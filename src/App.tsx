@@ -5,6 +5,11 @@ import "../i18n.config";
 const DashboardPage = lazy(() =>
   import("./pages/Dashboard").then((module) => ({ default: module.Dashboard }))
 );
+const CreateDaoPage = lazy(() =>
+  import("./pages/CreateDAO").then((module) => ({
+    default: module.CreateDAO,
+  }))
+);
 
 function App() {
   return (
@@ -13,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/app">
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="create" element={<CreateDaoPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
