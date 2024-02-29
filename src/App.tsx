@@ -1,17 +1,18 @@
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { GridLayout } from "src/components/Layout";
 import Navbar from "src/containers/Navbar";
 import { WalletMenu } from "src/containers/WalletMenu";
 
 import "../i18n.config";
+import { ContextProvider } from "./services/web3modal";
 
 const DashboardPage = lazy(() =>
-  import("./pages/Dashboard").then((module) => ({ default: module.Dashboard }))
+  import("./pages/Dashboard").then(module => ({ default: module.Dashboard }))
 );
 const CreateDaoPage = lazy(() =>
-  import("./pages/CreateDAO").then((module) => ({
-    default: module.CreateDAO,
+  import("./pages/CreateDAO").then(module => ({
+    default: module.CreateDAO
   }))
 );
 
@@ -32,7 +33,7 @@ const DaoWrapper: React.FC = () => {
 
 function App() {
   return (
-    <>
+    <ContextProvider>
       <BrowserRouter>
         <Routes>
           <Route path="dashboard" element={<DashboardPage />} />
@@ -40,7 +41,7 @@ function App() {
         </Routes>
         <WalletMenu />
       </BrowserRouter>
-    </>
+    </ContextProvider>
   );
 }
 
