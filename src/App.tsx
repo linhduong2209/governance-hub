@@ -1,5 +1,8 @@
 import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { GridLayout } from "src/components/Layout";
+import Navbar from "src/containers/Navbar";
+
 import "../i18n.config";
 
 const DashboardPage = lazy(() =>
@@ -11,15 +14,28 @@ const CreateDaoPage = lazy(() =>
   }))
 );
 
+const DaoWrapper: React.FC = () => {
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen">
+        <GridLayout>
+          <Routes>
+            <Route path="create" element={<CreateDaoPage />} />
+          </Routes>
+        </GridLayout>
+      </div>
+    </>
+  );
+};
+
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/app">
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="create" element={<CreateDaoPage />} />
-          </Route>
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="dao/*" element={<DaoWrapper />} />
         </Routes>
       </BrowserRouter>
     </>
