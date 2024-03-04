@@ -3,7 +3,7 @@ import {
   FormProvider,
   useFieldArray,
   useForm,
-  //   useFormState,
+  useFormState,
   useWatch,
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -13,10 +13,10 @@ import { TokenVotingWalletField } from "src/components/AddWallets/row";
 // import { Step } from "../components/FullScreenStepper";
 import { FullScreenStepper, Step } from "src/components/FullScreenStepper";
 import { MultisigWalletField } from "src/components/MultisigWallets/row";
-// import ConfigureCommunity from 'src/containers/configureCommunity';
+import ConfigureCommunity from "src/containers/ConfigureCommunity";
 import { OverviewDAOHeader, OverviewDAOStep } from "src/containers/DaoOverview";
 import DefineMetadata from "src/containers/DefineMetadata";
-// import GoLive, {GoLiveFooter, GoLiveHeader} from 'src/containers/goLive';
+import GoLive, { GoLiveFooter, GoLiveHeader } from "src/containers/GoLive";
 import SelectChain from "src/containers/SelectChainForm";
 import SetupCommunity from "src/containers/SetupCommunity";
 // import {CreateDaoProvider} from 'src/context/createDao';
@@ -33,7 +33,7 @@ import { htmlIn } from "src/utils/htmlIn";
 import { Landing } from "src/utils/paths";
 import { CreateDaoFormData } from "src/utils/types";
 // import {isFieldValid} from 'src/utils/validators';
-// import DefineExecutionMultisig from 'src/containers/defineExecutionMultisig';
+import DefineExecutionMultisig from "src/containers/DefineExecutionMultisig";
 
 const defaultValues = {
   tokenName: "",
@@ -86,7 +86,9 @@ export const CreateDAO: React.FC = () => {
     control: formMethods.control,
   });
 
-  //   const {errors, dirtyFields} = useFormState({control: formMethods.control});
+  const { errors, dirtyFields } = useFormState({
+    control: formMethods.control,
+  });
 
   const [
     formChain,
@@ -271,50 +273,50 @@ export const CreateDAO: React.FC = () => {
   //         : validateExistingTokenCommunity();
   //       break;
   //   }
-  //   const defineCommitteeIsValid = useMemo(() => {
-  //     if (
-  //       !committee ||
-  //       !committee.length ||
-  //       errors.committee ||
-  //       errors.committeeMinimumApproval ||
-  //       errors.executionExpirationMinutes ||
-  //       errors.executionExpirationHours ||
-  //       errors.executionExpirationDays
-  //     )
-  //       return false;
-  //     return true;
-  //   }, [
-  //     committee,
-  //     errors.committee,
-  //     errors.committeeMinimumApproval,
-  //     errors.executionExpirationMinutes,
-  //     errors.executionExpirationHours,
-  //     errors.executionExpirationDays,
-  //   ]);
+  const defineCommitteeIsValid = useMemo(() => {
+    if (
+      !committee ||
+      !committee.length ||
+      errors.committee ||
+      errors.committeeMinimumApproval ||
+      errors.executionExpirationMinutes ||
+      errors.executionExpirationHours ||
+      errors.executionExpirationDays
+    )
+      return false;
+    return true;
+  }, [
+    committee,
+    errors.committee,
+    errors.committeeMinimumApproval,
+    errors.executionExpirationMinutes,
+    errors.executionExpirationHours,
+    errors.executionExpirationDays,
+  ]);
 
-  //   const daoCommunityConfigurationIsValid = useMemo(() => {
-  //     if (
-  //       errors.minimumApproval ||
-  //       errors.minimumParticipation ||
-  //       errors.support ||
-  //       errors.durationDays ||
-  //       errors.durationHours ||
-  //       errors.durationMinutes ||
-  //       errors.multisigMinimumApprovals ||
-  //       errors.eligibilityTokenAmount
-  //     )
-  //       return false;
-  //     return true;
-  //   }, [
-  //     errors.durationDays,
-  //     errors.durationHours,
-  //     errors.durationMinutes,
-  //     errors.minimumApproval,
-  //     errors.minimumParticipation,
-  //     errors.support,
-  //     errors.multisigMinimumApprovals,
-  //     errors.eligibilityTokenAmount,
-  //   ]);
+  const daoCommunityConfigurationIsValid = useMemo(() => {
+    if (
+      errors.minimumApproval ||
+      errors.minimumParticipation ||
+      errors.support ||
+      errors.durationDays ||
+      errors.durationHours ||
+      errors.durationMinutes ||
+      errors.multisigMinimumApprovals ||
+      errors.eligibilityTokenAmount
+    )
+      return false;
+    return true;
+  }, [
+    errors.durationDays,
+    errors.durationHours,
+    errors.durationMinutes,
+    errors.minimumApproval,
+    errors.minimumParticipation,
+    errors.support,
+    errors.multisigMinimumApprovals,
+    errors.eligibilityTokenAmount,
+  ]);
 
   /*************************************************
    *                    Render                     *
@@ -366,7 +368,7 @@ export const CreateDAO: React.FC = () => {
         >
           <DefineMetadata />
         </Step>
-        {/* <Step
+        <Step
           wizardTitle={t("createDAO.step3.title")}
           wizardDescription={htmlIn(t)("createDAO.step3.description")}
           isNextButtonDisabled={!daoCommunitySetupIsValid}
@@ -382,7 +384,60 @@ export const CreateDAO: React.FC = () => {
           }
         >
           <SetupCommunity />
-        </Step> */}
+        </Step>
+        <Step
+          // *** optionally leaving previous common.js pointers which now work correctly also ***
+          // wizardTitle={t('createDao.stepCommunityVoting.title')}
+          // wizardDescription={htmlIn(t)('createDao.stepCommunityVoting.desc')}
+          wizardTitle={t("createDAO.step4.title")}
+          wizardDescription={htmlIn(t)("createDAO.step4.description")}
+          isNextButtonDisabled={!daoCommunityConfigurationIsValid}
+          onNextButtonClicked={(next) =>
+            handleNextButtonTracking(next, "4_configure_governance", {
+              minimum_approval: formMethods.getValues("minimumApproval"),
+              support: formMethods.getValues("support"),
+              duration_days: formMethods.getValues("durationDays"),
+              duration_hours: formMethods.getValues("durationHours"),
+              duration_minutes: formMethods.getValues("durationMinutes"),
+              governance_type: formMethods.getValues("membership"),
+            })
+          }
+        >
+          <ConfigureCommunity />
+        </Step>
+        <Step
+          skipStep={votingType !== "gasless"}
+          wizardTitle={t("createDao.executionMultisig.title")}
+          wizardDescription={htmlIn(t)("createDao.executionMultisig.desc")}
+          isNextButtonDisabled={!defineCommitteeIsValid}
+          onNextButtonClicked={(next) => {
+            handleNextButtonTracking(next, "5_define_execution_multisig", {
+              committee: formMethods.getValues("committee"),
+              committeeMinimumApproval: formMethods.getValues(
+                "committeeMinimumApproval"
+              ),
+              executionExpirationMinutes: formMethods.getValues(
+                "executionExpirationMinutes"
+              ),
+              executionExpirationHours: formMethods.getValues(
+                "executionExpirationHours"
+              ),
+              executionExpirationDays: formMethods.getValues(
+                "executionExpirationDays"
+              ),
+            });
+          }}
+        >
+          <DefineExecutionMultisig />
+        </Step>
+        <Step
+          hideWizard
+          fullWidth
+          customHeader={<GoLiveHeader />}
+          customFooter={<GoLiveFooter />}
+        >
+          <GoLive />
+        </Step>
       </FullScreenStepper>
     </FormProvider>
   );

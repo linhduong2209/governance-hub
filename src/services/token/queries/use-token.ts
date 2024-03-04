@@ -8,7 +8,7 @@ import {
 import {useCallback} from 'react';
 import {useBalance, Address} from 'wagmi';
 
-import {CHAIN_METADATA} from 'utils/constants';
+import {CHAIN_METADATA} from 'src/utils/constants';
 import {Token} from '../domain';
 import {tokenQueryKeys} from '../query-keys';
 import {tokenService} from '../token-service';

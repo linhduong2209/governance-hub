@@ -1,5 +1,5 @@
 import {AssetBalance} from '@aragon/sdk-client';
-import {SupportedNetworks} from 'utils/constants';
+import {SupportedNetworks} from 'src/utils/constants';
 
 export interface IFetchTokenParams {
   address: string;

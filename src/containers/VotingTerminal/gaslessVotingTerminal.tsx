@@ -19,7 +19,7 @@ import {useProposalTransactionContext} from '../../context/proposalTransaction';
 import {
   ExecutionWidget,
   ExecutionWidgetProps,
-} from '../../components/executionWidget';
+} from '../../components/ExecutionWidget';
 import {getProposalExecutionStatus} from '../../utils/proposals';
 import {PENDING_PROPOSAL_STATUS_INTERVAL} from '../../pages/proposal';
 import {
