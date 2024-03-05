@@ -1,22 +1,22 @@
-import {useMemo} from 'react';
-import {clearWagmiCache} from 'src/utils/library';
-import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { useMemo } from "react";
+import { clearWagmiCache } from "src/utils/library";
 import {
   useAccount,
-  useDisconnect,
   useBalance,
-  useEnsName,
+  useDisconnect,
   useEnsAvatar,
-  useNetwork as useWagmiNetwork,
-} from 'wagmi';
+  useEnsName,
+  useNetwork as useWagmiNetwork
+} from "wagmi";
 
-import {useWeb3Modal} from '@web3modal/react';
+import { useWeb3Modal } from "@web3modal/react";
 
-import {useNetwork} from 'src/context/network';
-import {CHAIN_METADATA} from 'src/utils/constants';
-import {useEthersSigner} from './useEthersSigner';
-import {BigNumber} from 'ethers';
-import {aragonGateway} from 'src/utils/aragonGateway';
+import { BigNumber } from "ethers";
+import { useNetwork } from "src/context/network";
+import { aragonGateway } from "src/utils/aragonGateway";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { useEthersSigner } from "./useEthersSigner";
 
 export interface IUseWallet {
   connectorName: string;
@@ -34,7 +34,7 @@ export interface IUseWallet {
   network: string;
   provider: Web3Provider | null;
   signer: JsonRpcSigner | null;
-  status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
+  status: "connecting" | "reconnecting" | "connected" | "disconnected";
   address: string | null;
   chainId: number;
   methods: {
@@ -47,33 +47,33 @@ export interface IUseWallet {
 }
 
 export const useWallet = (): IUseWallet => {
-  const {network} = useNetwork();
+  const { network } = useNetwork();
 
-  const {chain} = useWagmiNetwork();
-  const {address, status: wagmiStatus, isConnected, connector} = useAccount();
-  const {disconnect} = useDisconnect();
-  const {open: openWeb3Modal, isOpen} = useWeb3Modal();
+  const { chain } = useWagmiNetwork();
+  const { address, status: wagmiStatus, isConnected, connector } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { open: openWeb3Modal, isOpen } = useWeb3Modal();
   const chainId = chain?.id || 0;
   const signer = useEthersSigner(chainId);
 
   const provider = useMemo(
     () =>
-      ['mumbai', 'polygon'].includes(network)
+      ["mumbai", "polygon"].includes(network)
         ? aragonGateway.getRpcProvider(network)
         : signer?.provider,
     [network, signer?.provider]
   );
 
-  const {data: wagmiBalance} = useBalance({
-    address,
+  const { data: wagmiBalance } = useBalance({
+    address
   });
 
-  const {data: ensName} = useEnsName({
-    address,
+  const { data: ensName } = useEnsName({
+    address
   });
 
-  const {data: ensAvatarUrl} = useEnsAvatar({
-    name: ensName,
+  const { data: ensAvatarUrl } = useEnsAvatar({
+    name: ensName
   });
 
   const balance: bigint | null = wagmiBalance?.value || null;
@@ -87,7 +87,7 @@ export const useWallet = (): IUseWallet => {
         openWeb3Modal();
         resolve({
           networkId,
-          cacheProvider,
+          cacheProvider
         });
       });
     },
@@ -96,11 +96,11 @@ export const useWallet = (): IUseWallet => {
         disconnect();
         resolve(true);
       });
-    },
+    }
   };
 
   return {
-    connectorName: connector?.name || '',
+    connectorName: connector?.name || "",
     provider: provider as Web3Provider,
     signer: signer as JsonRpcSigner,
     status: wagmiStatus,
@@ -113,6 +113,6 @@ export const useWallet = (): IUseWallet => {
     isModalOpen: isOpen,
     isOnWrongNetwork,
     methods,
-    network,
+    network
   };
 };
