@@ -19,7 +19,7 @@ import DefineMetadata from "src/containers/DefineMetadata";
 import GoLive, { GoLiveFooter, GoLiveHeader } from "src/containers/GoLive";
 import SelectChain from "src/containers/SelectChainForm";
 import SetupCommunity from "src/containers/SetupCommunity";
-// import {CreateDaoProvider} from 'src/context/createDao';
+import { CreateDaoProvider } from "src/context/createDao";
 import { useNetwork } from "src/context/network";
 import { useProviders } from "src/context/providers";
 import { useWallet } from "src/hooks/useWallet";
@@ -323,122 +323,124 @@ export const CreateDAO: React.FC = () => {
    *************************************************/
   return (
     <FormProvider {...formMethods}>
-      <FullScreenStepper
-        wizardProcessName={t("createDAO.title")}
-        navLabel={t("createDAO.title")}
-        returnPath={Landing}
-        processType="DaoCreation"
-      >
-        <Step
-          fullWidth
-          hideWizard
-          customHeader={
-            <OverviewDAOHeader
-              navLabel={t("createDAO.title")}
-              returnPath={Landing}
-            />
-          }
-          customFooter={<></>}
+      <CreateDaoProvider>
+        <FullScreenStepper
+          wizardProcessName={t("createDAO.title")}
+          navLabel={t("createDAO.title")}
+          returnPath={Landing}
+          processType="DaoCreation"
         >
-          <OverviewDAOStep />
-        </Step>
-        <Step
-          wizardTitle={t("createDAO.step1.title")}
-          wizardDescription={htmlIn(t)("createDAO.step1.description")}
-          onNextButtonClicked={(next) =>
-            handleNextButtonTracking(next, "1_select_blockchain", {
-              network: formMethods.getValues("blockchain")?.network,
-            })
-          }
-        >
-          <SelectChain />
-        </Step>
-        <Step
-          wizardTitle={t("createDAO.step2.title")}
-          wizardDescription={htmlIn(t)("createDAO.step2.description")}
-          isNextButtonDisabled={false}
-          onNextButtonClicked={(next) =>
-            handleNextButtonTracking(next, "2_define_metadata", {
-              dao_name: "DAO",
-              // formMethods.getValues("daoName"),
-              links: "link",
-              // formMethods.getValues("links"),
-            })
-          }
-        >
-          <DefineMetadata />
-        </Step>
-        <Step
-          wizardTitle={t("createDAO.step3.title")}
-          wizardDescription={htmlIn(t)("createDAO.step3.description")}
-          isNextButtonDisabled={!daoCommunitySetupIsValid}
-          onNextButtonClicked={(next) =>
-            handleNextButtonTracking(next, "3_setup_community", {
-              governance_type: formMethods.getValues("membership"),
-              voting_type: formMethods.getValues("votingType"),
-              token_name: formMethods.getValues("tokenName"),
-              symbol: formMethods.getValues("tokenSymbol"),
-              token_address: formMethods.getValues("tokenAddress.address"),
-              multisigWallets: formMethods.getValues("multisigWallets"),
-            })
-          }
-        >
-          <SetupCommunity />
-        </Step>
-        <Step
-          // *** optionally leaving previous common.js pointers which now work correctly also ***
-          // wizardTitle={t('createDao.stepCommunityVoting.title')}
-          // wizardDescription={htmlIn(t)('createDao.stepCommunityVoting.desc')}
-          wizardTitle={t("createDAO.step4.title")}
-          wizardDescription={htmlIn(t)("createDAO.step4.description")}
-          isNextButtonDisabled={!daoCommunityConfigurationIsValid}
-          onNextButtonClicked={(next) =>
-            handleNextButtonTracking(next, "4_configure_governance", {
-              minimum_approval: formMethods.getValues("minimumApproval"),
-              support: formMethods.getValues("support"),
-              duration_days: formMethods.getValues("durationDays"),
-              duration_hours: formMethods.getValues("durationHours"),
-              duration_minutes: formMethods.getValues("durationMinutes"),
-              governance_type: formMethods.getValues("membership"),
-            })
-          }
-        >
-          <ConfigureCommunity />
-        </Step>
-        <Step
-          skipStep={votingType !== "gasless"}
-          wizardTitle={t("createDao.executionMultisig.title")}
-          wizardDescription={htmlIn(t)("createDao.executionMultisig.desc")}
-          isNextButtonDisabled={!defineCommitteeIsValid}
-          onNextButtonClicked={(next) => {
-            handleNextButtonTracking(next, "5_define_execution_multisig", {
-              committee: formMethods.getValues("committee"),
-              committeeMinimumApproval: formMethods.getValues(
-                "committeeMinimumApproval"
-              ),
-              executionExpirationMinutes: formMethods.getValues(
-                "executionExpirationMinutes"
-              ),
-              executionExpirationHours: formMethods.getValues(
-                "executionExpirationHours"
-              ),
-              executionExpirationDays: formMethods.getValues(
-                "executionExpirationDays"
-              ),
-            });
-          }}
-        >
-          <DefineExecutionMultisig />
-        </Step>
-        <Step
-          hideWizard
-          fullWidth
-          customHeader={<GoLiveHeader />}
-          customFooter={<GoLiveFooter />}
-        >
-          <GoLive />
-        </Step>
-      </FullScreenStepper>
+          <Step
+            fullWidth
+            hideWizard
+            customHeader={
+              <OverviewDAOHeader
+                navLabel={t("createDAO.title")}
+                returnPath={Landing}
+              />
+            }
+            customFooter={<></>}
+          >
+            <OverviewDAOStep />
+          </Step>
+          <Step
+            wizardTitle={t("createDAO.step1.title")}
+            wizardDescription={htmlIn(t)("createDAO.step1.description")}
+            onNextButtonClicked={(next) =>
+              handleNextButtonTracking(next, "1_select_blockchain", {
+                network: formMethods.getValues("blockchain")?.network,
+              })
+            }
+          >
+            <SelectChain />
+          </Step>
+          <Step
+            wizardTitle={t("createDAO.step2.title")}
+            wizardDescription={htmlIn(t)("createDAO.step2.description")}
+            isNextButtonDisabled={false}
+            onNextButtonClicked={(next) =>
+              handleNextButtonTracking(next, "2_define_metadata", {
+                dao_name: "DAO",
+                // formMethods.getValues("daoName"),
+                links: "link",
+                // formMethods.getValues("links"),
+              })
+            }
+          >
+            <DefineMetadata />
+          </Step>
+          <Step
+            wizardTitle={t("createDAO.step3.title")}
+            wizardDescription={htmlIn(t)("createDAO.step3.description")}
+            isNextButtonDisabled={!daoCommunitySetupIsValid}
+            onNextButtonClicked={(next) =>
+              handleNextButtonTracking(next, "3_setup_community", {
+                governance_type: formMethods.getValues("membership"),
+                voting_type: formMethods.getValues("votingType"),
+                token_name: formMethods.getValues("tokenName"),
+                symbol: formMethods.getValues("tokenSymbol"),
+                token_address: formMethods.getValues("tokenAddress.address"),
+                multisigWallets: formMethods.getValues("multisigWallets"),
+              })
+            }
+          >
+            <SetupCommunity />
+          </Step>
+          <Step
+            // *** optionally leaving previous common.js pointers which now work correctly also ***
+            // wizardTitle={t('createDao.stepCommunityVoting.title')}
+            // wizardDescription={htmlIn(t)('createDao.stepCommunityVoting.desc')}
+            wizardTitle={t("createDAO.step4.title")}
+            wizardDescription={htmlIn(t)("createDAO.step4.description")}
+            isNextButtonDisabled={!daoCommunityConfigurationIsValid}
+            onNextButtonClicked={(next) =>
+              handleNextButtonTracking(next, "4_configure_governance", {
+                minimum_approval: formMethods.getValues("minimumApproval"),
+                support: formMethods.getValues("support"),
+                duration_days: formMethods.getValues("durationDays"),
+                duration_hours: formMethods.getValues("durationHours"),
+                duration_minutes: formMethods.getValues("durationMinutes"),
+                governance_type: formMethods.getValues("membership"),
+              })
+            }
+          >
+            <ConfigureCommunity />
+          </Step>
+          <Step
+            skipStep={votingType !== "gasless"}
+            wizardTitle={t("createDao.executionMultisig.title")}
+            wizardDescription={htmlIn(t)("createDao.executionMultisig.desc")}
+            isNextButtonDisabled={!defineCommitteeIsValid}
+            onNextButtonClicked={(next) => {
+              handleNextButtonTracking(next, "5_define_execution_multisig", {
+                committee: formMethods.getValues("committee"),
+                committeeMinimumApproval: formMethods.getValues(
+                  "committeeMinimumApproval"
+                ),
+                executionExpirationMinutes: formMethods.getValues(
+                  "executionExpirationMinutes"
+                ),
+                executionExpirationHours: formMethods.getValues(
+                  "executionExpirationHours"
+                ),
+                executionExpirationDays: formMethods.getValues(
+                  "executionExpirationDays"
+                ),
+              });
+            }}
+          >
+            <DefineExecutionMultisig />
+          </Step>
+          <Step
+            hideWizard
+            fullWidth
+            customHeader={<GoLiveHeader />}
+            customFooter={<GoLiveFooter />}
+          >
+            <GoLive />
+          </Step>
+        </FullScreenStepper>
+      </CreateDaoProvider>
     </FormProvider>
   );
 };

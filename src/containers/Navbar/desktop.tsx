@@ -2,18 +2,18 @@ import React, { useCallback, useState } from "react";
 import { Breadcrumb, ButtonWallet } from "src/@aragon/ods-old";
 import { Button, IconType } from "@aragon/ods";
 import { useTranslation } from "react-i18next";
-// import {useReactiveVar} from '@apollo/client';
+import { useReactiveVar } from "@apollo/client";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
-// import {DaoSelector} from 'src/components/daoSelector';
+import { DaoSelector } from "src/components/DaoSelector";
 import { Container } from "src/components/Layout";
-// import NavLinks from 'src/components/navLinks';
+import NavLinks from "src/components/NavLinks";
 import ExitProcessMenu, { ProcessType } from "src/containers/ExitProcessMenu";
-// import {selectedDaoVar} from 'src/context/apolloClient';
-// import {useNetwork} from 'src/context/network';
-// import {useMappedBreadcrumbs} from 'src/hooks/useMappedBreadcrumbs';
-// import {useWallet} from 'src/hooks/useWallet';
+import { selectedDaoVar } from "src/context/apolloClient";
+import { useNetwork } from "src/context/network";
+import { useMappedBreadcrumbs } from "src/hooks/useMappedBreadcrumbs";
+import { useWallet } from "src/hooks/useWallet";
 import { NavlinksDropdown } from "./breadcrumbDropdown";
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
@@ -23,56 +23,55 @@ type DesktopNavProp = {
   returnURL?: string;
   processType?: ProcessType;
   processLabel?: string;
-  onDaoSelect?: () => void;
+  onDaoSelect: () => void;
   onWalletClick: () => void;
-  onFeedbackClick?: () => void;
+  onFeedbackClick: () => void;
 };
 
 const DesktopNav: React.FC<DesktopNavProp> = (props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // const { network } = useNetwork();
+  const { network } = useNetwork();
   const { dao } = useParams();
-  // const { breadcrumbs, icon, tag } = useMappedBreadcrumbs();
-  // const { address, ensName, ensAvatarUrl, isConnected } = useWallet();
+  const { breadcrumbs, icon, tag } = useMappedBreadcrumbs();
+  const { address, ensName, ensAvatarUrl, isConnected } = useWallet();
 
-  //  const currentDao = useReactiveVar(selectedDaoVar);
+  const currentDao = useReactiveVar(selectedDaoVar);
 
   const [showExitProcessMenu, setShowExitProcessMenu] = useState(false);
 
   // Note: Obviously because of convoluted navigation, this is being handled here
   // when it should have been in the wizard instead. That said, once new navigation
   // is added, this should be deprecated and removed
-  // const handleExitWithWarning = () => {
-  //   if (props.processType) {
-  //     setShowExitProcessMenu(true);
-  //   } else {
-  //     navigate(generatePath(props.returnURL!, { network, dao }));
-  //   }
-  // };
+  const handleExitWithWarning = () => {
+    if (props.processType) {
+      setShowExitProcessMenu(true);
+    } else {
+      navigate(generatePath(props.returnURL!, { network, dao }));
+    }
+  };
 
-  // const exitProcess = useCallback(() => {
-  //   setShowExitProcessMenu(false);
-  //   navigate(generatePath(props.returnURL!, { network, dao }));
-  // }, [dao, navigate, network, props.returnURL]);
+  const exitProcess = useCallback(() => {
+    setShowExitProcessMenu(false);
+    navigate(generatePath(props.returnURL!, { network, dao }));
+  }, [dao, navigate, network, props.returnURL]);
 
-  if (!props.isProcess) {
+  if (props.isProcess) {
     return (
       <>
         <Container data-testid="navbar">
           <Menu>
             <Breadcrumb
-              crumbs={{ label: "Create your DAO", path: props.returnURL! }}
-              //   onClick={handleExitWithWarning}
+              crumbs={{ label: props.processLabel!, path: props.returnURL! }}
+              onClick={handleExitWithWarning}
             />
 
             <ButtonWallet
-              src={""}
+              src={ensAvatarUrl || address}
               onClick={props.onWalletClick}
-              isConnected={false}
+              isConnected={isConnected}
               label={
-                // isConnected ? ensName || address :
-                t("navButtons.connectWallet")
+                isConnected ? ensName || address : t("navButtons.connectWallet")
               }
             />
           </Menu>
@@ -82,7 +81,7 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
             isOpen={showExitProcessMenu}
             processType={props.processType}
             onClose={() => setShowExitProcessMenu(false)}
-            ctaCallback={() => {}}
+            ctaCallback={exitProcess}
           />
         )}
       </>
@@ -92,7 +91,7 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
   return (
     <Container data-testid="navbar">
       <Menu>
-        {/* <Content>
+        <Content>
           <DaoSelector
             daoAddress={currentDao.ensDomain}
             daoName={currentDao?.metadata?.name || currentDao?.ensDomain}
@@ -116,28 +115,27 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
               </>
             )}
           </LinksWrapper>
-        </Content> */}
+        </Content>
 
         <div className="flex gap-4">
-          <Button
+          {/* <Button
             className="w-full md:w-max"
             size="lg"
             variant="tertiary"
             iconRight={IconType.FEEDBACK}
             onClick={props.onFeedbackClick}
           >
-            {t("navButtons.giveFeedback")}
-          </Button>
+            {t('navButtons.giveFeedback')}
+          </Button> */}
 
-          {/* <ButtonWallet
+          <ButtonWallet
             src={ensAvatarUrl || address}
             onClick={props.onWalletClick}
-            isConnected={false}
+            isConnected={isConnected}
             label={
-              // isConnected ? ensName || address :
-              t("navButtons.connectWallet")
+              isConnected ? ensName || address : t("navButtons.connectWallet")
             }
-          /> */}
+          />
         </div>
       </Menu>
     </Container>

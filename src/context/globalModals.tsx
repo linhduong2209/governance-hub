@@ -5,7 +5,7 @@ import React, {
   useMemo,
   ReactNode,
   useCallback,
-} from 'react';
+} from "react";
 
 const GlobalModalsContext = createContext<GlobalModalsContextType | null>(null);
 
@@ -18,28 +18,28 @@ type GlobalModalsContextType<TState = Record<string, unknown>> = {
 };
 
 export type DialogType =
-  | 'transfer'
-  | 'token'
-  | 'utc'
-  | 'addAction'
-  | 'selectDao'
-  | 'addresses'
-  | 'wallet'
-  | 'network'
-  | 'mobileMenu'
-  | 'manageWallet'
-  | 'gating'
-  | 'deposit'
-  | 'poapClaim'
-  | 'exportCsv'
-  | 'delegateVoting'
-  | 'delegationGating'
-  | 'committeeMembers'
-  | 'cannotDelegate';
+  | "transfer"
+  | "token"
+  | "utc"
+  | "addAction"
+  | "selectDao"
+  | "addresses"
+  | "wallet"
+  | "network"
+  | "mobileMenu"
+  | "manageWallet"
+  | "gating"
+  | "deposit"
+  | "poapClaim"
+  | "exportCsv"
+  | "delegateVoting"
+  | "delegationGating"
+  | "committeeMembers"
+  | "cannotDelegate";
 
-type Props = Record<'children', ReactNode>;
+type Props = Record<"children", ReactNode>;
 
-export const GlobalModalsProvider: React.FC<Props> = ({children}) => {
+export const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
   const [activeDialog, setActiveDialog] = useState<DialogType>();
   const [modalState, setModalState] = useState<Record<string, unknown>>();
 
@@ -81,7 +81,7 @@ export const useGlobalModalContext = <TState extends object>(
 
   if (values == null) {
     throw new Error(
-      'GlobalModals: hook must be used inside the GlobalModalContext in order to work properly.'
+      "GlobalModals: hook must be used inside the GlobalModalContext in order to work properly."
     );
   }
 

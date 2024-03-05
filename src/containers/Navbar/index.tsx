@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo } from "react";
 import { matchRoutes, useLocation } from "react-router-dom";
 
-import {ProcessType} from 'src/containers/ExitProcessMenu';
+import { ProcessType } from "src/containers/ExitProcessMenu";
 // import {selectedDaoVar} from 'src/context/apolloClient';
-// import {useGlobalModalContext} from 'src/context/globalModals';
+import { useGlobalModalContext } from "src/context/globalModals";
 // import {useNetwork} from 'src/context/network';
-// import {usePrivacyContext} from 'src/context/privacyContext';
+import { usePrivacyContext } from "src/context/privacyContext";
 // import {useDaoDetailsQuery} from 'src/hooks/useDaoDetails';
 import useScreen from "src/hooks/useScreen";
-// import {CHAIN_METADATA, FEEDBACK_FORM} from 'src/utils/constants';
+import { CHAIN_METADATA, FEEDBACK_FORM } from "src/utils/constants";
 import {
   Community,
   CreateDAO,
@@ -28,11 +28,11 @@ import DesktopNav from "./desktop";
 import MobileNav from "./mobile";
 
 const Navbar: React.FC = () => {
-  // const {open} = useGlobalModalContext();
+  const { open } = useGlobalModalContext();
   const { pathname } = useLocation();
   const { isDesktop } = useScreen();
   // const {network} = useNetwork();
-  // const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
+  const { handleWithFunctionalPreferenceMenu } = usePrivacyContext();
 
   // const {data: daoDetails} = useDaoDetailsQuery();
 
@@ -60,17 +60,17 @@ const Navbar: React.FC = () => {
   /*************************************************
    *                   Handlers                    *
    *************************************************/
-  // const handleOnDaoSelect = () => {
-  //   handleWithFunctionalPreferenceMenu(() => open("selectDao"));
-  // };
+  const handleOnDaoSelect = () => {
+    handleWithFunctionalPreferenceMenu(() => open("selectDao"));
+  };
 
   const handleWalletButtonClick = () => {
     open("wallet");
   };
 
-  // const handleFeedbackButtonClick = () => {
-  //   window.open(FEEDBACK_FORM, "_blank");
-  // };
+  const handleFeedbackButtonClick = () => {
+    window.open(FEEDBACK_FORM, "_blank");
+  };
 
   if (isDesktop) {
     return (
@@ -79,17 +79,17 @@ const Navbar: React.FC = () => {
         returnURL={processInfo?.returnURL}
         processLabel={processInfo?.processLabel}
         processType={processInfo?.processType}
-       // onDaoSelect={handleOnDaoSelect}
+        onDaoSelect={handleOnDaoSelect}
         onWalletClick={handleWalletButtonClick}
-       // onFeedbackClick={handleFeedbackButtonClick}
+        onFeedbackClick={handleFeedbackButtonClick}
       />
     );
   }
   return (
     <MobileNav
-     // onDaoSelect={handleOnDaoSelect}
+      // onDaoSelect={handleOnDaoSelect}
       onWalletClick={handleWalletButtonClick}
-     // onFeedbackClick={handleFeedbackButtonClick}
+      // onFeedbackClick={handleFeedbackButtonClick}
     />
   );
 };

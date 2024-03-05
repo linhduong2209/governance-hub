@@ -1,14 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-// import {useReactiveVar} from '@apollo/client';
+import { useReactiveVar } from "@apollo/client";
 import { AvatarDao, ButtonWallet } from "src/@aragon/ods-old";
 import { Button, IconType } from "@aragon/ods";
 
-// import {selectedDaoVar} from 'context/apolloClient';
-// import {useGlobalModalContext} from 'context/globalModals';
+import { selectedDaoVar } from "src/context/apolloClient";
+import { useGlobalModalContext } from "src/context/globalModals";
 import useScreen from "src/hooks/useScreen";
-// import {useWallet} from 'hooks/useWallet';
+import { useWallet } from "src/hooks/useWallet";
 import MobileMenu from "./mobileMenu";
 
 type MobileNavProps = {
@@ -19,10 +19,10 @@ type MobileNavProps = {
 
 const MobileNav: React.FC<MobileNavProps> = (props) => {
   const { t } = useTranslation();
-  // const {open} = useGlobalModalContext();
+  const { open } = useGlobalModalContext();
   const { isMobile } = useScreen();
-  //  const currentDao = useReactiveVar(selectedDaoVar);
-  // const { isConnected, address, ensName, ensAvatarUrl } = useWallet();
+  const currentDao = useReactiveVar(selectedDaoVar);
+  const { isConnected, address, ensName, ensAvatarUrl } = useWallet();
 
   return (
     <>
@@ -47,7 +47,7 @@ const MobileNav: React.FC<MobileNavProps> = (props) => {
               </Button>
             )}
           </FlexOne>
-          {/* <FlexOne className="justify-center">
+          <FlexOne className="justify-center">
             <DaoContainer>
               <AvatarDao
                 src={currentDao?.metadata?.avatar}
@@ -66,7 +66,7 @@ const MobileNav: React.FC<MobileNavProps> = (props) => {
                 isConnected ? ensName || address : t("navButtons.connectWallet")
               }
             />
-          </FlexOne> */}
+          </FlexOne>
         </Menu>
       </Container>
       {/* <MobileMenu onFeedbackClick={props.onFeedbackClick} /> */}

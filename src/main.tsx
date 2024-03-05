@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@aragon/ods/index.css";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import {
   arbitrum,
@@ -20,6 +20,11 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { aragonGateway } from "src/utils/aragonGateway";
 import { ProvidersContextProvider } from "src/context/providers";
 import { AlertProvider } from "src/context/alert";
+import { GlobalModalsProvider } from "src/context/globalModals";
+import { VocdoniClientProvider } from "./hooks/useVocdoniSdk";
+import { PrivacyContextProvider } from "src/context/privacyContext";
+import { UseCacheProvider } from "src/hooks/useCache";
+import { WalletMenuProvider } from "src/context/walletMenu";
 
 import App from "./App.tsx";
 
@@ -69,12 +74,24 @@ export const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AlertProvider>
-      <WagmiConfig config={wagmiConfig}>
-        <ProvidersContextProvider>
-          <App />
-        </ProvidersContextProvider>
-      </WagmiConfig>
-    </AlertProvider>
+    <QueryClientProvider client={queryClient}>
+      <PrivacyContextProvider>
+        <AlertProvider>
+          <WagmiConfig config={wagmiConfig}>
+            <UseCacheProvider>
+              <ProvidersContextProvider>
+                <WalletMenuProvider>
+                  <GlobalModalsProvider>
+                    <VocdoniClientProvider>
+                      <App />
+                    </VocdoniClientProvider>
+                  </GlobalModalsProvider>
+                </WalletMenuProvider>
+              </ProvidersContextProvider>
+            </UseCacheProvider>
+          </WagmiConfig>
+        </AlertProvider>
+      </PrivacyContextProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
