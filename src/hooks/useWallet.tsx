@@ -1,4 +1,6 @@
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { createConfig, getChainId, http } from "@wagmi/core";
+import { useWeb3Modal } from "@web3modal/react";
 import { useMemo } from "react";
 import { clearWagmiCache } from "src/utils/library";
 import {
@@ -6,11 +8,9 @@ import {
   useBalance,
   useDisconnect,
   useEnsAvatar,
-  useEnsName,
-  useNetwork as useWagmiNetwork
+  useEnsName
 } from "wagmi";
-
-import { useWeb3Modal } from "@web3modal/react";
+import { avalancheFuji } from "wagmi/chains";
 
 import { BigNumber } from "ethers";
 import { useNetwork } from "src/context/network";
@@ -49,11 +49,17 @@ export interface IUseWallet {
 export const useWallet = (): IUseWallet => {
   const { network } = useNetwork();
 
-  const { chain } = useWagmiNetwork();
   const { address, status: wagmiStatus, isConnected, connector } = useAccount();
   const { disconnect } = useDisconnect();
   const { open: openWeb3Modal, isOpen } = useWeb3Modal();
-  const chainId = chain?.id || 0;
+  const chainId = getChainId(
+    createConfig({
+      chains: [avalancheFuji],
+      transports: {
+        [avalancheFuji.id]: http()
+      }
+    })
+  );
   const signer = useEthersSigner(chainId);
 
   const provider = useMemo(

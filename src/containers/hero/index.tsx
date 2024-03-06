@@ -7,7 +7,8 @@ import { useAccount } from "wagmi";
 import Green from "../../../public/assets/images/circleGreenGradient.svg";
 import Logo from "../../../public/assets/images/coloredLogo.svg";
 import Purple from "../../../public/assets/images/purpleGradient.svg";
-import { GridLayout, HeaderContainer } from "../../components/layout";
+import { GridLayout } from "../../components/layout";
+import { HeaderContainer } from "../../components/layout/header";
 
 function Hero() {
   const { t } = useTranslation();
@@ -34,7 +35,6 @@ function Hero() {
         </Wrapper>
         <HeaderContainer data-testid="navbar">
           <Menu>
-            {/* <GridLayout> */}
             <ButtonWallet
               src={""}
               onClick={() => open()}
@@ -43,7 +43,6 @@ function Hero() {
                 isConnected ? address ?? "" : t("navButtons.connectWallet")
               }
             />
-            {/* </GridLayout> */}
           </Menu>
         </HeaderContainer>
       </GridLayout>

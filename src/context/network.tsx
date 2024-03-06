@@ -1,21 +1,22 @@
+import { createConfig, getChainId, http } from "@wagmi/core";
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
-  useState,
-} from 'react';
-import {useMatch, useNavigate} from 'react-router-dom';
-import {useAccount, useNetwork as useWagmiNetwork} from 'wagmi';
-
+  useState
+} from "react";
+import { useMatch, useNavigate } from "react-router-dom";
 import {
   CHAIN_METADATA,
-  isSupportedChainId,
   L2_NETWORKS,
   SupportedNetworks,
-  toSupportedNetwork,
-} from 'src/utils/constants';
-import {NotFound} from 'src/utils/paths';
+  isSupportedChainId,
+  toSupportedNetwork
+} from "src/utils/constants";
+import { NotFound } from "src/utils/paths";
+import { useAccount } from "wagmi";
+import { avalancheFuji } from "wagmi/chains";
 
 /* CONTEXT PROVIDER ========================================================= */
 
@@ -27,10 +28,10 @@ type NetworkContext = {
 };
 
 const NetworkContext = createContext<NetworkContext>({
-  network: 'ethereum',
+  network: "ethereum",
   setNetwork: () => {},
   isL2Network: false,
-  networkUrlSegment: undefined,
+  networkUrlSegment: undefined
 });
 
 type NetworkProviderProps = {
@@ -47,25 +48,25 @@ type NetworkProviderProps = {
 const determineNetwork = (
   networkUrlSegment: string | undefined,
   chainId: number,
-  status: 'disconnected' | 'connecting' | 'connected'
-): SupportedNetworks | 'unsupported' => {
+  status: "disconnected" | "connecting" | "connected"
+): SupportedNetworks | "unsupported" => {
   if (networkUrlSegment) {
     // NETWORK from url
     return toSupportedNetwork(networkUrlSegment);
-  } else if (status === 'connected') {
+  } else if (status === "connected") {
     if (isSupportedChainId(chainId)) {
       // NETWORK from wallet chain
       return Object.entries(CHAIN_METADATA).find(
         ([, v]) => v.id === chainId
       )?.[0] as SupportedNetworks;
     } else {
-      console.log('*NETWORK UNSUPPORTED');
-      return 'unsupported';
+      console.log("*NETWORK UNSUPPORTED");
+      return "unsupported";
     }
   }
 
   //NETWORK defaults to eth
-  return 'ethereum';
+  return "ethereum";
 };
 
 /**
@@ -81,16 +82,22 @@ const determineNetwork = (
  * exposes a setter that allows to change the network for
  *
  */
-export function NetworkProvider({children}: NetworkProviderProps) {
+export function NetworkProvider({ children }: NetworkProviderProps) {
   const navigate = useNavigate();
-  const urlNetwork = useMatch('daos/:network/*');
+  const urlNetwork = useMatch("daos/:network/*");
   const networkUrlSegment = urlNetwork?.params?.network;
-  const {chain} = useWagmiNetwork();
-  const chainId = chain?.id || 0;
-  const {status: wagmiStatus} = useAccount();
-  const status = wagmiStatus === 'reconnecting' ? 'connecting' : wagmiStatus;
+  const chainId = getChainId(
+    createConfig({
+      chains: [avalancheFuji],
+      transports: {
+        [avalancheFuji.id]: http()
+      }
+    })
+  );
+  const { status: wagmiStatus } = useAccount();
+  const status = wagmiStatus === "reconnecting" ? "connecting" : wagmiStatus;
   const [networkState, setNetworkState] = useState<
-    SupportedNetworks | 'unsupported'
+    SupportedNetworks | "unsupported"
   >(determineNetwork(networkUrlSegment, chainId, status));
 
   useEffect(() => {
@@ -102,7 +109,7 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   const changeNetwork = useCallback(
     (network: SupportedNetworks) => {
       if (networkUrlSegment) {
-        console.error('Network may not be changed on this page');
+        console.error("Network may not be changed on this page");
       } else {
         setNetworkState(network);
       }
@@ -112,9 +119,9 @@ export function NetworkProvider({children}: NetworkProviderProps) {
 
   useEffect(() => {
     // unsupported network based on the networkUrlSegment network
-    if (networkState === 'unsupported' && networkUrlSegment) {
-      console.warn('network unsupported');
-      navigate(NotFound, {replace: true});
+    if (networkState === "unsupported" && networkUrlSegment) {
+      console.warn("network unsupported");
+      navigate(NotFound, { replace: true });
     }
   }, [networkState, navigate, networkUrlSegment]);
 
@@ -124,7 +131,7 @@ export function NetworkProvider({children}: NetworkProviderProps) {
         network: networkState,
         setNetwork: changeNetwork,
         isL2Network,
-        networkUrlSegment,
+        networkUrlSegment
       }}
     >
       {children}

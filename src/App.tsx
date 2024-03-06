@@ -2,7 +2,6 @@ import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { GridLayout } from "src/components/Layout";
 import Navbar from "src/containers/Navbar";
-import { WalletMenu } from "src/containers/WalletMenu";
 
 import "../i18n.config";
 import { ContextProvider } from "./services/web3modal";
@@ -39,7 +38,7 @@ function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="dao/*" element={<DaoWrapper />} />
         </Routes>
-        <WalletMenu />
+        {/* <WalletMenu /> */}
       </BrowserRouter>
     </ContextProvider>
   );

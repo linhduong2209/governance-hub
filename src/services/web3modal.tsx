@@ -1,10 +1,9 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
+import { queryClient } from "src/main";
 import { WagmiProvider } from "wagmi";
 import { avalancheFuji } from "wagmi/chains";
-
-const queryClient = new QueryClient();
 
 const projectId = "35432815bc00118ae9bffea10455260d";
 
