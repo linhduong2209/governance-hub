@@ -1,5 +1,5 @@
 /* TOP LEVEL PAGES ========================================================== */
-export const Landing = "/app";
+export const Landing = "/dashboard";
 export const CreateDAO = "/create";
 export const NotFound = "/not-found";
 

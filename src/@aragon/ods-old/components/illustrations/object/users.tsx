@@ -1,16 +1,15 @@
-import React from 'react';
-import {type IconType} from '../../icons';
+import { type IconType } from "../../icons";
 
-export const Users: IconType = ({height = 160, width = 160, ...props}) => {
+export const Users: IconType = ({ height = 160, width = 160, ...props }) => {
   const pathStyle = {
-    fill: 'none',
-    stroke: '#001f5c',
-    strokeWidth: '2.6',
+    fill: "none",
+    stroke: "#001f5c",
+    strokeWidth: "2.6"
   };
   const highlightStyle = {
-    fill: '#3164fa',
-    stroke: '#3164fa',
-    strokeWidth: '2.6',
+    fill: "#E84142",
+    stroke: "#E84142",
+    strokeWidth: "2.6"
   };
   return (
     <svg

@@ -1,9 +1,20 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { queryClient } from "src/main";
 import { WagmiProvider } from "wagmi";
-import { avalancheFuji } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 5, // 5min
+      staleTime: 1000 * 60 * 2, // 2min
+      retry: 0,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true
+    }
+  }
+});
 
 const projectId = "35432815bc00118ae9bffea10455260d";
 
@@ -14,7 +25,7 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"]
 };
 
-const chains = [avalancheFuji] as const;
+const chains = [mainnet] as const;
 const config = defaultWagmiConfig({
   chains,
   projectId,

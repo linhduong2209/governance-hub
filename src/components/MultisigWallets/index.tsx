@@ -1,42 +1,40 @@
-import React, {useEffect, useRef} from 'react';
-import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
-import {Dropdown, Label, ListItemAction} from 'src/@aragon/ods-old';
-import {Button, IconType, AlertInline} from '@aragon/ods';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
-import {Address, useEnsName} from 'wagmi';
+import { AlertInline, Button, IconType } from "@aragon/ods";
+import { useEffect, useRef } from "react";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { Dropdown, Label, ListItemAction } from "src/@aragon/ods-old";
+import styled from "styled-components";
+import { Address, useEnsName } from "wagmi";
 
-import {useAlertContext} from 'src/context/alert';
-import {useNetwork} from 'src/context/network';
-import useScreen from 'src/hooks/useScreen';
-import {useWallet} from 'src/hooks/useWallet';
-import {CHAIN_METADATA} from 'src/utils/constants';
-import {Row} from './row';
+import { useNetwork } from "src/context/network";
+import useScreen from "src/hooks/useScreen";
+import { useWallet } from "src/hooks/useWallet";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { Row } from "./row";
 
 export const MultisigWallets = () => {
-  const {t} = useTranslation();
-  const {alert} = useAlertContext();
+  const { t } = useTranslation();
   const appendConnectedAddress = useRef(true);
 
-  const {network} = useNetwork();
-  const {address} = useWallet();
+  const { network } = useNetwork();
+  const { address } = useWallet();
 
-  const {data: ensName} = useEnsName({
+  const { data: ensName } = useEnsName({
     address: address as Address,
-    chainId: CHAIN_METADATA[network].id,
+    chainId: CHAIN_METADATA[network].id
   });
 
-  const {control, trigger, setFocus} = useFormContext();
-  const multisigWallets = useWatch({name: 'multisigWallets', control});
-  const {fields, update, replace, append, remove} = useFieldArray({
+  const { control, trigger, setFocus } = useFormContext();
+  const multisigWallets = useWatch({ name: "multisigWallets", control });
+  const { fields, update, replace, append, remove } = useFieldArray({
     control,
-    name: 'multisigWallets',
+    name: "multisigWallets"
   });
 
   const controlledWallets = fields.map((field, index) => {
     return {
       ...field,
-      ...(multisigWallets && {...multisigWallets[index]}),
+      ...(multisigWallets && { ...multisigWallets[index] })
     };
   });
 
@@ -46,15 +44,14 @@ export const MultisigWallets = () => {
       controlledWallets?.length === 0 &&
       appendConnectedAddress.current === true
     ) {
-      append({address, ensName});
+      append({ address, ensName });
       appendConnectedAddress.current = false;
     }
   }, [address, append, controlledWallets?.length, ensName]);
 
   // add empty wallet
   const handleAdd = () => {
-    append({address: '', ensName: ''});
-    alert(t('alert.chip.addressAdded'));
+    append({ address: "", ensName: "" });
     const id = `multisigWallets.${controlledWallets.length}`;
     setTimeout(() => {
       setFocus(id);
@@ -66,26 +63,23 @@ export const MultisigWallets = () => {
   const handleDeleteEntry = (index: number) => {
     remove(index);
 
-    alert(t('alert.chip.removedAddress'));
     setTimeout(() => {
-      trigger('multisigWallets');
+      trigger("multisigWallets");
     }, 50);
   };
 
   // remove all wallets
   const handleDeleteAll = () => {
-    replace([{address}]);
-    alert(t('alert.chip.removedAllAddresses'));
+    replace([{ address }]);
     setTimeout(() => {
-      trigger('multisigWallets');
+      trigger("multisigWallets");
     }, 50);
   };
 
   // reset wallet
   const handleResetEntry = (index: number) => {
-    update(index, {address: '', ensName: ''});
-    alert(t('alert.chip.resetAddress'));
-    trigger('multisigWallets');
+    update(index, { address: "", ensName: "" });
+    trigger("multisigWallets");
   };
 
   // reset all wallets
@@ -93,28 +87,27 @@ export const MultisigWallets = () => {
     controlledWallets.forEach((_, index) => {
       // skip the first one because is the own address
       if (index > 0) {
-        update(index, {address: '', ensName: ''});
+        update(index, { address: "", ensName: "" });
       }
     });
-    alert(t('alert.chip.resetAllAddresses'));
-    trigger('multisigWallets');
+    trigger("multisigWallets");
   };
 
-  const {isMobile} = useScreen();
+  const { isMobile } = useScreen();
 
   return (
     <Container>
       <DescriptionContainer>
         <Label
-          label={t('createDAO.step3.multisigMembers')}
-          helpText={t('createDAO.step3.multisigMembersHelptext')}
+          label={t("createDAO.step3.multisigMembers")}
+          helpText={t("createDAO.step3.multisigMembersHelptext")}
           renderHtml
         />
       </DescriptionContainer>
       <TableContainer>
         {!isMobile && (
           <TableTitleContainer>
-            <Title>{t('labels.whitelistWallets.address')}</Title>
+            <Title>{t("labels.whitelistWallets.address")}</Title>
           </TableTitleContainer>
         )}
         {controlledWallets.map((field, index) => (
@@ -131,7 +124,7 @@ export const MultisigWallets = () => {
         <ActionsContainer>
           <TextButtonsContainer>
             <Button variant="tertiary" size="lg" onClick={handleAdd}>
-              {t('labels.whitelistWallets.addAddress')}
+              {t("labels.whitelistWallets.addAddress")}
             </Button>
             {/*
           To be enabled when csv functionality is there
@@ -158,35 +151,35 @@ export const MultisigWallets = () => {
               {
                 component: (
                   <ListItemAction
-                    title={t('labels.whitelistWallets.resetAllEntries')}
+                    title={t("labels.whitelistWallets.resetAllEntries")}
                     bgWhite
                   />
                 ),
-                callback: handleResetAll,
+                callback: handleResetAll
               },
               {
                 component: (
                   <ListItemAction
-                    title={t('labels.whitelistWallets.deleteAllEntries')}
+                    title={t("labels.whitelistWallets.deleteAllEntries")}
                     bgWhite
                   />
                 ),
-                callback: handleDeleteAll,
-              },
+                callback: handleDeleteAll
+              }
             ]}
           />
         </ActionsContainer>
         <Divider />
         <SummaryContainer>
-          <Title>{t('labels.summary')}</Title>
+          <Title>{t("labels.summary")}</Title>
           <TotalWalletsContainer>
-            <Text>{t('labels.whitelistWallets.totalWallets')}</Text>
+            <Text>{t("labels.whitelistWallets.totalWallets")}</Text>
             <Title>{controlledWallets.length}</Title>
           </TotalWalletsContainer>
         </SummaryContainer>
       </TableContainer>
       <AlertInline
-        message={t('createDAO.step3.multisigMembersWalletAlert')}
+        message={t("createDAO.step3.multisigMembersWalletAlert")}
         variant="info"
       />
     </Container>
@@ -194,36 +187,36 @@ export const MultisigWallets = () => {
 };
 
 const Container = styled.div.attrs(() => ({
-  className: 'space-y-3 flex flex-col',
+  className: "space-y-3 flex flex-col"
 }))``;
 const DescriptionContainer = styled.div.attrs(() => ({
-  className: 'space-y-1 flex flex-col',
+  className: "space-y-1 flex flex-col"
 }))``;
 const TableContainer = styled.div.attrs(() => ({
-  className: 'rounded-xl bg-neutral-0 flex flex-col',
+  className: "rounded-xl bg-neutral-0 flex flex-col"
 }))``;
 const TableTitleContainer = styled.div.attrs(() => ({
-  className: 'mx-6 mt-6 mb-3',
+  className: "mx-6 mt-6 mb-3"
 }))``;
 const Title = styled.p.attrs({
-  className: 'ft-text-base xl:font-semibold font-semibold text-neutral-800',
+  className: "ft-text-base xl:font-semibold font-semibold text-neutral-800"
 })``;
 const Text = styled.p.attrs({
-  className: 'ft-text-base  text-neutral-600',
+  className: "ft-text-base  text-neutral-600"
 })``;
 const Divider = styled.div.attrs(() => ({
-  className: 'flex bg-neutral-50 h-0.5',
+  className: "flex bg-neutral-50 h-0.5"
 }))``;
 const ActionsContainer = styled.div.attrs(() => ({
-  className: 'flex xl:px-6 xl:py-3 p-4 place-content-between',
+  className: "flex xl:px-6 xl:py-3 p-4 place-content-between"
 }))``;
 const TextButtonsContainer = styled.div.attrs(() => ({
-  className: 'flex gap-4',
+  className: "flex gap-4"
 }))``;
 
 const SummaryContainer = styled.div.attrs(() => ({
-  className: 'flex xl:p-6 p-4 flex-col space-y-3',
+  className: "flex xl:p-6 p-4 flex-col space-y-3"
 }))``;
 const TotalWalletsContainer = styled.div.attrs(() => ({
-  className: 'flex place-content-between',
+  className: "flex place-content-between"
 }))``;

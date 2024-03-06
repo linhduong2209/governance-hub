@@ -8,50 +8,49 @@ import {
   TokenVotingClient,
   TokenVotingPluginInstall,
   VotingMode,
-  VotingSettings,
-} from '@aragon/sdk-client';
+  VotingSettings
+} from "@aragon/sdk-client";
 import {
   PluginInstallItem,
-  SupportedNetwork as sdkSupportedNetworks,
-} from '@aragon/sdk-client-common';
-import {parseUnits} from 'ethers/lib/utils';
+  SupportedNetwork as sdkSupportedNetworks
+} from "@aragon/sdk-client-common";
+import { parseUnits } from "ethers/lib/utils";
 import React, {
   ReactNode,
   createContext,
   useCallback,
   useContext,
-  useState,
-} from 'react';
-import {useFormContext} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
-import {generatePath, useNavigate} from 'react-router-dom';
+  useState
+} from "react";
+import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { generatePath, useNavigate } from "react-router-dom";
 
-import PublishModal from 'src/containers/TransactionModals/publishModal';
-import {useClient} from 'src/hooks/useClient';
-import {useAddFollowedDaoMutation} from 'src/hooks/useFollowedDaos';
-import {useAddPendingDaoMutation} from 'src/hooks/usePendingDao';
-import {usePollGasFee} from 'src/hooks/usePollGasfee';
-import {useWallet} from 'src/hooks/useWallet';
-import {trackEvent} from 'src/services/analytics';
+import PublishModal from "src/containers/TransactionModals/publishModal";
+import { useClient } from "src/hooks/useClient";
+import { useAddFollowedDaoMutation } from "src/hooks/useFollowedDaos";
+import { useAddPendingDaoMutation } from "src/hooks/usePendingDao";
+import { usePollGasFee } from "src/hooks/usePollGasfee";
+import { useWallet } from "src/hooks/useWallet";
+import { trackEvent } from "src/services/analytics";
 import {
   CHAIN_METADATA,
   TransactionState,
-  getSupportedNetworkByChainId,
-} from 'src/utils/constants';
-import {getSecondsFromDHM} from 'src/utils/date';
-import {readFile, translateToNetworkishName} from 'src/utils/library';
-import {Dashboard} from 'src/utils/paths';
-import {CreateDaoFormData} from 'src/utils/types';
-import {useGlobalModalContext} from './globalModals';
-import {useNetwork} from './network';
+  getSupportedNetworkByChainId
+} from "src/utils/constants";
+import { getSecondsFromDHM } from "src/utils/date";
+import { readFile, translateToNetworkishName } from "src/utils/library";
+import { Dashboard } from "src/utils/paths";
+import { CreateDaoFormData } from "src/utils/types";
+import { useNetwork } from "./network";
 
 import {
-  GaslessVotingClient,
-  GaslessVotingPluginInstall,
   GaslessPluginVotingSettings,
-} from '@vocdoni/gasless-voting';
-import {useCensus3CreateToken} from '../hooks/useCensus3';
-import {retry} from 'src/utils/retry';
+  GaslessVotingClient,
+  GaslessVotingPluginInstall
+} from "@vocdoni/gasless-voting";
+import { retry } from "src/utils/retry";
+import { useCensus3CreateToken } from "../hooks/useCensus3";
 
 const DEFAULT_TOKEN_DECIMALS = 18;
 
@@ -62,14 +61,15 @@ type CreateDaoContextType = {
 
 const CreateDaoContext = createContext<CreateDaoContextType | null>(null);
 
-const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
-  const {open} = useGlobalModalContext();
+const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // const { open } = useGlobalModalContext();
   const navigate = useNavigate();
-  const {isOnWrongNetwork, provider} = useWallet();
-  const {network} = useNetwork();
-  const {t} = useTranslation();
-  const {getValues} = useFormContext<CreateDaoFormData>();
-  const {client} = useClient();
+  const { isOnWrongNetwork, provider } = useWallet();
+  const { network } = useNetwork();
+  const { t } = useTranslation();
+  const { getValues } = useFormContext<CreateDaoFormData>();
+  const { client } = useClient();
+  console.log("client", client);
 
   const addFavoriteDaoMutation = useAddFollowedDaoMutation();
   const addPendingDaoMutation = useAddPendingDaoMutation();
@@ -78,7 +78,7 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     useState<TransactionState>();
   const [daoCreationData, setDaoCreationData] = useState<CreateDaoParams>();
   const [showModal, setShowModal] = useState(false);
-  const [daoAddress, setDaoAddress] = useState('');
+  const [daoAddress, setDaoAddress] = useState("");
 
   const shouldPoll =
     daoCreationData !== undefined &&
@@ -99,14 +99,14 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const handleExecuteCreation = async () => {
     // if DAO has been created, we don't need to do anything do not execute it
     // again, close the modal
-    trackEvent('daoCreation_publishDAONow_clicked', {
-      network: getValues('blockchain')?.network,
+    trackEvent("daoCreation_publishDAONow_clicked", {
+      network: getValues("blockchain")?.network,
       wallet_provider: provider?.connection.url,
-      governance_type: getValues('membership'),
+      governance_type: getValues("membership"),
       estimated_gwei_fee: averageFee?.toString(),
       total_usd_cost: averageFee
         ? (tokenPrice * Number(averageFee)).toString()
-        : '0',
+        : "0"
     });
 
     if (creationProcessState === TransactionState.SUCCESS) {
@@ -116,13 +116,12 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
     // if no creation data is set, or transaction already running, do nothing.
     if (!daoCreationData || creationProcessState === TransactionState.LOADING) {
-      console.log('Transaction is running');
+      console.log("Transaction is running");
       return;
     }
 
     // if the wallet was in a wrong network user will see the wrong network warning
     if (isOnWrongNetwork) {
-      open('network');
       handleCloseModal();
       return;
     }
@@ -140,12 +139,11 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         navigate(
           generatePath(Dashboard, {
             network: network,
-            dao: daoAddress,
+            dao: daoAddress
           })
         );
-        if (network === 'ethereum') {
+        if (network === "ethereum") {
           // (!networkInfo.isTestnet) {
-          open('poapClaim');
         }
         break;
       default: {
@@ -157,13 +155,13 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
   const getMultisigPluginInstallParams = useCallback((): [
     MultisigPluginInstallParams,
-    sdkSupportedNetworks,
+    sdkSupportedNetworks
   ] => {
     const {
       blockchain,
       multisigWallets,
       multisigMinimumApprovals,
-      eligibilityType,
+      eligibilityType
     } = getValues();
 
     return [
@@ -171,16 +169,16 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         members: multisigWallets.map(wallet => wallet.address),
         votingSettings: {
           minApprovals: multisigMinimumApprovals,
-          onlyListed: eligibilityType === 'multisig',
-        },
+          onlyListed: eligibilityType === "multisig"
+        }
       },
-      formNetworkToNetworkish(blockchain.id),
+      formNetworkToNetworkish(blockchain.id)
     ];
   }, [getValues]);
 
   const getVoteSettings = useCallback((): [
     VotingSettings,
-    sdkSupportedNetworks,
+    sdkSupportedNetworks
   ] => {
     const {
       blockchain,
@@ -194,7 +192,7 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
       voteReplacement,
       earlyExecution,
       isCustomToken,
-      tokenDecimals,
+      tokenDecimals
     } = getValues();
 
     let votingMode;
@@ -221,20 +219,20 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         minParticipation: parseInt(minimumParticipation) / 100,
         supportThreshold: parseInt(minimumApproval) / 100,
         minProposerVotingPower:
-          eligibilityType === 'token' && eligibilityTokenAmount !== undefined
+          eligibilityType === "token" && eligibilityTokenAmount !== undefined
             ? parseUnits(eligibilityTokenAmount.toString(), decimals).toBigInt()
-            : eligibilityType === 'multisig' || eligibilityType === 'anyone'
+            : eligibilityType === "multisig" || eligibilityType === "anyone"
             ? BigInt(0)
-            : parseUnits('1', decimals).toBigInt(),
-        votingMode,
+            : parseUnits("1", decimals).toBigInt(),
+        votingMode
       },
-      formNetworkToNetworkish(blockchain.id),
+      formNetworkToNetworkish(blockchain.id)
     ];
   }, [getValues]);
 
   const getNewErc20PluginParams =
-    useCallback((): TokenVotingPluginInstall['newToken'] => {
-      const {tokenName, tokenSymbol, wallets} = getValues();
+    useCallback((): TokenVotingPluginInstall["newToken"] => {
+      const { tokenName, tokenSymbol, wallets } = getValues();
 
       return {
         name: tokenName,
@@ -243,18 +241,18 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         // minter: '0x...', // optionally, define a minter
         balances: wallets?.map(wallet => ({
           address: wallet.address,
-          balance: parseUnits(wallet.amount, DEFAULT_TOKEN_DECIMALS).toBigInt(),
-        })),
+          balance: parseUnits(wallet.amount, DEFAULT_TOKEN_DECIMALS).toBigInt()
+        }))
       };
     }, [getValues]);
 
   const getErc20PluginParams =
-    useCallback((): TokenVotingPluginInstall['useToken'] => {
-      const {tokenAddress, tokenName, tokenSymbol, tokenType} = getValues();
+    useCallback((): TokenVotingPluginInstall["useToken"] => {
+      const { tokenAddress, tokenName, tokenSymbol, tokenType } = getValues();
 
       let name, symbol;
 
-      if (tokenType === 'ERC-20') {
+      if (tokenType === "ERC-20") {
         name = `Governance ${tokenName}`;
         symbol = `g${tokenSymbol}`;
       } else {
@@ -267,7 +265,7 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
       return {
         tokenAddress: tokenAddress.address, // contract address of underlying token
-        wrappedToken: {name, symbol},
+        wrappedToken: { name, symbol }
       };
     }, [getValues]);
 
@@ -280,7 +278,7 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         committeeMinimumApproval,
         executionExpirationHours,
         executionExpirationDays,
-        executionExpirationMinutes,
+        executionExpirationMinutes
       } = getValues();
 
       const vocdoniVotingSettings: GaslessPluginVotingSettings = {
@@ -294,17 +292,17 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         minParticipation: votingSettings.minParticipation,
         supportThreshold: votingSettings.supportThreshold,
         minProposerVotingPower: votingSettings.minProposerVotingPower as bigint,
-        censusStrategy: '',
+        censusStrategy: ""
       };
 
       return {
         multisig: committee.map(wallet => wallet.address),
         votingSettings: vocdoniVotingSettings,
-        ...((tokenType === 'governance-ERC20' || // token can be used as is
-          tokenType === 'ERC-20') && // token can/will be wrapped
+        ...((tokenType === "governance-ERC20" || // token can be used as is
+          tokenType === "ERC-20") && // token can/will be wrapped
         !isCustomToken // not a new token (existing token)
-          ? {useToken: getErc20PluginParams()}
-          : {newToken: getNewErc20PluginParams()}),
+          ? { useToken: getErc20PluginParams() }
+          : { newToken: getNewErc20PluginParams() })
       };
     },
     [getErc20PluginParams, getNewErc20PluginParams, getValues]
@@ -321,11 +319,11 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
       tokenType,
       isCustomToken,
       links,
-      votingType,
+      votingType
     } = getValues();
     const plugins: PluginInstallItem[] = [];
     switch (membership) {
-      case 'multisig': {
+      case "multisig": {
         const [params, network] = getMultisigPluginInstallParams();
 
         const multisigPlugin = MultisigClient.encoding.getPluginInstallItem(
@@ -335,10 +333,10 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         plugins.push(multisigPlugin);
         break;
       }
-      case 'token': {
+      case "token": {
         const [votingSettings, network] = getVoteSettings();
 
-        if (votingType === 'gasless') {
+        if (votingType === "gasless") {
           const params = getGaslessPluginInstallParams(votingSettings);
           const gaslessPlugin =
             GaslessVotingClient.encoding.getPluginInstallItem(params, network);
@@ -349,11 +347,11 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
           TokenVotingClient.encoding.getPluginInstallItem(
             {
               votingSettings: votingSettings,
-              ...((tokenType === 'governance-ERC20' || // token can be used as is
-                tokenType === 'ERC-20') && // token can/will be wrapped
+              ...((tokenType === "governance-ERC20" || // token can be used as is
+                tokenType === "ERC-20") && // token can/will be wrapped
               !isCustomToken // not a new token (existing token)
-                ? {useToken: getErc20PluginParams()}
-                : {newToken: getNewErc20PluginParams()}),
+                ? { useToken: getErc20PluginParams() }
+                : { newToken: getNewErc20PluginParams() })
             },
             network
           );
@@ -369,14 +367,14 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     const metadata: DaoMetadata = {
       name: daoName,
       description: daoSummary,
-      links: links.filter(r => r.name && r.url),
+      links: links.filter(r => r.name && r.url)
     };
 
     if (daoLogo) {
       try {
         const daoLogoBuffer = await readFile(daoLogo as Blob);
-        const logoCID = await retry(
-          () => client?.ipfs.add(new Uint8Array(daoLogoBuffer))
+        const logoCID = await retry(() =>
+          client?.ipfs.add(new Uint8Array(daoLogoBuffer))
         );
         await retry(() => client?.ipfs.pin(logoCID!));
         metadata.avatar = `ipfs://${logoCID}`;
@@ -388,15 +386,15 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     try {
       const ipfsUri = await retry(() => client?.methods.pinMetadata(metadata));
       return {
-        metadataUri: ipfsUri || '',
+        metadataUri: ipfsUri || "",
         // TODO: We're using dao name without spaces for ens, We need to add alert
         // to inform this to user
-        ensSubdomain: daoEnsName || '',
-        plugins: [...plugins],
+        ensSubdomain: daoEnsName || "",
+        plugins: [...plugins]
       };
     } catch (error: unknown) {
       setCreationProcessState(TransactionState.ERROR);
-      console.error('Could not pin metadata on IPFS', error);
+      console.error("Could not pin metadata on IPFS", error);
       throw error;
     }
   }, [
@@ -407,7 +405,7 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     getMultisigPluginInstallParams,
     getNewErc20PluginParams,
     getValues,
-    getVoteSettings,
+    getVoteSettings
   ]);
 
   // estimate creation fees
@@ -420,11 +418,11 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     maxFee,
     averageFee,
     stopPolling,
-    error: gasEstimationError,
+    error: gasEstimationError
   } = usePollGasFee(estimateCreationFees, shouldPoll);
 
-  const chainId = getValues('blockchain')?.id;
-  const {createToken} = useCensus3CreateToken({chainId});
+  const chainId = getValues("blockchain")?.id;
+  const { createToken } = useCensus3CreateToken({ chainId });
 
   // run dao creation transaction
   const createDao = async () => {
@@ -432,22 +430,22 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
     // Check if SDK initialized properly
     if (!client || !daoCreationData) {
-      throw new Error('SDK client is not initialized correctly');
+      throw new Error("SDK client is not initialized correctly");
     }
     const createDaoIterator = client?.methods.createDao(daoCreationData);
 
     // Check if createDaoIterator function is initialized
     if (!createDaoIterator) {
-      throw new Error('deposit function is not initialized correctly');
+      throw new Error("deposit function is not initialized correctly");
     }
 
-    const {daoName, daoSummary, daoLogo, links, votingType, membership} =
+    const { daoName, daoSummary, daoLogo, links, votingType, membership } =
       getValues();
     const metadata: DaoMetadata = {
       name: daoName,
       description: daoSummary,
       avatar: daoLogo ? URL.createObjectURL(daoLogo as Blob) : undefined,
-      links: links.filter(r => r.name && r.url),
+      links: links.filter(r => r.name && r.url)
     };
 
     try {
@@ -455,21 +453,21 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
         switch (step.key) {
           case DaoCreationSteps.CREATING:
             console.log(step.txHash);
-            trackEvent('daoCreation_transaction_signed', {
-              network: getValues('blockchain')?.network,
+            trackEvent("daoCreation_transaction_signed", {
+              network: getValues("blockchain")?.network,
               wallet_provider: provider?.connection.url,
-              governance_type: getValues('membership'),
+              governance_type: getValues("membership")
             });
             break;
           case DaoCreationSteps.DONE:
             console.log(
-              'Newly created DAO address',
+              "Newly created DAO address",
               step.address.toLowerCase()
             );
-            trackEvent('daoCreation_transaction_success', {
-              network: getValues('blockchain')?.network,
+            trackEvent("daoCreation_transaction_success", {
+              network: getValues("blockchain")?.network,
               wallet_provider: provider?.connection.url,
-              governance_type: getValues('membership'),
+              governance_type: getValues("membership")
             });
             setDaoCreationData(undefined);
             setCreationProcessState(TransactionState.SUCCESS);
@@ -483,39 +481,39 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
                   daoDetails: {
                     ...daoCreationData,
                     metadata,
-                    creationDate: new Date(),
-                  },
+                    creationDate: new Date()
+                  }
                 }),
                 addFavoriteDaoMutation.mutateAsync({
                   dao: {
                     address: step.address.toLocaleLowerCase(),
                     chain: CHAIN_METADATA[network].id,
-                    ensDomain: daoCreationData.ensSubdomain || '',
+                    ensDomain: daoCreationData.ensSubdomain || "",
                     plugins: [
                       {
                         id:
-                          membership === 'token'
-                            ? 'token-voting.plugin.dao.eth'
-                            : 'multisig.plugin.dao.eth',
-                        data: daoCreationData.plugins[0].data,
-                      },
+                          membership === "token"
+                            ? "token-voting.plugin.dao.eth"
+                            : "multisig.plugin.dao.eth",
+                        data: daoCreationData.plugins[0].data
+                      }
                     ],
                     metadata: {
                       name: metadata.name,
                       avatar: metadata.avatar,
-                      description: metadata.description,
-                    },
-                  },
-                }),
+                      description: metadata.description
+                    }
+                  }
+                })
               ]).then(async () => {
-                if (votingType === 'gasless' && membership === 'token') {
+                if (votingType === "gasless" && membership === "token") {
                   await createToken(step.pluginAddresses[0]);
                 }
               });
               // After everything is
             } catch (error) {
               console.warn(
-                'Error favoriting and adding newly created DAO to cache',
+                "Error favoriting and adding newly created DAO to cache",
                 error
               );
             }
@@ -525,11 +523,11 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
     } catch (err) {
       // unsuccessful execution, keep creation data for retry
       console.log(err);
-      trackEvent('daoCreation_transaction_failed', {
-        network: getValues('blockchain')?.network,
+      trackEvent("daoCreation_transaction_failed", {
+        network: getValues("blockchain")?.network,
         wallet_provider: provider?.connection.url,
-        governance_type: getValues('membership'),
-        err,
+        governance_type: getValues("membership"),
+        err
       });
       setCreationProcessState(TransactionState.ERROR);
     }
@@ -539,8 +537,8 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
    *                    Render                     *
    *************************************************/
   const buttonLabels = {
-    [TransactionState.SUCCESS]: t('TransactionModal.launchDaoDashboard'),
-    [TransactionState.WAITING]: t('TransactionModal.publishDaoButtonLabel'),
+    [TransactionState.SUCCESS]: t("TransactionModal.launchDaoDashboard"),
+    [TransactionState.WAITING]: t("TransactionModal.publishDaoButtonLabel")
   };
 
   const dialogAction =
@@ -549,10 +547,10 @@ const CreateDaoProvider: React.FC<{children: ReactNode}> = ({children}) => {
       : handleExecuteCreation;
 
   return (
-    <CreateDaoContext.Provider value={{handlePublishDao}}>
+    <CreateDaoContext.Provider value={{ handlePublishDao }}>
       {children}
       <PublishModal
-        subtitle={t('TransactionModal.publishDaoSubtitle')}
+        subtitle={t("TransactionModal.publishDaoSubtitle")}
         buttonStateLabels={buttonLabels}
         state={creationProcessState || TransactionState.WAITING}
         isOpen={showModal}
@@ -572,7 +570,7 @@ function useCreateDaoContext(): CreateDaoContextType {
   return useContext(CreateDaoContext) as CreateDaoContextType;
 }
 
-export {CreateDaoProvider, useCreateDaoContext};
+export { CreateDaoProvider, useCreateDaoContext };
 
 function formNetworkToNetworkish(chainId: number) {
   const selectedNetwork = getSupportedNetworkByChainId(chainId);
@@ -581,7 +579,7 @@ function formNetworkToNetworkish(chainId: number) {
     return translateToNetworkishName(selectedNetwork) as sdkSupportedNetworks;
   } else {
     throw new Error(
-      'No network selected. A supported network must be selected'
+      "No network selected. A supported network must be selected"
     );
   }
 }

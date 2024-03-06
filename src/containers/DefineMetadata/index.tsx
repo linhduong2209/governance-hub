@@ -1,44 +1,32 @@
+import { AlertInline } from "@aragon/ods";
 import React, { useCallback } from "react";
+import { Controller, FieldError, useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   InputImageSingle,
   Label,
-  TextareaSimple,
   TextInput,
+  TextareaSimple
 } from "src/@aragon/ods-old";
-import { AlertInline } from "@aragon/ods";
-import { Controller, FieldError, useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import AddLinks from "src/components/AddLinks";
 // import { useNetwork } from "src/context/network";
 // import { useProviders } from "src/context/providers";
-import { ENS_SUPPORTED_NETWORKS, URL_PATTERN } from "src/utils/constants";
+import { URL_PATTERN } from "src/utils/constants";
 // import { isOnlyWhitespace } from "src/utils/library";
-import { isDaoEnsNameValid } from "src/utils/validators";
 
 const DAO_LOGO = {
   maxDimension: 2400,
   minDimension: 256,
-  maxFileSize: 3000000,
+  maxFileSize: 3000000
 };
 
 const BYTES_IN_MB = 1000000;
 
-export type DefineMetadataProps = {
-  arrayName?: string;
-  isSettingPage?: boolean;
-  bgWhite?: boolean;
-};
-
-const DefineMetadata: React.FC<DefineMetadataProps> = ({
-  arrayName = "links",
-  bgWhite = false,
-  isSettingPage,
-}) => {
+const DefineMetadata: React.FC = () => {
   const { t } = useTranslation();
   //  const { network } = useNetwork();
-  const { control, setError, clearErrors, getValues } = useFormContext();
+  const { control, setError } = useFormContext();
   //  const { api: provider } = useProviders();
 
   // const supportsENS = ENS_SUPPORTED_NETWORKS.includes(network);
@@ -56,7 +44,7 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
             // convert to mb
             const sizeInMb = maxFileSize / BYTES_IN_MB;
             imgError.message = t("errors.imageTooLarge", {
-              maxFileSize: sizeInMb,
+              maxFileSize: sizeInMb
             });
           }
 
@@ -64,7 +52,7 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
         case "wrong-dimension":
           imgError.message = t("errors.imageDimensions", {
             minDimension,
-            maxDimension,
+            maxDimension
           });
           break;
         default:
@@ -76,38 +64,6 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
     },
     [setError, t]
   );
-
-  function ErrorHandler({
-    value,
-    error,
-  }: {
-    value: string;
-    error?: FieldError;
-  }) {
-    if (error?.message) {
-      if (error.message === t("infos.checkingEns")) {
-        return (
-          <AlertInline
-            message={t("infos.checkingEns") as string}
-            variant="info"
-          />
-        );
-      } else {
-        return (
-          <AlertInline message={error.message as string} variant="critical" />
-        );
-      }
-    } else {
-      if (value) {
-        return (
-          <AlertInline
-            message={t("infos.ensAvailable") as string}
-            variant="success"
-          />
-        );
-      } else return null;
-    }
-  }
 
   return (
     <>
@@ -123,11 +79,11 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
           control={control}
           defaultValue=""
           rules={{
-            required: t("errors.required.name"),
+            required: t("errors.required.name")
           }}
           render={({
             field: { onBlur, onChange, value, name },
-            fieldState: { error },
+            fieldState: { error }
           }) => (
             <>
               <TextInput
@@ -142,60 +98,6 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
           )}
         />
       </FormItem>
-
-      {/* ENS Ens Name */}
-      {!isSettingPage && (
-        //  supportsENS &&
-        <FormItem>
-          <Label
-            label={t("labels.daoEnsName")}
-            helpText={t("createDAO.step2.ensNameSubtitle")}
-          />
-
-          <Controller
-            name="daoEnsName"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: t("errors.required.ensName"),
-              // validate: (value) =>
-              //   isDaoEnsNameValid(
-              //     value,
-              //     provider,
-              //     setError,
-              //     clearErrors,
-              //     getValues
-              //   ),
-            }}
-            render={({
-              field: { onBlur, onChange, value, name },
-              fieldState: { error },
-            }) => (
-              <>
-                <TextInput
-                  {...{
-                    name,
-                    value,
-                    onBlur,
-                    onChange: (event) => {
-                      event.target.value = event.target.value.toLowerCase();
-                      onChange(event);
-                    },
-                  }}
-                  placeholder={t("placeHolders.ensName")}
-                  rightAdornment={
-                    <div className="flex h-full items-center rounded-r-xl bg-neutral-50 px-4">
-                      .dao.eth
-                    </div>
-                  }
-                />
-                <InputCount>{`${value.length}/128`}</InputCount>
-                <ErrorHandler {...{ value, error }} />
-              </>
-            )}
-          />
-        </FormItem>
-      )}
 
       {/* Logo */}
       <FormItem>
@@ -254,7 +156,7 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
           name="daoSummary"
           rules={{
             required: t("errors.required.summary"),
-            validate: (value) => true,
+            validate: value => true
             //    isOnlyWhitespace(value) ? t("errors.required.summary") : true,
           }}
           control={control}
@@ -288,13 +190,13 @@ const DefineMetadata: React.FC<DefineMetadataProps> = ({
 export default DefineMetadata;
 
 const InputCount = styled.div.attrs({
-  className: "ft-text-sm mt-2",
+  className: "ft-text-sm mt-2"
 })``;
 
 const FormItem = styled.div.attrs({
-  className: "space-y-3",
+  className: "space-y-3"
 })``;
 
 const LogoContainer = styled.div.attrs({
-  className: "pt-1",
+  className: "pt-1"
 })``;

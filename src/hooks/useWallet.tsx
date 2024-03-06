@@ -10,7 +10,7 @@ import {
   useEnsAvatar,
   useEnsName
 } from "wagmi";
-import { avalancheFuji } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 
 import { BigNumber } from "ethers";
 import { useNetwork } from "src/context/network";
@@ -54,9 +54,9 @@ export const useWallet = (): IUseWallet => {
   const { open: openWeb3Modal, isOpen } = useWeb3Modal();
   const chainId = getChainId(
     createConfig({
-      chains: [avalancheFuji],
+      chains: [mainnet],
       transports: {
-        [avalancheFuji.id]: http()
+        [mainnet.id]: http()
       }
     })
   );

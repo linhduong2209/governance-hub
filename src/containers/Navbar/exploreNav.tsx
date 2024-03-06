@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { ButtonWallet, useScreen } from "src/@aragon/ods-old";
 import { Button, IconType } from "@aragon/ods";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { ButtonWallet, useScreen } from "src/@aragon/ods-old";
+import styled from "styled-components";
 
-import { useWallet } from "src/hooks/useWallet";
 import Logo from "public/logo.svg";
+import { GridLayout, HeaderContainer } from "src/components/layout";
 import { useGlobalModalContext } from "src/context/globalModals";
-import { Container, GridLayout } from "src/components/Layout";
+import { useWallet } from "src/hooks/useWallet";
 import { FEEDBACK_FORM } from "src/utils/constants";
 
 const ExploreNav: React.FC = () => {
@@ -36,7 +36,7 @@ const ExploreNav: React.FC = () => {
   };
 
   return (
-    <Container data-testid="navbar">
+    <HeaderContainer data-testid="navbar">
       <Menu>
         <GridLayout>
           <LeftContent>
@@ -78,31 +78,31 @@ const ExploreNav: React.FC = () => {
           </RightContent>
         </GridLayout>
       </Menu>
-    </Container>
+    </HeaderContainer>
   );
 };
 
 const Menu = styled.nav.attrs({
-  className: "py-4 xl:py-6",
+  className: "py-4 xl:py-6"
 })`
   background: linear-gradient(180deg, #3164fa 0%, rgba(49, 100, 250, 0) 100%);
 `;
 
 const LeftContent = styled.div.attrs({
-  className: "col-span-3 md:col-span-2 flex items-center",
+  className: "col-span-3 md:col-span-2 flex items-center"
 })``;
 
 const LogoContainer = styled.img.attrs({
-  className: "h-8 cursor-pointer",
+  className: "h-8 cursor-pointer"
 })``;
 
 const RightContent = styled.div.attrs({
   className:
-    "col-start-9 col-span-4 flex flex-row-reverse justify-between items-center",
+    "col-start-9 col-span-4 flex flex-row-reverse justify-between items-center"
 })``;
 
 const ActionsWrapper = styled.div.attrs({
-  className: "flex space-x-3 md:space-x-6 items-center",
+  className: "flex space-x-3 md:space-x-6 items-center"
 })``;
 
 export default ExploreNav;

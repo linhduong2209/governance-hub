@@ -1,19 +1,11 @@
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { ButtonWallet } from "src/@aragon/ods-old";
-import { useAccount } from "wagmi";
-import Green from "../../../public/assets/images/circleGreenGradient.svg";
-import Logo from "../../../public/assets/images/coloredLogo.svg";
-import Purple from "../../../public/assets/images/purpleGradient.svg";
-import { GridLayout } from "../../components/Layout";
-import { Container as HeaderContainer } from "../../components/Layout/header";
+import Logo from "../../../public/assets/images/Avalanche_Horizontal_Red.svg";
+import { GridLayout } from "../../components/layout";
 
 function Hero() {
   const { t } = useTranslation();
-  const { open } = useWeb3Modal();
-  const { address, isConnected } = useAccount();
 
   return (
     <Container>
@@ -26,25 +18,7 @@ function Hero() {
           <ImageWrapper>
             <StyledImage src={Logo} />
           </ImageWrapper>
-          <GradientContainer>
-            <GradientWrapper>
-              <GradientGreen src={Green} />
-              <GradientPurple src={Purple} />
-            </GradientWrapper>
-          </GradientContainer>
         </Wrapper>
-        <HeaderContainer data-testid="navbar">
-          <Menu>
-            <ButtonWallet
-              src={""}
-              onClick={() => open()}
-              isConnected={isConnected}
-              label={
-                isConnected ? address ?? "" : t("navButtons.connectWallet")
-              }
-            />
-          </Menu>
-        </HeaderContainer>
       </GridLayout>
     </Container>
   );
@@ -52,7 +26,7 @@ function Hero() {
 
 const Container = styled.div.attrs({
   className:
-    "bg-primary-400 h-[448px] -mt-20 pt-20  xl:h-[536px] xl:pt-24 xl:-mt-24 overflow-hidden",
+    "bg-primary h-[448px] -mt-20 pt-20  xl:h-[536px] xl:pt-24 xl:-mt-24 overflow-hidden"
 })``;
 
 const Wrapper = styled.div.attrs({
@@ -61,7 +35,11 @@ const Wrapper = styled.div.attrs({
 })``;
 
 const ContentWrapper = styled.div.attrs({
+<<<<<<< HEAD
   className: "xl:space-y-1.5 space-y-2 max-w-lg pt-9 xl:pt-20",
+=======
+  className: "xl:space-y-1.5 space-y-2 max-w-lg pt-9 xl:pt-10"
+>>>>>>> 371655e (Commit)
 })``;
 
 const Title = styled.h1.attrs({
@@ -82,6 +60,7 @@ const ImageWrapper = styled.div.attrs({
 })``;
 
 const StyledImage = styled.img.attrs({
+<<<<<<< HEAD
   className: "w-[568px] hidden xl:block",
 })``;
 
@@ -107,4 +86,9 @@ const Menu = styled.nav.attrs({
   background: linear-gradient(180deg, #3164fa 0%, rgba(49, 100, 250, 0) 100%);
 `;
 
+=======
+  className: "w-[500px] pt-20 hidden xl:block"
+})``;
+
+>>>>>>> 371655e (Commit)
 export default Hero;

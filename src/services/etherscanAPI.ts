@@ -1,5 +1,5 @@
-import { queryClient } from "src/main";
 import { CHAIN_METADATA, SupportedNetworks } from "src/utils/constants";
+import { queryClient } from "./web3modal";
 
 export const getEtherscanVerifiedContract = (
   contractAddress: string,
@@ -11,16 +11,16 @@ export const getEtherscanVerifiedContract = (
     queryKey: ["verifyContractEtherscan", contractAddress, network],
     staleTime: Infinity,
     queryFn: () => {
-      return fetch(url).then((res) => {
-        return res.json().then((data) => {
+      return fetch(url).then(res => {
+        return res.json().then(data => {
           if (data.result[0].Proxy === "1") {
             return fetch(
               `${CHAIN_METADATA[network].etherscanApi}?module=contract&action=getsourcecode&address=${data.result[0].Implementation}&apikey=${CHAIN_METADATA[network].etherscanApiKey}`
-            ).then((r) => r.json());
+            ).then(r => r.json());
           }
           return data;
         });
       });
-    },
+    }
   });
 };

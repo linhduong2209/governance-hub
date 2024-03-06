@@ -5,7 +5,7 @@ import {
   BigNumber,
   constants,
   ethers,
-  providers as EthersProviders,
+  providers as EthersProviders
 } from "ethers";
 
 import { formatUnits } from "src/utils/library";
@@ -13,7 +13,7 @@ import {
   NativeTokenData,
   SupportedNetworks,
   TimeFilter,
-  TOKEN_AMOUNT_REGEX,
+  TOKEN_AMOUNT_REGEX
 } from "./constants";
 import { add } from "date-fns";
 import { TokenVotingClient, Transfer, TransferType } from "@aragon/sdk-client";
@@ -22,7 +22,7 @@ import { votesUpgradeableABI } from "src/abis/governanceWrappedERC20TokenABI";
 import { erc1155TokenABI } from "src/abis/erc1155TokenABI";
 import { erc721TokenABI } from "src/abis/erc721TokenABI";
 import { aragonTokenABI } from "src/abis/aragonTokenABI";
-import { queryClient } from "src/main";
+import { queryClient } from "../services/web3modal";
 import { VocdoniSDKClient } from "@vocdoni/sdk";
 
 /**
@@ -80,7 +80,7 @@ export function filterTokens(tokens: TokenWithMetadata[], searchTerm: string) {
 
   if (!searchTerm) return tokens;
 
-  return tokens.filter((t) => tokenInfoMatches(t, searchTerm));
+  return tokens.filter(t => tokenInfoMatches(t, searchTerm));
 }
 
 /**
@@ -238,7 +238,7 @@ export async function isERC1155(
     await Promise.all([
       contract.balanceOf(address),
       contract.balanceOfBatch([address], [0]),
-      contract.balanceOf(address, address),
+      contract.balanceOf(address, address)
     ]);
     return true;
   } catch (err) {
@@ -270,7 +270,7 @@ export async function getTokenInfo(
       name: nativeTokenData.name,
       symbol: nativeTokenData.symbol,
       decimals: nativeTokenData.decimals,
-      totalSupply,
+      totalSupply
     };
   }
   const contract = new ethers.Contract(address, erc20TokenABI, provider);
@@ -284,9 +284,9 @@ export async function getTokenInfo(
           contract.decimals(),
           contract.name(),
           contract.symbol(),
-          contract.totalSupply(),
+          contract.totalSupply()
         ]);
-      },
+      }
     });
 
     decimals = values[0];
@@ -301,7 +301,7 @@ export async function getTokenInfo(
     decimals,
     name,
     symbol,
-    totalSupply,
+    totalSupply
   };
 }
 
@@ -361,7 +361,7 @@ export const isCompatibleToken = async (
       staleTime: 1000 * 60 * 60 * 24 * 10, // 10 days
       queryFn: () => {
         return pluginClient.methods.isTokenVotingCompatibleToken(address);
-      },
+      }
     });
 
     return value as Compatibility;
@@ -447,7 +447,7 @@ export function historicalTokenBalances(
 ) {
   const historicalBalances = {} as Record<string, TokenWithMetadata>;
   tokenBalances.forEach(
-    (bal) => (historicalBalances[bal.metadata.id.toLowerCase()] = { ...bal })
+    bal => (historicalBalances[bal.metadata.id.toLowerCase()] = { ...bal })
   );
   const nowMs = new Date().getTime();
 

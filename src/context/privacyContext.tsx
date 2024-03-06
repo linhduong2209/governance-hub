@@ -5,14 +5,14 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState,
-} from 'react';
+  useState
+} from "react";
 
-import {Nullable} from 'src/utils/types';
-import PrivacyPolicy from 'src/containers/PrivacyPolicy';
-import CookiePreferenceMenu from 'src/containers/PrivacyPolicy/cookiePreferenceMenu';
-import {disableAnalytics, enableAnalytics} from 'src/services/analytics';
-import CookieSettingsMenu from 'src/containers/PrivacyPolicy/cookieSettingsMenu';
+import PrivacyPolicy from "src/containers/PrivacyPolicy";
+import CookiePreferenceMenu from "src/containers/PrivacyPolicy/cookiePreferenceMenu";
+import CookieSettingsMenu from "src/containers/PrivacyPolicy/cookieSettingsMenu";
+import { disableAnalytics, enableAnalytics } from "src/services/analytics";
+import { Nullable } from "src/utils/types";
 
 export type PrivacyPreferences = {
   analytics: boolean;
@@ -35,10 +35,10 @@ type PrivacyContextType = {
 
 const PrivacyContext = createContext<PrivacyContextType | null>(null);
 
-const PRIVACY_KEY = 'privacy-policy-preferences';
+const PRIVACY_KEY = "privacy-policy-preferences";
 
-const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
-  children,
+const PrivacyContextProvider: React.FC<{ children: ReactNode }> = ({
+  children
 }) => {
   // 'cache' for the privacy preferences to reduce storage usage and increase speed
   const [preferences, setPreferences] = useState<PrivacyPreferences>();
@@ -51,7 +51,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
   const [showPreferenceMenu, setShowPreferenceMenu] = useState<boolean>(false);
   const [preferenceMenuCallbacks, setPreferenceMenuCallbacks] = useState({
     onAccept: () => setShowPreferenceMenu(true),
-    onReject: () => setShowPreferenceMenu(false),
+    onReject: () => setShowPreferenceMenu(false)
   });
 
   /*************************************************
@@ -82,7 +82,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
       if (userPreference.analytics || userPreference.functional) {
         localStorage.setItem(
           PRIVACY_KEY,
-          JSON.stringify({optIn: true, ...userPreference})
+          JSON.stringify({ optIn: true, ...userPreference })
         );
 
         // enable analytics if was previously off
@@ -93,9 +93,9 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
         if (preferences?.analytics && !userPreference.analytics)
           disableAnalytics();
 
-        setPreferences({...userPreference});
+        setPreferences({ ...userPreference });
       } else {
-        localStorage.setItem(PRIVACY_KEY, JSON.stringify({optIn: false}));
+        localStorage.setItem(PRIVACY_KEY, JSON.stringify({ optIn: false }));
       }
 
       setShowPolicyMenu(false);
@@ -106,12 +106,12 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
 
   // accept all cookies
   const acceptAll = useCallback(() => {
-    setPrivacyPolicy({analytics: true, functional: true});
+    setPrivacyPolicy({ analytics: true, functional: true });
   }, [setPrivacyPolicy]);
 
   // reject all cookies
   const rejectAll = useCallback(() => {
-    setPrivacyPolicy({analytics: false, functional: false});
+    setPrivacyPolicy({ analytics: false, functional: false });
     disableAnalytics();
   }, [setPrivacyPolicy]);
 
@@ -119,7 +119,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
   const setFunctionalCookies = useCallback(() => {
     setPrivacyPolicy({
       analytics: preferences?.analytics || false,
-      functional: true,
+      functional: true
     });
   }, [preferences?.analytics, setPrivacyPolicy]);
 
@@ -127,7 +127,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
   const setAnalyticsCookies = useCallback(() => {
     setPrivacyPolicy({
       analytics: true,
-      functional: preferences?.functional || false,
+      functional: preferences?.functional || false
     });
   }, [preferences?.functional, setPrivacyPolicy]);
 
@@ -164,7 +164,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
         onReject: () => {
           setShowPreferenceMenu(false);
           onReject?.();
-        },
+        }
       });
     },
     [preferences?.functional, setFunctionalCookies]
@@ -180,7 +180,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
       setPrivacyPolicy,
       setAnalyticsCookies,
       setFunctionalCookies,
-      handleWithFunctionalPreferenceMenu,
+      handleWithFunctionalPreferenceMenu
     }),
     [
       acceptAll,
@@ -190,7 +190,7 @@ const PrivacyContextProvider: React.FC<{children: ReactNode}> = ({
       rejectAll,
       setAnalyticsCookies,
       setFunctionalCookies,
-      setPrivacyPolicy,
+      setPrivacyPolicy
     ]
   );
 
@@ -225,4 +225,4 @@ function usePrivacyContext(): PrivacyContextType {
   return useContext(PrivacyContext) as PrivacyContextType;
 }
 
-export {PrivacyContextProvider, usePrivacyContext};
+export { PrivacyContextProvider, usePrivacyContext };

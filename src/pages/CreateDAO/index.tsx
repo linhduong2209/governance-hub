@@ -1,13 +1,13 @@
+import { JsonRpcProvider } from "@ethersproject/providers";
 import React, { useEffect, useMemo, useRef } from "react";
 import {
   FormProvider,
   useFieldArray,
   useForm,
   useFormState,
-  useWatch,
+  useWatch
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { JsonRpcProvider } from "@ethersproject/providers";
 
 import { TokenVotingWalletField } from "src/components/AddWallets/row";
 // import { Step } from "../components/FullScreenStepper";
@@ -15,25 +15,24 @@ import { FullScreenStepper, Step } from "src/components/FullScreenStepper";
 import { MultisigWalletField } from "src/components/MultisigWallets/row";
 import ConfigureCommunity from "src/containers/ConfigureCommunity";
 import { OverviewDAOHeader, OverviewDAOStep } from "src/containers/DaoOverview";
+import DefineExecutionMultisig from "src/containers/DefineExecutionMultisig";
 import DefineMetadata from "src/containers/DefineMetadata";
 import GoLive, { GoLiveFooter, GoLiveHeader } from "src/containers/GoLive";
 import SelectChain from "src/containers/SelectChainForm";
 import SetupCommunity from "src/containers/SetupCommunity";
 import { CreateDaoProvider } from "src/context/createDao";
 import { useNetwork } from "src/context/network";
-import { useProviders } from "src/context/providers";
 import { useWallet } from "src/hooks/useWallet";
 import { trackEvent } from "src/services/analytics";
 import {
   CHAIN_METADATA,
-  getSupportedNetworkByChainId,
+  getSupportedNetworkByChainId
 } from "src/utils/constants";
 import { htmlIn } from "src/utils/htmlIn";
-// import {hasValue} from 'src/utils/library';
+import { hasValue } from "src/utils/library";
 import { Landing } from "src/utils/paths";
 import { CreateDaoFormData } from "src/utils/types";
-// import {isFieldValid} from 'src/utils/validators';
-import DefineExecutionMultisig from "src/containers/DefineExecutionMultisig";
+import { isFieldValid } from "src/utils/validators";
 
 const defaultValues = {
   tokenName: "",
@@ -57,37 +56,37 @@ const defaultValues = {
   durationDays: "1",
   durationHours: "0",
   durationMinutes: "0",
-  minimumParticipation: "15",
+  minimumParticipation: "15"
 };
 
 export const CreateDAO: React.FC = () => {
   const { t } = useTranslation();
   const { chainId } = useWallet();
-  const { api: provider } = useProviders();
+  // const { api: provider } = useProviders();
   const { setNetwork, isL2Network } = useNetwork();
 
   const formMethods = useForm<CreateDaoFormData>({
     mode: "onChange",
-    defaultValues,
+    defaultValues
   });
 
   const { update: updateMultisigFields } = useFieldArray({
     control: formMethods.control,
-    name: "multisigWallets",
+    name: "multisigWallets"
   });
 
   const { update: updateTokenFields } = useFieldArray({
     name: "wallets",
-    control: formMethods.control,
+    control: formMethods.control
   });
 
   const { update: updateCommittee } = useFieldArray({
     name: "committee",
-    control: formMethods.control,
+    control: formMethods.control
   });
 
   const { errors, dirtyFields } = useFormState({
-    control: formMethods.control,
+    control: formMethods.control
   });
 
   const [
@@ -105,7 +104,7 @@ export const CreateDAO: React.FC = () => {
     tokenTotalSupply,
     tokenType,
     committee,
-    votingType,
+    votingType
   ] = useWatch({
     control: formMethods.control,
     name: [
@@ -123,8 +122,8 @@ export const CreateDAO: React.FC = () => {
       "tokenTotalSupply",
       "tokenType",
       "committee",
-      "votingType",
-    ],
+      "votingType"
+    ]
   });
   const prevFormChain = useRef<number>(formChain);
 
@@ -136,15 +135,24 @@ export const CreateDAO: React.FC = () => {
   // users and so that the process doesn't start with a warning. Afterwards,
   // the select blockchain form dictates the expected network
   useEffect(() => {
+    // get the default expected network using the connected wallet, use ethereum
+    // mainnet in case user accesses the flow without wallet connection. Ideally,
+    // this should not happen
     const defaultNetwork = getSupportedNetworkByChainId(chainId) || "ethereum";
 
+    // update the network context
     setNetwork(defaultNetwork);
 
+    // set the default value in the form
     formMethods.setValue("blockchain", {
       id: CHAIN_METADATA[defaultNetwork].id,
       label: CHAIN_METADATA[defaultNetwork].name,
-      network: CHAIN_METADATA[defaultNetwork].isTestnet ? "test" : "main",
+      network: CHAIN_METADATA[defaultNetwork].isTestnet ? "test" : "main"
     });
+
+    // intentionally disabling this next line so that changing the
+    // wallet network doesn't cause effect to run
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // useEffect(() => {
@@ -166,6 +174,10 @@ export const CreateDAO: React.FC = () => {
   //     prevFormChain.current = formChain;
   //     refetchWalletsENS();
   //   }
+
+  //   // intentionally setting only formChain as the dependency
+  //   // since this update needs to happen only on form network change
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [formChain]);
 
   /*************************************************
@@ -178,7 +190,7 @@ export const CreateDAO: React.FC = () => {
   ) => {
     trackEvent("daoCreation_continueBtn", {
       step: stepName,
-      settings: properties,
+      settings: properties
     });
     next();
   };
@@ -191,10 +203,10 @@ export const CreateDAO: React.FC = () => {
    *
    * @returns True if multisig values are valid, false otherwise.
    */
-  //   const validateMultisigCommunity = () =>
-  //     multisigWallets?.length > 0 &&
-  //     isFieldValid(errors.multisigWallets) &&
-  //     ['anyone', 'multisig'].includes(eligibilityType);
+  const validateMultisigCommunity = () =>
+    multisigWallets?.length > 0 &&
+    isFieldValid(errors.multisigWallets) &&
+    ["anyone", "multisig"].includes(eligibilityType);
 
   /**
    * Validates custom token values for DAO community.
@@ -206,16 +218,16 @@ export const CreateDAO: React.FC = () => {
    *
    * @returns True if custom token values are valid, false otherwise.
    */
-  //   const validateCustomTokenCommunity = () =>
-  //     tokenWallets?.length > 0 &&
-  //     isFieldValid(errors.wallets) &&
-  //     hasValue(tokenName) &&
-  //     isFieldValid(errors.tokenName) &&
-  //     hasValue(tokenSymbol) &&
-  //     isFieldValid(errors.tokenSymbol) &&
-  //     ["anyone", "token"].includes(eligibilityType) &&
-  //     isFieldValid(errors.eligibilityTokenAmount) &&
-  //     tokenTotalSupply > 0;
+  const validateCustomTokenCommunity = () =>
+    tokenWallets?.length > 0 &&
+    isFieldValid(errors.wallets) &&
+    hasValue(tokenName) &&
+    isFieldValid(errors.tokenName) &&
+    hasValue(tokenSymbol) &&
+    isFieldValid(errors.tokenSymbol) &&
+    ["anyone", "token"].includes(eligibilityType) &&
+    isFieldValid(errors.eligibilityTokenAmount) &&
+    tokenTotalSupply > 0;
 
   /**
    * Validates existing token values for DAO community.
@@ -225,54 +237,54 @@ export const CreateDAO: React.FC = () => {
    *
    * @returns True if existing token values are valid, false otherwise.
    */
-  //   const validateExistingTokenCommunity = () =>
-  //     hasValue(tokenAddress?.address) &&
-  //     isFieldValid(errors.tokenAddress?.address) &&
-  //     hasValue(tokenName) &&
-  //     isFieldValid(errors.tokenName) &&
-  //     hasValue(tokenType) &&
-  //     isFieldValid(errors.tokenType) &&
-  //     tokenType !== "Unknown" &&
-  //     tokenTotalSupply > 0;
+  const validateExistingTokenCommunity = () =>
+    hasValue(tokenAddress?.address) &&
+    isFieldValid(errors.tokenAddress?.address) &&
+    hasValue(tokenName) &&
+    isFieldValid(errors.tokenName) &&
+    hasValue(tokenType) &&
+    isFieldValid(errors.tokenType) &&
+    tokenType !== "Unknown" &&
+    tokenTotalSupply > 0;
 
   /*************************************************
    *             Step Validation States            *
    *************************************************/
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const daoMetadataIsValid = useMemo(() => {
-  //     // required fields not dirty
-  //     if (!isL2Network && !daoEnsName) return false;
-  //     if (!daoName || !dirtyFields.daoSummary) return false;
+  const daoMetadataIsValid = useMemo(() => {
+    // required fields not dirty
+    if (!isL2Network && !daoEnsName) return false;
+    if (!daoName || !dirtyFields.daoSummary) return false;
 
-  //     return errors.daoEnsName ||
-  //       errors.daoName ||
-  //       errors.links ||
-  //       errors.daoSummary
-  //       ? false
-  //       : true;
-  //   }, [
-  //     daoEnsName,
-  //     daoName,
-  //     dirtyFields.daoSummary,
-  //     errors.daoEnsName,
-  //     errors.daoName,
-  //     errors.daoSummary,
-  //     errors.links,
-  //     isL2Network,
-  //   ]);
+    return errors.daoEnsName ||
+      errors.daoName ||
+      errors.links ||
+      errors.daoSummary
+      ? false
+      : true;
+  }, [
+    daoEnsName,
+    daoName,
+    dirtyFields.daoSummary,
+    errors.daoEnsName,
+    errors.daoName,
+    errors.daoSummary,
+    errors.links,
+    isL2Network
+  ]);
 
   let daoCommunitySetupIsValid = false;
 
-  //   switch (membership) {
-  //     case 'multisig':
-  //       daoCommunitySetupIsValid = validateMultisigCommunity();
-  //       break;
-  //     case 'token':
-  //       daoCommunitySetupIsValid = isCustomToken
-  //         ? validateCustomTokenCommunity()
-  //         : validateExistingTokenCommunity();
-  //       break;
-  //   }
+  switch (membership) {
+    case "multisig":
+      daoCommunitySetupIsValid = validateMultisigCommunity();
+      break;
+    case "token":
+      daoCommunitySetupIsValid = isCustomToken
+        ? validateCustomTokenCommunity()
+        : validateExistingTokenCommunity();
+      break;
+  }
   const defineCommitteeIsValid = useMemo(() => {
     if (
       !committee ||
@@ -291,7 +303,7 @@ export const CreateDAO: React.FC = () => {
     errors.committeeMinimumApproval,
     errors.executionExpirationMinutes,
     errors.executionExpirationHours,
-    errors.executionExpirationDays,
+    errors.executionExpirationDays
   ]);
 
   const daoCommunityConfigurationIsValid = useMemo(() => {
@@ -315,7 +327,7 @@ export const CreateDAO: React.FC = () => {
     errors.minimumParticipation,
     errors.support,
     errors.multisigMinimumApprovals,
-    errors.eligibilityTokenAmount,
+    errors.eligibilityTokenAmount
   ]);
 
   /*************************************************
@@ -346,9 +358,9 @@ export const CreateDAO: React.FC = () => {
           <Step
             wizardTitle={t("createDAO.step1.title")}
             wizardDescription={htmlIn(t)("createDAO.step1.description")}
-            onNextButtonClicked={(next) =>
+            onNextButtonClicked={next =>
               handleNextButtonTracking(next, "1_select_blockchain", {
-                network: formMethods.getValues("blockchain")?.network,
+                network: formMethods.getValues("blockchain")?.network
               })
             }
           >
@@ -358,11 +370,11 @@ export const CreateDAO: React.FC = () => {
             wizardTitle={t("createDAO.step2.title")}
             wizardDescription={htmlIn(t)("createDAO.step2.description")}
             isNextButtonDisabled={false}
-            onNextButtonClicked={(next) =>
+            onNextButtonClicked={next =>
               handleNextButtonTracking(next, "2_define_metadata", {
                 dao_name: "DAO",
                 // formMethods.getValues("daoName"),
-                links: "link",
+                links: "link"
                 // formMethods.getValues("links"),
               })
             }
@@ -373,14 +385,14 @@ export const CreateDAO: React.FC = () => {
             wizardTitle={t("createDAO.step3.title")}
             wizardDescription={htmlIn(t)("createDAO.step3.description")}
             isNextButtonDisabled={!daoCommunitySetupIsValid}
-            onNextButtonClicked={(next) =>
+            onNextButtonClicked={next =>
               handleNextButtonTracking(next, "3_setup_community", {
                 governance_type: formMethods.getValues("membership"),
                 voting_type: formMethods.getValues("votingType"),
                 token_name: formMethods.getValues("tokenName"),
                 symbol: formMethods.getValues("tokenSymbol"),
                 token_address: formMethods.getValues("tokenAddress.address"),
-                multisigWallets: formMethods.getValues("multisigWallets"),
+                multisigWallets: formMethods.getValues("multisigWallets")
               })
             }
           >
@@ -393,14 +405,14 @@ export const CreateDAO: React.FC = () => {
             wizardTitle={t("createDAO.step4.title")}
             wizardDescription={htmlIn(t)("createDAO.step4.description")}
             isNextButtonDisabled={!daoCommunityConfigurationIsValid}
-            onNextButtonClicked={(next) =>
+            onNextButtonClicked={next =>
               handleNextButtonTracking(next, "4_configure_governance", {
                 minimum_approval: formMethods.getValues("minimumApproval"),
                 support: formMethods.getValues("support"),
                 duration_days: formMethods.getValues("durationDays"),
                 duration_hours: formMethods.getValues("durationHours"),
                 duration_minutes: formMethods.getValues("durationMinutes"),
-                governance_type: formMethods.getValues("membership"),
+                governance_type: formMethods.getValues("membership")
               })
             }
           >
@@ -411,7 +423,7 @@ export const CreateDAO: React.FC = () => {
             wizardTitle={t("createDao.executionMultisig.title")}
             wizardDescription={htmlIn(t)("createDao.executionMultisig.desc")}
             isNextButtonDisabled={!defineCommitteeIsValid}
-            onNextButtonClicked={(next) => {
+            onNextButtonClicked={next => {
               handleNextButtonTracking(next, "5_define_execution_multisig", {
                 committee: formMethods.getValues("committee"),
                 committeeMinimumApproval: formMethods.getValues(
@@ -425,7 +437,7 @@ export const CreateDAO: React.FC = () => {
                 ),
                 executionExpirationDays: formMethods.getValues(
                   "executionExpirationDays"
-                ),
+                )
               });
             }}
           >
@@ -464,13 +476,13 @@ const updateWalletsENS = async (
   updateFunction: UpdateFunction
 ) => {
   const ensNames = await Promise.all(
-    wallets.map((w) => provider.lookupAddress(w.address))
+    wallets.map(w => provider.lookupAddress(w.address))
   );
 
   wallets.forEach((wallet, index) => {
     updateFunction(index, {
       ...wallet,
-      ensName: ensNames[index] ?? "",
+      ensName: ensNames[index] ?? ""
     });
   });
 };

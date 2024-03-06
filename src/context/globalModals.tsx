@@ -1,10 +1,10 @@
 import React, {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
   ReactNode,
+  createContext,
   useCallback,
+  useContext,
+  useMemo,
+  useState
 } from "react";
 
 const GlobalModalsContext = createContext<GlobalModalsContextType | null>(null);
@@ -62,7 +62,7 @@ export const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
       activeDialog,
       modalState,
       open,
-      close,
+      close
     }),
     [activeDialog, modalState, open, close]
   );
@@ -88,6 +88,6 @@ export const useGlobalModalContext = <TState extends object>(
   return {
     ...values,
     isOpen: dialog ? values.activeDialog === dialog : undefined,
-    modalState: values.modalState as TState,
+    modalState: values.modalState as TState
   };
 };

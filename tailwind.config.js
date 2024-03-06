@@ -3,7 +3,13 @@ export default {
   presets: [require("@aragon/ods/tailwind.config")],
   content: ["./src/**/*.{tsx,html}", "./node_modules/@aragon/ods/**/*.js"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#E84142",
+        button: "#EEEDED",
+        white: "#FFFFFF"
+      }
+    }
   },
   plugins: [
     require("tailwindcss-fluid-type")({
@@ -15,7 +21,7 @@ export default {
         screenMin: 20, // 320px
         screenMax: 96, // 1536px
         unit: "rem",
-        prefix: "ft-",
+        prefix: "ft-"
       },
       values: {
         xs: [-2, 1.5],
@@ -26,8 +32,8 @@ export default {
         "2xl": [3, 1.2],
         "3xl": [4, 1.2],
         "4xl": [5, 1.2],
-        "5xl": [6, 1.2],
-      },
-    }),
-  ],
+        "5xl": [6, 1.2]
+      }
+    })
+  ]
 };

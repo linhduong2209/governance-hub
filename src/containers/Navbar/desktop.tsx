@@ -1,20 +1,15 @@
-import React, { useCallback, useState } from "react";
-import { Breadcrumb, ButtonWallet } from "src/@aragon/ods-old";
-import { Button, IconType } from "@aragon/ods";
-import { useTranslation } from "react-i18next";
 import { useReactiveVar } from "@apollo/client";
+import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
+import { Breadcrumb, ButtonWallet } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
-import { DaoSelector } from "src/components/DaoSelector";
-import { Container } from "src/components/Layout";
-import NavLinks from "src/components/NavLinks";
+import { HeaderContainer } from "src/components/layout";
 import ExitProcessMenu, { ProcessType } from "src/containers/ExitProcessMenu";
 import { selectedDaoVar } from "src/context/apolloClient";
 import { useNetwork } from "src/context/network";
-import { useMappedBreadcrumbs } from "src/hooks/useMappedBreadcrumbs";
 import { useWallet } from "src/hooks/useWallet";
-import { NavlinksDropdown } from "./breadcrumbDropdown";
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -28,12 +23,12 @@ type DesktopNavProp = {
   onFeedbackClick: () => void;
 };
 
-const DesktopNav: React.FC<DesktopNavProp> = (props) => {
+const DesktopNav: React.FC<DesktopNavProp> = props => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { network } = useNetwork();
   const { dao } = useParams();
-  const { breadcrumbs, icon, tag } = useMappedBreadcrumbs();
+  // const { breadcrumbs, icon, tag } = useMappedBreadcrumbs();
   const { address, ensName, ensAvatarUrl, isConnected } = useWallet();
 
   const currentDao = useReactiveVar(selectedDaoVar);
@@ -59,7 +54,7 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
   if (props.isProcess) {
     return (
       <>
-        <Container data-testid="navbar">
+        <HeaderContainer data-testid="navbar">
           <Menu>
             <Breadcrumb
               crumbs={{ label: props.processLabel!, path: props.returnURL! }}
@@ -75,7 +70,7 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
               }
             />
           </Menu>
-        </Container>
+        </HeaderContainer>
         {props.processType && (
           <ExitProcessMenu
             isOpen={showExitProcessMenu}
@@ -89,16 +84,16 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
   }
 
   return (
-    <Container data-testid="navbar">
+    <HeaderContainer data-testid="navbar">
       <Menu>
         <Content>
-          <DaoSelector
+          {/* <DaoSelector
             daoAddress={currentDao.ensDomain}
             daoName={currentDao?.metadata?.name || currentDao?.ensDomain}
             src={currentDao?.metadata?.avatar}
             onClick={props.onDaoSelect}
-          />
-          <LinksWrapper>
+          /> */}
+          {/* <LinksWrapper>
             {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
               <NavLinks />
             ) : (
@@ -107,14 +102,14 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
                 <Breadcrumb
                   icon={icon}
                   crumbs={breadcrumbs}
-                  onClick={(path) =>
+                  onClick={path =>
                     navigate(generatePath(path, { network, dao }))
                   }
                   tag={tag}
                 />
               </>
             )}
-          </LinksWrapper>
+          </LinksWrapper> */}
         </Content>
 
         <div className="flex gap-4">
@@ -138,28 +133,28 @@ const DesktopNav: React.FC<DesktopNavProp> = (props) => {
           />
         </div>
       </Menu>
-    </Container>
+    </HeaderContainer>
   );
 };
 
 export default DesktopNav;
 
 const Menu = styled.nav.attrs({
-  className: `flex mx-auto justify-between items-center max-w-[1680px]
-     px-10 2xl:px-20 py-6`,
+  className: `flex mx-auto w-full justify-between items-center max-w-[1680px]
+     px-10 2xl:px-20 py-6`
 })`
-  background: linear-gradient(
-    180deg,
-    rgba(245, 247, 250, 1) 0%,
-    rgba(245, 247, 250, 0) 100%
-  );
-  backdrop-filter: blur(24px);
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(245, 247, 250, 1) 0%,
+  //   rgba(245, 247, 250, 0) 100%
+  // );
+  // backdrop-filter: blur(24px);
 `;
 
 const Content = styled.div.attrs({
-  className: "flex items-center space-x-12",
+  className: "flex items-center space-x-12"
 })``;
 
 const LinksWrapper = styled.div.attrs({
-  className: "flex items-center space-x-3",
+  className: "flex items-center space-x-3"
 })``;

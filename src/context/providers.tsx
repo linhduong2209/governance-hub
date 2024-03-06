@@ -1,7 +1,7 @@
-import {JsonRpcProvider} from '@ethersproject/providers';
-import React, {ReactNode, createContext, useContext, useMemo} from 'react';
-import {useNetwork} from './network';
-import {aragonGateway} from 'src/utils/aragonGateway';
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { ReactNode, createContext, useContext, useMemo } from "react";
+import { aragonGateway } from "src/utils/aragonGateway";
+import { useNetwork } from "./network";
 
 export interface IProvidersContext {
   api: JsonRpcProvider;
@@ -9,15 +9,15 @@ export interface IProvidersContext {
 
 const ProvidersContext = createContext<IProvidersContext | null>(null);
 
-export const ProvidersContextProvider = (props: {children: ReactNode}) => {
-  const {network} = useNetwork();
+export const ProvidersContextProvider = (props: { children: ReactNode }) => {
+  const { network } = useNetwork();
   const apiProvider = aragonGateway.getRpcProvider(network);
 
   if (apiProvider == null) {
-    throw new Error('ProvidersContextProvider: unsupported chain');
+    throw new Error("ProvidersContextProvider: unsupported chain");
   }
 
-  const contextValue = useMemo(() => ({api: apiProvider}), [apiProvider]);
+  const contextValue = useMemo(() => ({ api: apiProvider }), [apiProvider]);
 
   return (
     <ProvidersContext.Provider value={contextValue}>
@@ -31,7 +31,7 @@ export const useProviders = (): IProvidersContext => {
 
   if (context == null) {
     throw new Error(
-      'useProviders: hook must be used within a ProvidersContextProvider'
+      "useProviders: hook must be used within a ProvidersContextProvider"
     );
   }
 

@@ -1078,7 +1078,8 @@
           "governanceType": "Governance type",
           "arbitrumGoerli": "Arbitrum Goerli",
           "arbitrum": "Arbitrum",
-          "ethereumSepolia": "Ethereum Sepolia"
+          "ethereumSepolia": "Ethereum Sepolia",
+          "fuji": "Fuji"
         },
         "ctaLabel": {
           "see0": "See 0 DAOs",

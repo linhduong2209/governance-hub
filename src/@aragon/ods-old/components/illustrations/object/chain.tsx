@@ -1,7 +1,6 @@
-import React from 'react';
-import {type IconType} from '../../icons';
+import { type IconType } from "../../icons";
 
-export const Chain: IconType = ({height = 160, width = 160, ...props}) => {
+export const Chain: IconType = ({ height = 160, width = 160, ...props }) => {
   return (
     <svg
       width={width}
@@ -33,7 +32,7 @@ export const Chain: IconType = ({height = 160, width = 160, ...props}) => {
         height="27.3987"
         rx="2"
         transform="matrix(0.840417 -0.541941 0.840417 0.541941 83.9473 80)"
-        fill="#3164FA"
+        fill="#E84142"
       />
     </svg>
   );
