@@ -11,6 +11,6 @@ export const daoFactoryABI = [
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function',                                  
   },
 ];
