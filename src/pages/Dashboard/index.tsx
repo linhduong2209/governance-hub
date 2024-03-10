@@ -3,6 +3,7 @@ import Navbar from "src/containers/Navbar";
 import styled from "styled-components";
 import { GridLayout } from "../../components/Layout";
 import Hero from "../../containers/hero";
+import { DaoExplorer } from "src/containers/daoExplore/daoExplore";
 
 export const Dashboard: React.FC = () => {
   return (
@@ -12,8 +13,8 @@ export const Dashboard: React.FC = () => {
         <Hero />
         <GridLayout>
           <ContentWrapper>
-            {/* <DaoExplorer /> */}
             <Carousel />
+            <DaoExplorer />
           </ContentWrapper>
         </GridLayout>
       </div>

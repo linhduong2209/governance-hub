@@ -1,10 +1,13 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import { GridLayout } from "src/components/layout";
+import { GridLayout } from "src/components/Layout";
 import Navbar from "src/containers/Navbar";
 
 import "../i18n.config";
 import { Loading } from "./components/Temporary";
+import { BrowserRouter } from "react-router-dom";
+import { NetworkProvider } from "./context/network";
+import { NetworkErrorMenu } from "./containers/NetworkErrorMenu";
 
 const DashboardPage = lazy(() =>
   import("./pages/Dashboard").then(module => ({ default: module.Dashboard })),
@@ -51,13 +54,19 @@ const DaosWrapper: React.FC = () => {
 
 function App() {
   return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="create/*" element={<DaoWrapper />} />
-      </Routes>
-      {/* <WalletMenu /> */}
-    </Suspense>
+    <>
+      <Suspense fallback={<Loading />}>
+        <BrowserRouter>
+          <NetworkProvider>
+            <Routes>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="create/*" element={<DaoWrapper />} />
+            </Routes>
+          </NetworkProvider>
+        </BrowserRouter>
+      </Suspense>
+      <NetworkErrorMenu />
+    </>
   );
 }
 

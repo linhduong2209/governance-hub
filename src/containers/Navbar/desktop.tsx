@@ -5,7 +5,7 @@ import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, ButtonWallet } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
-import { HeaderContainer } from "src/components/layout";
+import { HeaderContainer } from "src/components/Layout";
 import ExitProcessMenu, { ProcessType } from "src/containers/ExitProcessMenu";
 import { selectedDaoVar } from "src/context/apolloClient";
 import { useNetwork } from "src/context/network";
@@ -141,7 +141,7 @@ export default DesktopNav;
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto w-full justify-between items-center max-w-[1680px]
-     px-10 2xl:px-20 py-6`
+     px-10 2xl:px-20 py-6`,
 })`
   // background: linear-gradient(
   //   180deg,
@@ -152,9 +152,9 @@ const Menu = styled.nav.attrs({
 `;
 
 const Content = styled.div.attrs({
-  className: "flex items-center space-x-12"
+  className: "flex items-center space-x-12",
 })``;
 
 const LinksWrapper = styled.div.attrs({
-  className: "flex items-center space-x-3"
+  className: "flex items-center space-x-3",
 })``;

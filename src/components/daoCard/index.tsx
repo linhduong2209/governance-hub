@@ -1,14 +1,14 @@
 import { Icon, IconType } from "@aragon/ods";
-import { AvatarDao } from "@aragon/ods-old";
-import { useResolveDaoAvatar } from "hooks/useResolveDaoAvatar";
-import useScreen from "hooks/useScreen";
+// import { AvatarDao } from "@aragon/ods-old";
+import { useResolveDaoAvatar } from "src/hooks/useResolveDaoAvatar";
+import useScreen from "src/hooks/useScreen";
 import { useTranslation } from "react-i18next";
 import { generatePath, useHref } from "react-router-dom";
-import { IDao } from "services/aragon-backend/domain/dao";
+import { IDao } from "src/services/aragon-backend/domain/dao";
+import { toDisplayEns } from "src/utils/library";
 import styled from "styled-components";
-import { CHAIN_METADATA } from "utils/constants";
-import { toDisplayEns } from "utils/library";
-import { Dashboard } from "utils/paths";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { Dashboard } from "src/utils/paths";
 
 export interface IDaoCardProps {
   dao: IDao;
@@ -24,7 +24,7 @@ export const DaoCard = (props: IDaoCardProps) => {
 
   const daoPage = generatePath(Dashboard, {
     network,
-    dao: toDisplayEns(ens) || daoAddress
+    dao: toDisplayEns(ens) || daoAddress,
   });
   const daoUrl = useHref(daoPage);
 
@@ -39,7 +39,7 @@ export const DaoCard = (props: IDaoCardProps) => {
     <Container href={daoUrl}>
       <DaoDataWrapper>
         <HeaderContainer>
-          <AvatarDao daoName={name} src={logo && avatar} />
+          {/* <AvatarDao daoName={name} src={logo && avatar} /> */}
           <div className="space-y-0.5 text-left xl:space-y-1">
             <Title>{name}</Title>
             <p className="font-semibold text-neutral-500 ft-text-sm">
@@ -72,7 +72,7 @@ const Container = styled.a.attrs({
     focus:outline-none focus:ring focus:ring-primary
     hover:border-neutral-100 active:border-200
     bg-neutral-0 rounded-xl cursor-pointer
-    `
+    `,
 })`
   &:hover {
     box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
@@ -84,11 +84,11 @@ const Container = styled.a.attrs({
 `;
 
 const HeaderContainer = styled.div.attrs({
-  className: "flex flex-row space-x-4 items-center"
+  className: "flex flex-row space-x-4 items-center",
 })``;
 
 const Title = styled.p.attrs({
-  className: "font-semibold text-neutral-800 ft-text-xl break-words"
+  className: "font-semibold text-neutral-800 ft-text-xl break-words",
 })``;
 
 // The line desktop breakpoint does not work with
@@ -97,7 +97,7 @@ const Title = styled.p.attrs({
 const Description = styled.p.attrs({
   className: `
   font-medium text-neutral-600 ft-text-base flex text-left
-  `
+  `,
 })<{ isDesktop: boolean }>`
   overflow: hidden;
   display: -webkit-box;
@@ -106,15 +106,15 @@ const Description = styled.p.attrs({
 `;
 
 const DaoMetadataWrapper = styled.div.attrs({
-  className: "flex flex-row space-x-6"
+  className: "flex flex-row space-x-6",
 })``;
 const IconLabel = styled.p.attrs({
-  className: "text-neutral-600 ft-text-sm capitalize"
+  className: "text-neutral-600 ft-text-sm capitalize",
 })``;
 const IconWrapper = styled.div.attrs({
-  className: "flex flex-row space-x-2"
+  className: "flex flex-row space-x-2",
 })``;
 
 const DaoDataWrapper = styled.div.attrs({
-  className: "flex flex-col grow space-y-3 flex-1"
+  className: "flex flex-col grow space-y-3 flex-1",
 })``;

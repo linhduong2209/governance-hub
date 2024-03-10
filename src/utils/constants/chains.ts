@@ -3,13 +3,13 @@
 import { i18n } from "../../../i18n.config";
 
 export const SUPPORTED_CHAIN_ID = [
-  1, 5, 137, 8453, 80001, 84531, 42161, 421613, 11155111, 43113
+  1, 5, 137, 8453, 80001, 84531, 42161, 421613, 11155111, 43113,
 ] as const;
 
 export type SupportedChainID = (typeof SUPPORTED_CHAIN_ID)[number];
 
 export function isSupportedChainId(
-  chainId: number
+  chainId: number,
 ): chainId is SupportedChainID {
   return SUPPORTED_CHAIN_ID.some(id => id === chainId);
 }
@@ -17,7 +17,7 @@ export function isSupportedChainId(
 // TODO: Remove this Goerli based network conditions
 export const ENS_SUPPORTED_NETWORKS: SupportedNetworks[] = [
   "ethereum",
-  "goerli"
+  "goerli",
 ];
 export const NETWORKS_WITH_CUSTOM_REGISTRY: SupportedNetworks[] = [
   "arbitrum",
@@ -26,7 +26,7 @@ export const NETWORKS_WITH_CUSTOM_REGISTRY: SupportedNetworks[] = [
   "sepolia",
   "arbitrum-goerli",
   "base-goerli",
-  "mumbai"
+  "mumbai",
 ];
 
 export const L2_NETWORKS = NETWORKS_WITH_CUSTOM_REGISTRY;
@@ -42,14 +42,14 @@ const SUPPORTED_NETWORKS = [
   "arbitrum-goerli",
   "base-goerli",
   "mumbai",
-  "fuji"
+  "fuji",
 ] as const;
 
 export const GOERLI_BASED_NETWORKS: SupportedNetworks[] = [
   "goerli",
   "base-goerli",
   "arbitrum-goerli",
-  "mumbai"
+  "mumbai",
 ];
 
 export type SupportedNetworks =
@@ -71,7 +71,7 @@ export const supportedNetworksToBackendMap = {
   "base-goerli": "baseGoerli",
   "arbitrum-goerli": "arbitrumGoerli",
   base: "base",
-  arbitrum: "arbitrum"
+  arbitrum: "arbitrum",
 } as Record<SupportedNetworks, string>;
 
 /**
@@ -80,11 +80,11 @@ export const supportedNetworksToBackendMap = {
  * @returns the name of the supported network or null if network is unsupported
  */
 export function getSupportedNetworkByChainId(
-  chainId: number
+  chainId: number,
 ): SupportedNetworks | undefined {
   if (isSupportedChainId(chainId)) {
     return Object.entries(CHAIN_METADATA).find(
-      entry => entry[1].id === chainId
+      entry => entry[1].id === chainId,
     )?.[0] as SupportedNetworks;
   }
 }
@@ -143,20 +143,20 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api.etherscan.io/api",
     etherscanApiKey: etherscanApiKey,
     coingecko: {
       networkId: "ethereum",
-      nativeTokenId: "ethereum"
+      nativeTokenId: "ethereum",
     },
     covalent: {
       networkId: "eth-mainnet",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://eth-mainnet.g.alchemy.com/v2",
-    supportsEns: true
+    supportsEns: true,
   },
   polygon: {
     id: 137,
@@ -171,20 +171,20 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "MATIC",
       symbol: "MATIC",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api.polygonscan.com/api",
     etherscanApiKey: polygonscanApiKey,
     coingecko: {
       networkId: "polygon-pos",
-      nativeTokenId: "matic-network"
+      nativeTokenId: "matic-network",
     },
     covalent: {
       networkId: "matic-mainnet",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://polygon-mainnet.g.alchemy.com/v2",
-    supportsEns: false
+    supportsEns: false,
   },
   arbitrum: {
     id: 42161,
@@ -199,19 +199,19 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api.arbiscan.io/api",
     alchemyApi: "https://arb-mainnet.g.alchemy.com/v2",
     coingecko: {
       networkId: "arbitrum-one",
-      nativeTokenId: "ethereum"
+      nativeTokenId: "ethereum",
     },
     covalent: {
       networkId: "arbitrum-mainnet",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
-    supportsEns: false
+    supportsEns: false,
   },
   base: {
     id: 8453,
@@ -226,16 +226,16 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api.basescan.org/api",
     etherscanApiKey: "",
     covalent: {
       networkId: "base-mainnet",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "",
-    supportsEns: false
+    supportsEns: false,
   },
   sepolia: {
     id: 11155111,
@@ -251,16 +251,16 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "SepoliaETH",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api-sepolia.etherscan.io/api",
     etherscanApiKey: etherscanApiKey,
     covalent: {
       networkId: "eth-sepolia",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://eth-sepolia.g.alchemy.com/v2",
-    supportsEns: false
+    supportsEns: false,
   },
   unsupported: {
     id: 1,
@@ -275,11 +275,11 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "",
       symbol: "",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "",
     alchemyApi: "",
-    supportsEns: false
+    supportsEns: false,
   },
   goerli: {
     id: 5,
@@ -295,16 +295,16 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Goerli Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api-goerli.etherscan.io/api",
     etherscanApiKey: etherscanApiKey,
     covalent: {
       networkId: "eth-goerli",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://eth-goerli.g.alchemy.com/v2",
-    supportsEns: true
+    supportsEns: true,
   },
   mumbai: {
     id: 80001,
@@ -320,16 +320,16 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "MATIC",
       symbol: "MATIC",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api-testnet.polygonscan.com/api",
     etherscanApiKey: polygonscanApiKey,
     covalent: {
       networkId: "matic-mumbai",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://polygon-mumbai.g.alchemy.com/v2",
-    supportsEns: false
+    supportsEns: false,
   },
   "arbitrum-goerli": {
     id: 421613,
@@ -345,15 +345,15 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api-goerli.arbiscan.io/api",
     alchemyApi: "https://arb-goerli.g.alchemy.com/v2",
     covalent: {
       networkId: "arbitrum-goerli",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
-    supportsEns: false
+    supportsEns: false,
   },
   "base-goerli": {
     id: 84531,
@@ -369,16 +369,16 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     etherscanApi: "https://api.basescan.org/api",
     etherscanApiKey: "",
     covalent: {
       networkId: "base-testnet",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "",
-    supportsEns: false
+    supportsEns: false,
   },
   fuji: {
     id: 43113,
@@ -393,23 +393,23 @@ export const CHAIN_METADATA: Record<SupportedNetworks, ChainData> = {
     nativeCurrency: {
       name: "AVAX",
       symbol: "AVAX",
-      decimals: 18
+      decimals: 18,
     },
     // Avalanche Fuji doesn't use Etherscan
     etherscanApi: "",
     etherscanApiKey: "",
     covalent: {
       networkId: "43113",
-      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      nativeTokenId: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
     alchemyApi: "https://avalanche-fuji.g.alchemy.com/v2",
-    supportsEns: false
-  }
+    supportsEns: false,
+  },
 };
 
 export const chainExplorerAddressLink = (
   network: SupportedNetworks,
-  address: string
+  address: string,
 ) => {
   return `${CHAIN_METADATA[network].explorer}address/${address}`;
 };

@@ -65,7 +65,10 @@ const GoLive: React.FC = () => {
       <Community />
       <Governance />
       {votingType === "gasless" && <Committee />}
-      <AlertCard message={t("createDAO.review.daoUpdates")} variant="info" />
+      <AlertCard
+        message={t("createDAO.review.daoUpdates")}
+        className="border-secondary"
+      />
     </Container>
   );
 };
@@ -79,10 +82,11 @@ export const GoLiveFooter: React.FC = () => {
   const { isConnected, provider, isOnWrongNetwork } = useWallet();
 
   const IsButtonDisabled = () =>
-    !Object.values(reviewCheck).every((v) => v === true);
+    !Object.values(reviewCheck).every(v => v === true);
 
   const publishDao = (e: React.MouseEvent) => {
     e.stopPropagation();
+
     isConnected &&
       trackEvent("daoCreation_publishYourDAO_clicked", {
         network: getValues("blockchain")?.network,
@@ -115,7 +119,9 @@ export const GoLiveFooter: React.FC = () => {
           variant="primary"
           iconRight={IconType.CHEVRON_RIGHT}
           onClick={publishDao}
-          state={IsButtonDisabled() ? "disabled" : undefined}
+          disabled={IsButtonDisabled()}
+          className="bg-primary"
+          style={{ opacity: IsButtonDisabled() ? 0.6 : 1 }}
         >
           {t("createDAO.review.title")}
         </Button>

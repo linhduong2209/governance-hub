@@ -19,7 +19,7 @@ export const useClient = () => {
   const client = useContext(UseClientContext);
   if (client === null) {
     throw new Error(
-      "useClient() can only be used on the descendants of <UseClientProvider />"
+      "useClient() can only be used on the descendants of <UseClientProvider />",
     );
   }
   if (client.context) {
@@ -29,7 +29,7 @@ export const useClient = () => {
 };
 
 export const UseClientProvider: React.FC<{ children: ReactNode }> = ({
-  children
+  children,
 }) => {
   const { signer } = useWallet();
   const [client, setClient] = useState<Client>();
@@ -74,7 +74,7 @@ export const UseClientProvider: React.FC<{ children: ReactNode }> = ({
 
   const value: ClientContext = {
     client,
-    context
+    context,
   };
 
   return (

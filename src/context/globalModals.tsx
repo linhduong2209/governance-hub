@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useContext,
   useMemo,
-  useState
+  useState,
 } from "react";
 
 const GlobalModalsContext = createContext<GlobalModalsContextType | null>(null);
@@ -54,7 +54,7 @@ export const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
       setActiveDialog(dialog);
       setModalState(state);
     },
-    []
+    [],
   );
 
   const value = useMemo(
@@ -62,9 +62,9 @@ export const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
       activeDialog,
       modalState,
       open,
-      close
+      close,
     }),
-    [activeDialog, modalState, open, close]
+    [activeDialog, modalState, open, close],
   );
 
   return (
@@ -75,19 +75,19 @@ export const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
 };
 
 export const useGlobalModalContext = <TState extends object>(
-  dialog?: DialogType
+  dialog?: DialogType,
 ): GlobalModalsContextType<TState> => {
   const values = useContext(GlobalModalsContext);
 
   if (values == null) {
     throw new Error(
-      "GlobalModals: hook must be used inside the GlobalModalContext in order to work properly."
+      "GlobalModals: hook must be used inside the GlobalModalContext in order to work properly.",
     );
   }
 
   return {
     ...values,
     isOpen: dialog ? values.activeDialog === dialog : undefined,
-    modalState: values.modalState as TState
+    modalState: values.modalState as TState,
   };
 };
