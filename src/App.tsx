@@ -7,11 +7,16 @@ import "../i18n.config";
 import { ContextProvider } from "./services/web3modal";
 
 const DashboardPage = lazy(() =>
-  import("./pages/Dashboard").then(module => ({ default: module.Dashboard }))
+  import("./pages/Dashboard").then((module) => ({ default: module.Dashboard }))
 );
 const CreateDaoPage = lazy(() =>
-  import("./pages/CreateDAO").then(module => ({
-    default: module.CreateDAO
+  import("./pages/CreateDAO").then((module) => ({
+    default: module.CreateDAO,
+  }))
+);
+const DaoPage = lazy(() =>
+  import("./pages/DAODetail").then((module) => ({
+    default: module.DAODetail,
   }))
 );
 
@@ -30,6 +35,22 @@ const DaoWrapper: React.FC = () => {
   );
 };
 
+const DaosWrapper: React.FC = () => {
+  return (
+    <>
+      {/* <Navbar /> */}
+      <div className="min-h-screen">
+        <GridLayout>
+          <Routes>
+            <Route path="dao-detail" element={<DaoPage />} />
+          </Routes>
+          {/* <DaoPage /> */}
+        </GridLayout>
+      </div>
+    </>
+  );
+};
+
 function App() {
   return (
     <ContextProvider>
@@ -37,6 +58,7 @@ function App() {
         <Routes>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="dao/*" element={<DaoWrapper />} />
+          <Route path="daos/*" element={<DaosWrapper />} />
         </Routes>
         {/* <WalletMenu /> */}
       </BrowserRouter>
