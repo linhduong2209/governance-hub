@@ -6,7 +6,7 @@ import {
   InputImageSingle,
   Label,
   TextInput,
-  TextareaSimple
+  TextareaSimple,
 } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
@@ -18,7 +18,7 @@ import { URL_PATTERN } from "src/utils/constants";
 const DAO_LOGO = {
   maxDimension: 2400,
   minDimension: 256,
-  maxFileSize: 3000000
+  maxFileSize: 3000000,
 };
 
 const BYTES_IN_MB = 1000000;
@@ -44,7 +44,7 @@ const DefineMetadata: React.FC = () => {
             // convert to mb
             const sizeInMb = maxFileSize / BYTES_IN_MB;
             imgError.message = t("errors.imageTooLarge", {
-              maxFileSize: sizeInMb
+              maxFileSize: sizeInMb,
             });
           }
 
@@ -52,7 +52,7 @@ const DefineMetadata: React.FC = () => {
         case "wrong-dimension":
           imgError.message = t("errors.imageDimensions", {
             minDimension,
-            maxDimension
+            maxDimension,
           });
           break;
         default:
@@ -62,7 +62,7 @@ const DefineMetadata: React.FC = () => {
 
       setError("daoLogo", imgError);
     },
-    [setError, t]
+    [setError, t],
   );
 
   return (
@@ -79,11 +79,11 @@ const DefineMetadata: React.FC = () => {
           control={control}
           defaultValue=""
           rules={{
-            required: t("errors.required.name")
+            required: t("errors.required.name"),
           }}
           render={({
             field: { onBlur, onChange, value, name },
-            fieldState: { error }
+            fieldState: { error },
           }) => (
             <>
               <TextInput
@@ -156,7 +156,7 @@ const DefineMetadata: React.FC = () => {
           name="daoSummary"
           rules={{
             required: t("errors.required.summary"),
-            validate: value => true
+            validate: value => true,
             //    isOnlyWhitespace(value) ? t("errors.required.summary") : true,
           }}
           control={control}
@@ -173,16 +173,6 @@ const DefineMetadata: React.FC = () => {
           )}
         />
       </FormItem>
-
-      {/* Links */}
-      <FormItem>
-        <Label
-          label={t("labels.links")}
-          helpText={t("createDAO.step2.linksSubtitle")}
-          isOptional
-        />
-        {/* <AddLinks arrayName={arrayName} bgWhite={bgWhite} /> */}
-      </FormItem>
     </>
   );
 };
@@ -190,13 +180,13 @@ const DefineMetadata: React.FC = () => {
 export default DefineMetadata;
 
 const InputCount = styled.div.attrs({
-  className: "ft-text-sm mt-2"
+  className: "ft-text-sm mt-2",
 })``;
 
 const FormItem = styled.div.attrs({
-  className: "space-y-3"
+  className: "space-y-3",
 })``;
 
 const LogoContainer = styled.div.attrs({
-  className: "pt-1"
+  className: "pt-1",
 })``;

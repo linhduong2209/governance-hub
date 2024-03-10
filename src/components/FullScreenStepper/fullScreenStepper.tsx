@@ -5,7 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +43,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   processType,
   children,
   navLabel,
-  returnPath
+  returnPath,
 }) => {
   const skipSteps = children.filter(child => child.props.skipStep !== true);
 
@@ -67,7 +67,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
     isNextButtonDisabled,
     onBackButtonClicked,
     onNextButtonClicked,
-    onNextButtonDisabledClicked
+    onNextButtonDisabledClicked,
   } = skipSteps[currentIndex].props;
 
   const totalSteps = useMemo(() => {
@@ -140,7 +140,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
                 <Breadcrumb
                   crumbs={{
                     label: navLabel,
-                    path: returnPath
+                    path: returnPath,
                   }}
                   onClick={handleExitButtonClicked}
                 />
@@ -149,7 +149,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
           )}
           {customHeader &&
             React.cloneElement(customHeader, {
-              onExitButtonClick: handleExitButtonClicked
+              onExitButtonClick: handleExitButtonClicked,
             })}
         </div>
         <FormLayout fullWidth={fullWidth || false}>
@@ -200,7 +200,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
 
 const Layout = styled.div.attrs({
   className:
-    "col-span-full xl:col-start-2 xl:col-end-12 font-medium text-neutral-600 mb-20"
+    "col-span-full xl:col-start-2 xl:col-end-12 font-medium text-neutral-600 mb-20",
 })``;
 
 type FormLayoutProps = {
@@ -209,12 +209,12 @@ type FormLayoutProps = {
 
 const FormLayout = styled.div.attrs<{ fullWidth: FormLayoutProps }>(
   ({ fullWidth }) => ({
-    className: `mt-10 xl:mt-16 mx-auto space-y-10 ${!fullWidth && "xl:w-3/5"}`
-  })
+    className: `mt-10 xl:mt-16 mx-auto space-y-10 ${!fullWidth && "xl:w-3/5"}`,
+  }),
 )<FormLayoutProps>``;
 
 const FormFooter = styled.div.attrs({
-  className: "flex justify-between xl:pt-6"
+  className: "flex justify-between xl:pt-6",
 })``;
 
 const ButtonValidationTrigger = styled.div``;

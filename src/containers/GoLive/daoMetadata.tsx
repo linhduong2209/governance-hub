@@ -1,18 +1,23 @@
-import React from 'react';
-import {AvatarDao, ListItemLink} from 'src/@aragon/ods-old';
-import {Controller, useFormContext} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
+import React from "react";
+import { AvatarDao, ListItemLink } from "src/@aragon/ods-old";
+import { Controller, useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
-import {useFormStep} from 'src/components/FullScreenStepper';
-import {DescriptionListContainer, Dl, Dt, Dd} from 'src/components/DescriptionList';
-import {useNetwork} from 'src/context/network';
+import { useFormStep } from "src/components/FullScreenStepper";
+import {
+  DescriptionListContainer,
+  Dl,
+  Dt,
+  Dd,
+} from "src/components/DescriptionList";
+import { useNetwork } from "src/context/network";
 
 const DaoMetadata: React.FC = () => {
-  const {control, getValues} = useFormContext();
-  const {setStep} = useFormStep();
-  const {isL2Network} = useNetwork();
-  const {t} = useTranslation();
-  const {daoLogo, daoName, daoEnsName, daoSummary, links, reviewCheckError} =
+  const { control, getValues } = useFormContext();
+  const { setStep } = useFormStep();
+  const { isL2Network } = useNetwork();
+  const { t } = useTranslation();
+  const { daoLogo, daoName, daoEnsName, daoSummary, links, reviewCheckError } =
     getValues();
 
   return (
@@ -21,55 +26,49 @@ const DaoMetadata: React.FC = () => {
       control={control}
       defaultValue={false}
       rules={{
-        required: t('errors.required.recipient'),
+        required: t("errors.required.recipient"),
       }}
-      render={({field: {onChange, value}}) => (
+      render={({ field: { onChange, value } }) => (
         <DescriptionListContainer
-          title={t('labels.review.daoMetadata')}
+          title={t("labels.review.daoMetadata")}
           onEditClick={() => setStep(3)}
-          checkBoxErrorMessage={t('createDAO.review.acceptContent')}
+          checkBoxErrorMessage={t("createDAO.review.acceptContent")}
           checkedState={
-            value ? 'active' : reviewCheckError ? 'error' : 'default'
+            value ? "active" : reviewCheckError ? "error" : "default"
           }
-          tagLabel={t('labels.changeableVote')}
+          tagLabel={t("labels.changeableVote")}
           onChecked={() => onChange(!value)}
         >
           <Dl>
-            <Dt>{t('labels.logo')}</Dt>
+            <Dt>{t("labels.logo")}</Dt>
             <Dd>
               <AvatarDao
-                {...{daoName}}
-                {...(daoLogo && {src: URL.createObjectURL(daoLogo)})}
+                {...{ daoName }}
+                {...(daoLogo && { src: URL.createObjectURL(daoLogo) })}
                 size="small"
               />
             </Dd>
           </Dl>
           <Dl>
-            <Dt>{t('labels.daoName')}</Dt>
+            <Dt>{t("labels.daoName")}</Dt>
             <Dd>{daoName}</Dd>
           </Dl>
-          {!isL2Network && (
-            <Dl>
-              <Dt>{t('labels.daoEnsName')}</Dt>
-              <Dd>{`${daoEnsName}.dao.eth`}</Dd>
-            </Dl>
-          )}
           <Dl>
-            <Dt>{t('labels.summary')}</Dt>
+            <Dt>{t("labels.summary")}</Dt>
             <Dd>{daoSummary}</Dd>
           </Dl>
-          {links[0].url !== '' && (
+          {links[0].url !== "" && (
             <Dl>
-              <Dt>{t('labels.links')}</Dt>
+              <Dt>{t("labels.links")}</Dt>
               <Dd>
                 <div className="space-y-3">
                   {links.map(
                     (
-                      {name, url}: {name: string; url: string},
-                      index: number
+                      { name, url }: { name: string; url: string },
+                      index: number,
                     ) => {
                       return (
-                        url !== '' && (
+                        url !== "" && (
                           <ListItemLink
                             key={index}
                             label={name}
@@ -78,7 +77,7 @@ const DaoMetadata: React.FC = () => {
                           />
                         )
                       );
-                    }
+                    },
                   )}
                 </div>
               </Dd>

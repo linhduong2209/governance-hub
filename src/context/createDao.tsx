@@ -8,11 +8,11 @@ import {
   TokenVotingClient,
   TokenVotingPluginInstall,
   VotingMode,
-  VotingSettings
+  VotingSettings,
 } from "@aragon/sdk-client";
 import {
   PluginInstallItem,
-  SupportedNetwork as sdkSupportedNetworks
+  SupportedNetwork as sdkSupportedNetworks,
 } from "@aragon/sdk-client-common";
 import { parseUnits } from "ethers/lib/utils";
 import React, {
@@ -20,7 +20,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useState
+  useState,
 } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,7 @@ import { trackEvent } from "src/services/analytics";
 import {
   CHAIN_METADATA,
   TransactionState,
-  getSupportedNetworkByChainId
+  getSupportedNetworkByChainId,
 } from "src/utils/constants";
 import { getSecondsFromDHM } from "src/utils/date";
 import { readFile, translateToNetworkishName } from "src/utils/library";
@@ -47,7 +47,7 @@ import { useNetwork } from "./network";
 import {
   GaslessPluginVotingSettings,
   GaslessVotingClient,
-  GaslessVotingPluginInstall
+  GaslessVotingPluginInstall,
 } from "@vocdoni/gasless-voting";
 import { retry } from "src/utils/retry";
 import { useCensus3CreateToken } from "../hooks/useCensus3";
@@ -69,7 +69,6 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation();
   const { getValues } = useFormContext<CreateDaoFormData>();
   const { client } = useClient();
-  console.log("client", client);
 
   const addFavoriteDaoMutation = useAddFollowedDaoMutation();
   const addPendingDaoMutation = useAddPendingDaoMutation();
@@ -90,9 +89,11 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const handlePublishDao = async () => {
     setCreationProcessState(TransactionState.LOADING);
     setShowModal(true);
-    const creationParams = await getDaoSettings();
-    setDaoCreationData(creationParams);
-    setCreationProcessState(TransactionState.WAITING);
+    // const creationParams = await getDaoSettings();
+    // setDaoCreationData(creationParams);
+    setTimeout(() => {
+      setCreationProcessState(TransactionState.SUCCESS);
+    }, 3000);
   };
 
   // Handler for modal button click
@@ -106,7 +107,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       estimated_gwei_fee: averageFee?.toString(),
       total_usd_cost: averageFee
         ? (tokenPrice * Number(averageFee)).toString()
-        : "0"
+        : "0",
     });
 
     if (creationProcessState === TransactionState.SUCCESS) {
@@ -136,12 +137,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       case TransactionState.LOADING:
         break;
       case TransactionState.SUCCESS:
-        navigate(
-          generatePath(Dashboard, {
-            network: network,
-            dao: daoAddress
-          })
-        );
+        navigate(generatePath("/dashboard"));
         if (network === "ethereum") {
           // (!networkInfo.isTestnet) {
         }
@@ -155,13 +151,13 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const getMultisigPluginInstallParams = useCallback((): [
     MultisigPluginInstallParams,
-    sdkSupportedNetworks
+    sdkSupportedNetworks,
   ] => {
     const {
       blockchain,
       multisigWallets,
       multisigMinimumApprovals,
-      eligibilityType
+      eligibilityType,
     } = getValues();
 
     return [
@@ -169,16 +165,16 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         members: multisigWallets.map(wallet => wallet.address),
         votingSettings: {
           minApprovals: multisigMinimumApprovals,
-          onlyListed: eligibilityType === "multisig"
-        }
+          onlyListed: eligibilityType === "multisig",
+        },
       },
-      formNetworkToNetworkish(blockchain.id)
+      formNetworkToNetworkish(blockchain.id),
     ];
   }, [getValues]);
 
   const getVoteSettings = useCallback((): [
     VotingSettings,
-    sdkSupportedNetworks
+    sdkSupportedNetworks,
   ] => {
     const {
       blockchain,
@@ -192,7 +188,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       voteReplacement,
       earlyExecution,
       isCustomToken,
-      tokenDecimals
+      tokenDecimals,
     } = getValues();
 
     let votingMode;
@@ -214,7 +210,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         minDuration: getSecondsFromDHM(
           parseInt(durationDays),
           parseInt(durationHours),
-          parseInt(durationMinutes)
+          parseInt(durationMinutes),
         ),
         minParticipation: parseInt(minimumParticipation) / 100,
         supportThreshold: parseInt(minimumApproval) / 100,
@@ -224,9 +220,9 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             : eligibilityType === "multisig" || eligibilityType === "anyone"
             ? BigInt(0)
             : parseUnits("1", decimals).toBigInt(),
-        votingMode
+        votingMode,
       },
-      formNetworkToNetworkish(blockchain.id)
+      formNetworkToNetworkish(blockchain.id),
     ];
   }, [getValues]);
 
@@ -241,8 +237,8 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         // minter: '0x...', // optionally, define a minter
         balances: wallets?.map(wallet => ({
           address: wallet.address,
-          balance: parseUnits(wallet.amount, DEFAULT_TOKEN_DECIMALS).toBigInt()
-        }))
+          balance: parseUnits(wallet.amount, DEFAULT_TOKEN_DECIMALS).toBigInt(),
+        })),
       };
     }, [getValues]);
 
@@ -265,7 +261,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       return {
         tokenAddress: tokenAddress.address, // contract address of underlying token
-        wrappedToken: { name, symbol }
+        wrappedToken: { name, symbol },
       };
     }, [getValues]);
 
@@ -278,21 +274,21 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         committeeMinimumApproval,
         executionExpirationHours,
         executionExpirationDays,
-        executionExpirationMinutes
+        executionExpirationMinutes,
       } = getValues();
 
       const vocdoniVotingSettings: GaslessPluginVotingSettings = {
         minTallyDuration: getSecondsFromDHM(
           parseInt(executionExpirationDays),
           parseInt(executionExpirationHours),
-          parseInt(executionExpirationMinutes)
+          parseInt(executionExpirationMinutes),
         ),
         minTallyApprovals: Number(committeeMinimumApproval),
         minDuration: votingSettings.minDuration,
         minParticipation: votingSettings.minParticipation,
         supportThreshold: votingSettings.supportThreshold,
         minProposerVotingPower: votingSettings.minProposerVotingPower as bigint,
-        censusStrategy: ""
+        censusStrategy: "",
       };
 
       return {
@@ -302,10 +298,10 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           tokenType === "ERC-20") && // token can/will be wrapped
         !isCustomToken // not a new token (existing token)
           ? { useToken: getErc20PluginParams() }
-          : { newToken: getNewErc20PluginParams() })
+          : { newToken: getNewErc20PluginParams() }),
       };
     },
-    [getErc20PluginParams, getNewErc20PluginParams, getValues]
+    [getErc20PluginParams, getNewErc20PluginParams, getValues],
   );
 
   // Get dao setting configuration for creation process
@@ -319,7 +315,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       tokenType,
       isCustomToken,
       links,
-      votingType
+      votingType,
     } = getValues();
     const plugins: PluginInstallItem[] = [];
     switch (membership) {
@@ -328,7 +324,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
         const multisigPlugin = MultisigClient.encoding.getPluginInstallItem(
           params,
-          network
+          network,
         );
         plugins.push(multisigPlugin);
         break;
@@ -351,9 +347,9 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
                 tokenType === "ERC-20") && // token can/will be wrapped
               !isCustomToken // not a new token (existing token)
                 ? { useToken: getErc20PluginParams() }
-                : { newToken: getNewErc20PluginParams() })
+                : { newToken: getNewErc20PluginParams() }),
             },
-            network
+            network,
           );
 
         plugins.push(tokenVotingPlugin);
@@ -367,14 +363,14 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const metadata: DaoMetadata = {
       name: daoName,
       description: daoSummary,
-      links: links.filter(r => r.name && r.url)
+      links: links.filter(r => r.name && r.url),
     };
 
     if (daoLogo) {
       try {
         const daoLogoBuffer = await readFile(daoLogo as Blob);
         const logoCID = await retry(() =>
-          client?.ipfs.add(new Uint8Array(daoLogoBuffer))
+          client?.ipfs.add(new Uint8Array(daoLogoBuffer)),
         );
         await retry(() => client?.ipfs.pin(logoCID!));
         metadata.avatar = `ipfs://${logoCID}`;
@@ -390,7 +386,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         // TODO: We're using dao name without spaces for ens, We need to add alert
         // to inform this to user
         ensSubdomain: daoEnsName || "",
-        plugins: [...plugins]
+        plugins: [...plugins],
       };
     } catch (error: unknown) {
       setCreationProcessState(TransactionState.ERROR);
@@ -405,7 +401,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     getMultisigPluginInstallParams,
     getNewErc20PluginParams,
     getValues,
-    getVoteSettings
+    getVoteSettings,
   ]);
 
   // estimate creation fees
@@ -418,7 +414,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     maxFee,
     averageFee,
     stopPolling,
-    error: gasEstimationError
+    error: gasEstimationError,
   } = usePollGasFee(estimateCreationFees, shouldPoll);
 
   const chainId = getValues("blockchain")?.id;
@@ -445,7 +441,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: daoName,
       description: daoSummary,
       avatar: daoLogo ? URL.createObjectURL(daoLogo as Blob) : undefined,
-      links: links.filter(r => r.name && r.url)
+      links: links.filter(r => r.name && r.url),
     };
 
     try {
@@ -456,18 +452,18 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             trackEvent("daoCreation_transaction_signed", {
               network: getValues("blockchain")?.network,
               wallet_provider: provider?.connection.url,
-              governance_type: getValues("membership")
+              governance_type: getValues("membership"),
             });
             break;
           case DaoCreationSteps.DONE:
             console.log(
               "Newly created DAO address",
-              step.address.toLowerCase()
+              step.address.toLowerCase(),
             );
             trackEvent("daoCreation_transaction_success", {
               network: getValues("blockchain")?.network,
               wallet_provider: provider?.connection.url,
-              governance_type: getValues("membership")
+              governance_type: getValues("membership"),
             });
             setDaoCreationData(undefined);
             setCreationProcessState(TransactionState.SUCCESS);
@@ -481,8 +477,8 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
                   daoDetails: {
                     ...daoCreationData,
                     metadata,
-                    creationDate: new Date()
-                  }
+                    creationDate: new Date(),
+                  },
                 }),
                 addFavoriteDaoMutation.mutateAsync({
                   dao: {
@@ -495,16 +491,16 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
                           membership === "token"
                             ? "token-voting.plugin.dao.eth"
                             : "multisig.plugin.dao.eth",
-                        data: daoCreationData.plugins[0].data
-                      }
+                        data: daoCreationData.plugins[0].data,
+                      },
                     ],
                     metadata: {
                       name: metadata.name,
                       avatar: metadata.avatar,
-                      description: metadata.description
-                    }
-                  }
-                })
+                      description: metadata.description,
+                    },
+                  },
+                }),
               ]).then(async () => {
                 if (votingType === "gasless" && membership === "token") {
                   await createToken(step.pluginAddresses[0]);
@@ -514,7 +510,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             } catch (error) {
               console.warn(
                 "Error favoriting and adding newly created DAO to cache",
-                error
+                error,
               );
             }
             break;
@@ -527,7 +523,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         network: getValues("blockchain")?.network,
         wallet_provider: provider?.connection.url,
         governance_type: getValues("membership"),
-        err
+        err,
       });
       setCreationProcessState(TransactionState.ERROR);
     }
@@ -538,7 +534,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
    *************************************************/
   const buttonLabels = {
     [TransactionState.SUCCESS]: t("TransactionModal.launchDaoDashboard"),
-    [TransactionState.WAITING]: t("TransactionModal.publishDaoButtonLabel")
+    [TransactionState.WAITING]: t("TransactionModal.publishDaoButtonLabel"),
   };
 
   const dialogAction =
@@ -579,7 +575,7 @@ function formNetworkToNetworkish(chainId: number) {
     return translateToNetworkishName(selectedNetwork) as sdkSupportedNetworks;
   } else {
     throw new Error(
-      "No network selected. A supported network must be selected"
+      "No network selected. A supported network must be selected",
     );
   }
 }
