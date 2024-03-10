@@ -93,7 +93,7 @@ const CreateDaoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // setDaoCreationData(creationParams);
     setTimeout(() => {
       setCreationProcessState(TransactionState.SUCCESS);
-    }, 3000);
+    }, 6000);
   };
 
   // Handler for modal button click

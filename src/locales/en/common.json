@@ -1149,7 +1149,7 @@
     },
     "build": {
       "title": "Build faster",
-      "description": "Use our governance plugins to build a DAO, dApp, or anything you can imagine on the Aragon OSx protocol.",
+      "description": "Use our governance plugins to build a DAO, dApp.",
       "actionLabel": "Coming soon"
     },
     "404": {

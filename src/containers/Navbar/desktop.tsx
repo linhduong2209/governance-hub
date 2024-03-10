@@ -87,29 +87,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
     <Container data-testid="navbar">
       <Menu>
         <Content>
-          {/* <DaoSelector
-            daoAddress={currentDao.ensDomain}
-            daoName={currentDao?.metadata?.name || currentDao?.ensDomain}
-            src={currentDao?.metadata?.avatar}
-            onClick={props.onDaoSelect}
-          /> */}
-          {/* <LinksWrapper>
-            {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
-              <NavLinks />
-            ) : (
-              <>
-                <NavlinksDropdown />
-                <Breadcrumb
-                  icon={icon}
-                  crumbs={breadcrumbs}
-                  onClick={path =>
-                    navigate(generatePath(path, { network, dao }))
-                  }
-                  tag={tag}
-                />
-              </>
-            )}
-          </LinksWrapper> */}
+          <p className="text-white text-3xl font-bold">Gover</p>
         </Content>
 
         <div className="flex gap-4">

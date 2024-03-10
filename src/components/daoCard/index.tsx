@@ -9,6 +9,7 @@ import { toDisplayEns } from "src/utils/library";
 import styled from "styled-components";
 import { CHAIN_METADATA } from "src/utils/constants";
 import { Dashboard } from "src/utils/paths";
+import { AvatarDao } from "src/@aragon/ods-old";
 
 export interface IDaoCardProps {
   dao: IDao;
@@ -24,7 +25,7 @@ export const DaoCard = (props: IDaoCardProps) => {
 
   const daoPage = generatePath(Dashboard, {
     network,
-    dao: toDisplayEns(ens) || daoAddress,
+    dao: toDisplayEns("dasdasdas") || daoAddress,
   });
   const daoUrl = useHref(daoPage);
 
@@ -39,12 +40,9 @@ export const DaoCard = (props: IDaoCardProps) => {
     <Container href={"/dao-detail"}>
       <DaoDataWrapper>
         <HeaderContainer>
-          {/* <AvatarDao daoName={name} src={logo && avatar} /> */}
+          <AvatarDao daoName={name} src={logo && avatar} />
           <div className="space-y-0.5 text-left xl:space-y-1">
             <Title>{name}</Title>
-            <p className="font-semibold text-neutral-500 ft-text-sm">
-              {toDisplayEns(ens)}
-            </p>
           </div>
         </HeaderContainer>
         <Description isDesktop={isDesktop}>{description}</Description>
