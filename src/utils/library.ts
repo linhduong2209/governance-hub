@@ -9,7 +9,7 @@ import {
   TokenVotingClient,
   VotingMode,
   WithdrawParams,
-} from '@aragon/sdk-client';
+} from "@aragon/sdk-client";
 import {
   DaoAction,
   DecodedApplyUpdateParams,
@@ -19,22 +19,22 @@ import {
   SupportedVersion,
   bytesToHex,
   resolveIpfsCid,
-} from '@aragon/sdk-client-common';
-import {fetchEnsAvatar} from '@wagmi/core';
-import {BigNumber, BigNumberish, constants, ethers, providers} from 'ethers';
+} from "@aragon/sdk-client-common";
+import { fetchEnsAvatar } from "@wagmi/core";
+import { BigNumber, BigNumberish, constants, ethers, providers } from "ethers";
 import {
   formatUnits as ethersFormatUnits,
   hexlify,
   isAddress,
-} from 'ethers/lib/utils';
-import {TFunction} from 'i18next';
+} from "ethers/lib/utils";
+import { TFunction } from "i18next";
 
-import {daoFactoryABI} from 'src/abis/daoFactoryABI';
-import {MultisigWalletField} from 'src/components/MultisigWallets/row';
-import {PluginTypes} from 'src/hooks/usePluginClient';
-import {getEtherscanVerifiedContract} from 'src/services/etherscanAPI';
-import {Token} from 'src/services/token/domain';
-import {IFetchTokenParams} from 'src/services/token/token-service.api';
+import { daoFactoryABI } from "src/abis/daoFactoryABI";
+import { MultisigWalletField } from "src/components/MultisigWallets/row";
+import { PluginTypes } from "src/hooks/usePluginClient";
+import { getEtherscanVerifiedContract } from "src/services/etherscanAPI";
+import { Token } from "src/services/token/domain";
+import { IFetchTokenParams } from "src/services/token/token-service.api";
 import {
   BIGINT_PATTERN,
   CHAIN_METADATA,
@@ -44,7 +44,7 @@ import {
   PERSONAL_SIGN_LABEL,
   PERSONAL_SIGN_SIGNATURE,
   SupportedNetworks,
-} from 'src/utils/constants';
+} from "src/utils/constants";
 import {
   Action,
   ActionAddAddress,
@@ -59,19 +59,19 @@ import {
   ActionWithdraw,
   ExternalActionInput,
   Input,
-} from 'src/utils/types';
-import {i18n} from '../../i18n.config';
-import {Abi, addABI, decodeMethod} from './abiDecoder';
-import {attachEtherNotice} from './contract';
-import {getTokenInfo} from './tokens';
-import {daoABI} from 'src/abis/daoABI';
+} from "src/utils/types";
+import { i18n } from "../../i18n.config";
+import { Abi, addABI, decodeMethod } from "./abiDecoder";
+import { attachEtherNotice } from "./contract";
+import { getTokenInfo } from "./tokens";
+import { daoABI } from "src/abis/daoABI";
 import {
   GaslessPluginVotingSettings,
   GaslessVotingClient,
-} from '@vocdoni/gasless-voting';
+} from "@vocdoni/gasless-voting";
 
 export function formatUnits(amount: BigNumberish, decimals: number) {
-  if (amount.toString().includes('.') || !decimals) {
+  if (amount.toString().includes(".") || !decimals) {
     return amount.toString();
   }
   return ethersFormatUnits(amount, decimals);
@@ -86,15 +86,15 @@ export function formatUnits(amount: BigNumberish, decimals: number) {
 export async function handleClipboardActions(
   currentValue: string,
   onChange: (value: string) => void,
-  alert: (label: string) => void
+  alert: (label: string) => void,
 ) {
   if (currentValue) {
     await navigator.clipboard.writeText(currentValue);
-    alert(i18n.t('alert.chip.inputCopied'));
+    alert(i18n.t("alert.chip.inputCopied"));
   } else {
     const textFromClipboard = await navigator.clipboard.readText();
     onChange(textFromClipboard);
-    alert(i18n.t('alert.chip.inputPasted'));
+    alert(i18n.t("alert.chip.inputPasted"));
   }
 }
 
@@ -104,7 +104,7 @@ export async function handleClipboardActions(
  * @returns whether the parameter is an empty string
  */
 export const isOnlyWhitespace = (value: string) => {
-  return value.trim() === '';
+  return value.trim() === "";
 };
 
 /**
@@ -115,13 +115,13 @@ export const isOnlyWhitespace = (value: string) => {
  */
 export const getUserFriendlyWalletLabel = (
   value: string,
-  t: TFunction<'translation', undefined>
+  t: TFunction<"translation", undefined>,
 ) => {
   switch (value) {
-    case '':
-      return '';
+    case "":
+      return "";
     case constants.AddressZero:
-      return t('labels.daoTreasury');
+      return t("labels.daoTreasury");
 
     default:
       return value;
@@ -129,7 +129,7 @@ export const getUserFriendlyWalletLabel = (
 };
 
 export const toHex = (num: number | string) => {
-  return '0x' + num.toString(16);
+  return "0x" + num.toString(16);
 };
 
 /**
@@ -147,40 +147,40 @@ export async function decodeWithdrawToAction(
   network: SupportedNetworks,
   to: string,
   value: bigint,
-  fetchToken: (params: IFetchTokenParams) => Promise<Token | null>
+  fetchToken: (params: IFetchTokenParams) => Promise<Token | null>,
 ): Promise<ActionWithdraw | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
   // FIXME remove custom type when NFT withdraws are supported
-  type DecodedWithdraw = WithdrawParams & {amount?: bigint};
+  type DecodedWithdraw = WithdrawParams & { amount?: bigint };
   const decoded = client.decoding.withdrawAction(
     to,
     value,
-    data
+    data,
   ) as DecodedWithdraw;
 
   if (!decoded) {
-    console.error('Unable to decode withdraw action');
+    console.error("Unable to decode withdraw action");
     return;
   }
 
   const tokenAddress =
-    decoded.type === 'native' ? constants.AddressZero : decoded?.tokenAddress;
+    decoded.type === "native" ? constants.AddressZero : decoded?.tokenAddress;
 
   try {
     const recipient = await Web3Address.create(
       provider,
-      decoded.recipientAddressOrEns
+      decoded.recipientAddressOrEns,
     );
 
     const [tokenInfo] = await Promise.all([
       getTokenInfo(
         tokenAddress,
         provider,
-        CHAIN_METADATA[network].nativeCurrency
+        CHAIN_METADATA[network].nativeCurrency,
       ),
     ]);
 
@@ -191,12 +191,12 @@ export async function decodeWithdrawToAction(
     });
 
     return {
-      amount: Number(formatUnits(decoded.amount ?? '0', tokenInfo.decimals)),
-      name: 'withdraw_assets',
+      amount: Number(formatUnits(decoded.amount ?? "0", tokenInfo.decimals)),
+      name: "withdraw_assets",
       to: recipient,
       tokenBalance: 0, // unnecessary?
       tokenAddress: tokenAddress,
-      tokenImgUrl: apiResponse?.imgUrl ?? '',
+      tokenImgUrl: apiResponse?.imgUrl ?? "",
       tokenName: tokenInfo.name,
       tokenPrice: apiResponse?.price ?? 0,
       tokenSymbol: tokenInfo.symbol,
@@ -204,7 +204,7 @@ export async function decodeWithdrawToAction(
       isCustomToken: false,
     };
   } catch (error) {
-    console.error('Error decoding withdraw action', error);
+    console.error("Error decoding withdraw action", error);
   }
 }
 
@@ -220,10 +220,10 @@ export async function decodeMintTokensToAction(
   daoTokenAddress: string,
   totalVotingWeight: bigint,
   provider: providers.Provider,
-  network: SupportedNetworks
+  network: SupportedNetworks,
 ): Promise<ActionMintToken | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
@@ -231,10 +231,10 @@ export async function decodeMintTokensToAction(
     //@sepehr2github is there any reason why we don't just pass
     // the token info into this function
     // get token info
-    const {symbol, decimals} = await getTokenInfo(
+    const { symbol, decimals } = await getTokenInfo(
       daoTokenAddress,
       provider,
-      CHAIN_METADATA[network].nativeCurrency
+      CHAIN_METADATA[network].nativeCurrency,
     );
 
     // decode and calculate new tokens count
@@ -242,7 +242,7 @@ export async function decodeMintTokensToAction(
 
     const decoded = data.map(action => {
       // decode action
-      const {amount, address}: MintTokenParams =
+      const { amount, address }: MintTokenParams =
         client.decoding.mintTokenAction(action);
 
       // update new tokens count
@@ -250,7 +250,7 @@ export async function decodeMintTokensToAction(
       return {
         web3Address: {
           address,
-          ensName: '',
+          ensName: "",
         },
         amount: Number(formatUnits(amount, decimals)),
       };
@@ -258,7 +258,7 @@ export async function decodeMintTokensToAction(
 
     //TODO: That's technically not correct. The minting could go to addresses who already hold that token.
     return Promise.resolve({
-      name: 'mint_tokens',
+      name: "mint_tokens",
       inputs: {
         mintTokensToWallets: decoded,
       },
@@ -271,7 +271,7 @@ export async function decodeMintTokensToAction(
       },
     });
   } catch (error) {
-    console.error('Error decoding mint token action', error);
+    console.error("Error decoding mint token action", error);
   }
 }
 
@@ -283,21 +283,21 @@ export async function decodeMintTokensToAction(
  */
 export async function decodeAddMembersToAction(
   data: Uint8Array | undefined,
-  client: MultisigClient | GaslessVotingClient | undefined
+  client: MultisigClient | GaslessVotingClient | undefined,
 ): Promise<ActionAddAddress | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
   const addresses = client.decoding.addAddressesAction(data)?.map(address => ({
     address,
-    ensName: '',
+    ensName: "",
   }));
 
   return Promise.resolve({
-    name: 'add_address',
-    inputs: {memberWallets: addresses},
+    name: "add_address",
+    inputs: { memberWallets: addresses },
   });
 }
 
@@ -309,22 +309,22 @@ export async function decodeAddMembersToAction(
  */
 export async function decodeRemoveMembersToAction(
   data: Uint8Array | undefined,
-  client: MultisigClient | GaslessVotingClient | undefined
+  client: MultisigClient | GaslessVotingClient | undefined,
 ): Promise<ActionRemoveAddress | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
   const addresses = client.decoding
     .removeAddressesAction(data)
     ?.map(address => ({
       address,
-      ensName: '',
+      ensName: "",
     }));
 
   return Promise.resolve({
-    name: 'remove_address',
-    inputs: {memberWallets: addresses},
+    name: "remove_address",
+    inputs: { memberWallets: addresses },
   });
 }
 
@@ -338,15 +338,15 @@ export async function decodePluginSettingsToAction(
   data: Uint8Array | undefined,
   client: TokenVotingClient | undefined,
   totalVotingWeight: bigint,
-  token?: Erc20TokenDetails
+  token?: Erc20TokenDetails,
 ): Promise<ActionUpdatePluginSettings | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
   return {
-    name: 'modify_token_voting_settings',
+    name: "modify_token_voting_settings",
     inputs: {
       ...client.decoding.updatePluginSettingsAction(data),
       token,
@@ -357,15 +357,15 @@ export async function decodePluginSettingsToAction(
 
 export function decodeMultisigSettingsToAction(
   data: Uint8Array | undefined,
-  client: MultisigClient
+  client: MultisigClient,
 ): ActionUpdateMultisigPluginSettings | undefined {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
   return {
-    name: 'modify_multisig_voting_settings',
+    name: "modify_multisig_voting_settings",
     inputs: client.decoding.updateMultisigVotingSettings(data),
   };
 }
@@ -374,15 +374,15 @@ export function decodeGaslessSettingsToAction(
   data: Uint8Array | undefined,
   client: GaslessVotingClient,
   totalVotingWeight: bigint,
-  token?: Erc20TokenDetails
+  token?: Erc20TokenDetails,
 ): ActionUpdateGaslessSettings | undefined {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
   return {
-    name: 'modify_gasless_voting_settings',
+    name: "modify_gasless_voting_settings",
     inputs: {
       ...client.decoding.updatePluginSettingsAction(data),
       token,
@@ -399,10 +399,10 @@ export function decodeGaslessSettingsToAction(
  */
 export async function decodeMetadataToAction(
   data: Uint8Array | undefined,
-  client: Client | undefined
+  client: Client | undefined,
 ): Promise<ActionUpdateMetadata | undefined> {
   if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
@@ -410,11 +410,11 @@ export async function decodeMetadataToAction(
     const decodedMetadata = await client.decoding.updateDaoMetadataAction(data);
 
     return {
-      name: 'modify_metadata',
+      name: "modify_metadata",
       inputs: decodedMetadata,
     };
   } catch (error) {
-    console.error('Error decoding update dao metadata action', error);
+    console.error("Error decoding update dao metadata action", error);
   }
 }
 
@@ -444,18 +444,18 @@ export async function decodeToExternalAction(
   network: SupportedNetworks,
   t: TFunction,
   ABI?: Abi[],
-  bypassAddress?: string
+  bypassAddress?: string,
 ): Promise<ActionExternalContract | undefined> {
   try {
     const etherscanData = await getEtherscanVerifiedContract(
       bypassAddress ?? action.to,
-      network
+      network,
     );
 
     // Check if the contract data was fetched successfully and if the contract has a verified source code
     if (
-      (etherscanData.status === '1' &&
-        etherscanData.result[0].ABI !== 'Contract source code not verified') ||
+      (etherscanData.status === "1" &&
+        etherscanData.result[0].ABI !== "Contract source code not verified") ||
       ABI
     ) {
       const contractAbi = ABI ?? JSON.parse(etherscanData.result[0].ABI);
@@ -468,7 +468,7 @@ export async function decodeToExternalAction(
         const notices = attachEtherNotice(
           etherscanData.result[0].SourceCode,
           etherscanData.result[0].ContractName,
-          contractAbi
+          contractAbi,
         ).find(notice => notice.name === decodedData.name);
 
         const inputs: ExternalActionInput[] = decodedData.params.map(param => {
@@ -476,7 +476,8 @@ export async function decodeToExternalAction(
             ...param,
             notice: notices?.inputs.find(
               // multiple inputs may have the same name
-              notice => notice.name === param.name && notice.type === param.type
+              notice =>
+                notice.name === param.name && notice.type === param.type,
             )?.notice,
           };
         });
@@ -484,16 +485,16 @@ export async function decodeToExternalAction(
         if (BigNumber.from(action.value).gt(0)) {
           inputs.push({
             ...getDefaultPayableAmountInput(t, network),
-            type: 'string',
+            type: "string",
             value: `${formatUnits(
               BigNumber.from(action.value),
-              CHAIN_METADATA[network].nativeCurrency.decimals
+              CHAIN_METADATA[network].nativeCurrency.decimals,
             )} ${CHAIN_METADATA[network].nativeCurrency.symbol}`,
           } as ExternalActionInput);
         }
 
         return {
-          name: 'wallet_connect_action',
+          name: "wallet_connect_action",
           contractAddress: action.to,
           contractName: etherscanData.result[0].ContractName,
           functionName: decodedData.name,
@@ -505,7 +506,7 @@ export async function decodeToExternalAction(
       } else {
         // verified but unable to be decoded
         return {
-          name: 'wallet_connect_action',
+          name: "wallet_connect_action",
           contractAddress: action.to,
           contractName: etherscanData.result[0].ContractName,
           functionName: getWCEncodedFunctionName(action, daoAddress),
@@ -516,7 +517,7 @@ export async function decodeToExternalAction(
       }
     } else {
       return {
-        name: 'wallet_connect_action',
+        name: "wallet_connect_action",
         contractAddress: action.to,
         contractName: action.to,
         functionName: getWCEncodedFunctionName(action, daoAddress),
@@ -526,7 +527,7 @@ export async function decodeToExternalAction(
       };
     }
   } catch (error) {
-    console.error('Failed to decode external contract action:', error);
+    console.error("Failed to decode external contract action:", error);
   }
 }
 
@@ -546,12 +547,12 @@ export async function decodeOSUpdateActions(
   t: TFunction,
   encodedAction: DaoAction,
   network: SupportedNetworks,
-  provider: ethers.providers.Provider
+  provider: ethers.providers.Provider,
 ) {
-  const translatedNetwork = translateToNetworkishName(network ?? 'unsupported');
+  const translatedNetwork = translateToNetworkishName(network ?? "unsupported");
 
-  if (translatedNetwork !== 'unsupported') {
-    const {daoFactoryAddress} =
+  if (translatedNetwork !== "unsupported") {
+    const { daoFactoryAddress } =
       LIVE_CONTRACTS[SupportedVersion.LATEST][translatedNetwork];
 
     let daoImplementationAddress: string | undefined;
@@ -561,14 +562,14 @@ export async function decodeOSUpdateActions(
       const contract = new ethers.Contract(
         daoFactoryAddress,
         daoFactoryABI,
-        provider
+        provider,
       );
 
       daoImplementationAddress = await contract.daoBase();
     } catch (error) {
       console.error(
-        'Error fetching the DAO base implementation address',
-        error
+        "Error fetching the DAO base implementation address",
+        error,
       );
     }
 
@@ -578,7 +579,7 @@ export async function decodeOSUpdateActions(
       network,
       t,
       daoImplementationAddress ? undefined : daoABI,
-      daoImplementationAddress
+      daoImplementationAddress,
     );
   }
 }
@@ -591,10 +592,10 @@ export async function decodeOSUpdateActions(
  */
 export function decodeUpgradeToAndCallAction(
   encodedAction: DaoAction | undefined,
-  client: Client | undefined
+  client: Client | undefined,
 ) {
   if (!client) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
@@ -602,25 +603,25 @@ export function decodeUpgradeToAndCallAction(
 
   try {
     const decoded: DaoUpdateDecodedParams = client.decoding.daoUpdateAction(
-      encodedAction.data
+      encodedAction.data,
     );
 
     const inputs = entriesToExternalContractActionProps(decoded);
     const functionName =
       client.decoding.findInterface(encodedAction.data)?.functionName ??
-      'upgradeToAndCall';
+      "upgradeToAndCall";
 
     return {
-      name: 'external_contract_action',
+      name: "external_contract_action",
       functionName,
-      contractName: 'DAO',
+      contractName: "DAO",
       contractAddress: encodedAction.to,
       inputs,
     } as ActionSCC;
   } catch (error) {
     console.error(
-      'decodeOsUpdateAction: failed to decode os_update action',
-      error
+      "decodeOsUpdateAction: failed to decode os_update action",
+      error,
     );
   }
 }
@@ -634,10 +635,10 @@ export function decodeUpgradeToAndCallAction(
  */
 export function decodeApplyUpdateAction(
   encodedAction: DaoAction,
-  client: Client | undefined
+  client: Client | undefined,
 ) {
   if (!client) {
-    console.error('SDK client is not initialized correctly');
+    console.error("SDK client is not initialized correctly");
     return;
   }
 
@@ -645,25 +646,25 @@ export function decodeApplyUpdateAction(
 
   try {
     const decoded: DecodedApplyUpdateParams = client.decoding.applyUpdateAction(
-      encodedAction.data
+      encodedAction.data,
     );
 
     const inputs = entriesToExternalContractActionProps(decoded);
     const functionName =
       client.decoding.findInterface(encodedAction.data)?.functionName ??
-      'applyUpdate';
+      "applyUpdate";
 
     return {
-      name: 'external_contract_action',
+      name: "external_contract_action",
       functionName,
-      contractName: 'PluginSetupProcessor',
+      contractName: "PluginSetupProcessor",
       contractAddress: encodedAction.to,
       inputs,
     } as ActionSCC;
   } catch (error) {
     console.error(
-      'decodeApplyUpdateAction: failed to decode apply_update action',
-      error
+      "decodeApplyUpdateAction: failed to decode apply_update action",
+      error,
     );
   }
 }
@@ -674,23 +675,23 @@ export function decodeApplyUpdateAction(
  * @returns An array of objects with name, type, and value properties.
  */
 function entriesToExternalContractActionProps(decoded: object) {
-  if (decoded != null && typeof decoded === 'object') {
+  if (decoded != null && typeof decoded === "object") {
     return Object.entries(decoded).map(([key, value]) => {
       let displayedValue = value;
       let displayedType = typeof value as string;
 
-      if (typeof value === 'object' && Object.keys(value).length === 0) {
-        displayedValue = ' ';
-      } else if (typeof value === 'string') {
-        displayedType = 'address';
+      if (typeof value === "object" && Object.keys(value).length === 0) {
+        displayedValue = " ";
+      } else if (typeof value === "string") {
+        displayedType = "address";
       }
 
-      return {name: key, type: displayedType, value: displayedValue};
+      return { name: key, type: displayedType, value: displayedValue };
     });
   }
 }
 
-const FLAG_TYPED_ARRAY = 'FLAG_TYPED_ARRAY';
+const FLAG_TYPED_ARRAY = "FLAG_TYPED_ARRAY";
 /**
  *  Custom serializer that includes fix for BigInt type
  * @param _ key; unused
@@ -707,7 +708,7 @@ export const customJSONReplacer = (_: string, value: unknown) => {
   }
 
   // bigint
-  if (typeof value === 'bigint') return `${value.toString()}n`;
+  if (typeof value === "bigint") return `${value.toString()}n`;
 
   return value;
 };
@@ -726,7 +727,7 @@ export const customJSONReviver = (_: string, value: any) => {
     return new Uint8Array(value.data);
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     // BigInt
     if (BIGINT_PATTERN.test(value)) return BigInt(value.slice(0, -1));
 
@@ -759,10 +760,10 @@ export function decodeVotingMode(mode: VotingMode): DecodedVotingMode {
  */
 export async function resolveDaoAvatarIpfsCid(
   client: Client | undefined,
-  avatar?: string | Blob
+  avatar?: string | Blob,
 ): Promise<string | undefined> {
   if (avatar) {
-    if (typeof avatar !== 'string') {
+    if (typeof avatar !== "string") {
       return URL.createObjectURL(avatar);
     } else if (/^ipfs/.test(avatar) && client) {
       try {
@@ -773,7 +774,7 @@ export async function resolveDaoAvatarIpfsCid(
 
         return URL.createObjectURL(imageBlob);
       } catch (err) {
-        console.warn('Error resolving DAO avatar IPFS Cid', err);
+        console.warn("Error resolving DAO avatar IPFS Cid", err);
       }
     } else {
       return avatar;
@@ -801,14 +802,14 @@ export function readFile(file: Blob): Promise<ArrayBuffer> {
  */
 export function removeUnchangedMinimumApprovalAction(
   actions: Action[],
-  pluginSettings: MultisigVotingSettings | GaslessPluginVotingSettings
+  pluginSettings: MultisigVotingSettings | GaslessPluginVotingSettings,
 ) {
   return actions.flatMap(action => {
     if (
-      (action.name === 'modify_multisig_voting_settings' &&
+      (action.name === "modify_multisig_voting_settings" &&
         Number(action.inputs.minApprovals) ===
           (pluginSettings as MultisigVotingSettings).minApprovals) ||
-      (action.name === 'modify_gasless_voting_settings' &&
+      (action.name === "modify_gasless_voting_settings" &&
         Number(action.inputs.minTallyApprovals) ===
           (pluginSettings as GaslessPluginVotingSettings).minTallyApprovals)
     )
@@ -832,29 +833,31 @@ export function sleepFor(time = 600) {
  */
 // TODO: Remove this Goerli based network conditions
 export const translateToAppNetwork = (
-  sdkNetwork: SdkContext['network']
+  sdkNetwork: SdkContext["network"],
 ): SupportedNetworks => {
   switch (sdkNetwork.name as SdkSupportedNetworks) {
     case SdkSupportedNetworks.ARBITRUM:
-      return 'arbitrum';
+      return "arbitrum";
     case SdkSupportedNetworks.ARBITRUM_GOERLI:
-      return 'arbitrum-goerli';
+      return "arbitrum-goerli";
     case SdkSupportedNetworks.BASE:
-      return 'base';
+      return "base";
     case SdkSupportedNetworks.BASE_GOERLI:
-      return 'base-goerli';
+      return "base-goerli";
     case SdkSupportedNetworks.MAINNET:
-      return 'ethereum';
+      return "ethereum";
     case SdkSupportedNetworks.GOERLI:
-      return 'goerli';
+      return "goerli";
     case SdkSupportedNetworks.MUMBAI:
-      return 'mumbai';
+      return "mumbai";
     case SdkSupportedNetworks.POLYGON:
-      return 'polygon';
+      return "polygon";
     case SdkSupportedNetworks.SEPOLIA:
-      return 'sepolia';
+      return "sepolia";
+    case SdkSupportedNetworks.FUJI:
+      return "fuji";
     default:
-      return 'unsupported';
+      return "unsupported";
   }
 };
 
@@ -864,34 +867,36 @@ export const translateToAppNetwork = (
  * @returns translated equivalent SDK supported network
  */
 export function translateToNetworkishName(
-  appNetwork: SupportedNetworks
-): SdkSupportedNetworks | 'unsupported' {
-  if (typeof appNetwork !== 'string') {
-    return 'unsupported';
+  appNetwork: SupportedNetworks,
+): String | "unsupported" {
+  if (typeof appNetwork !== "string") {
+    return "unsupported";
   }
 
   switch (appNetwork) {
-    case 'arbitrum':
+    case "arbitrum":
       return SdkSupportedNetworks.ARBITRUM;
-    case 'arbitrum-goerli':
+    case "arbitrum-goerli":
       return SdkSupportedNetworks.ARBITRUM_GOERLI;
-    case 'base':
+    case "base":
       return SdkSupportedNetworks.BASE;
-    case 'base-goerli':
+    case "base-goerli":
       return SdkSupportedNetworks.BASE_GOERLI;
-    case 'ethereum':
+    case "ethereum":
       return SdkSupportedNetworks.MAINNET;
-    case 'goerli':
+    case "goerli":
       return SdkSupportedNetworks.GOERLI;
-    case 'mumbai':
+    case "mumbai":
       return SdkSupportedNetworks.MUMBAI;
-    case 'polygon':
+    case "polygon":
       return SdkSupportedNetworks.POLYGON;
-    case 'sepolia':
+    case "sepolia":
       return SdkSupportedNetworks.SEPOLIA;
+    case "fuji":
+      return SdkSupportedNetworks.FUJI;
   }
 
-  return 'unsupported';
+  return "unsupported";
 }
 
 /**
@@ -900,41 +905,41 @@ export function translateToNetworkishName(
  * @returns ens name or empty string if ens name is null.dao.eth
  */
 export function toDisplayEns(ensName?: string) {
-  if (!ensName || ensName === 'null.dao.eth') return '';
+  if (!ensName || ensName === "null.dao.eth") return "";
 
-  if (!ensName.includes('.dao.eth')) return `${ensName}.dao.eth`;
+  if (!ensName.includes(".dao.eth")) return `${ensName}.dao.eth`;
   return ensName;
 }
 
 export function getDefaultPayableAmountInput(
   t: TFunction,
-  network: SupportedNetworks
+  network: SupportedNetworks,
 ): Input {
   return {
     name: getDefaultPayableAmountInputName(t),
-    type: 'uint256',
-    notice: t('scc.inputPayableAmount.description', {
+    type: "uint256",
+    notice: t("scc.inputPayableAmount.description", {
       tokenSymbol: CHAIN_METADATA[network].nativeCurrency.symbol,
     }),
   };
 }
 
 export function getDefaultPayableAmountInputName(t: TFunction) {
-  return t('scc.inputPayableAmount.label');
+  return t("scc.inputPayableAmount.label");
 }
 
 export function getWCNativeToField(
   t: TFunction,
   value: string,
-  network: SupportedNetworks
+  network: SupportedNetworks,
 ) {
   return {
-    name: t('newProposal.configureActionsEncoded.inputValueLabel'),
-    type: 'string',
-    notice: t('newProposal.configureActionsEncoded.inputValueDesc'),
+    name: t("newProposal.configureActionsEncoded.inputValueLabel"),
+    type: "string",
+    notice: t("newProposal.configureActionsEncoded.inputValueDesc"),
     value: `${formatUnits(
       BigNumber.from(value),
-      CHAIN_METADATA[network].nativeCurrency.decimals
+      CHAIN_METADATA[network].nativeCurrency.decimals,
     )} ${CHAIN_METADATA[network].nativeCurrency.symbol}`,
   };
 }
@@ -942,25 +947,25 @@ export function getWCNativeToField(
 export function getEncodedActionInputs(
   action: DaoAction,
   network: SupportedNetworks,
-  t: TFunction
+  t: TFunction,
 ) {
   return Object.keys(action).flatMap(fieldName => {
     switch (fieldName) {
-      case 'value':
+      case "value":
         return getWCNativeToField(t, action.value.toString(), network);
-      case 'to':
+      case "to":
         return {
-          name: t('newProposal.configureActionsEncoded.inputDestLabel'),
-          type: 'address',
-          notice: t('newProposal.configureActionsEncoded.inputDestDesc'),
+          name: t("newProposal.configureActionsEncoded.inputDestLabel"),
+          type: "address",
+          notice: t("newProposal.configureActionsEncoded.inputDestDesc"),
           value: action[fieldName],
         };
 
-      case 'data':
+      case "data":
         return {
-          name: t('newProposal.configureActionsEncoded.inputDataLabel'),
-          type: 'encodedData',
-          notice: t('newProposal.configureActionsEncoded.inputDataDesc'),
+          name: t("newProposal.configureActionsEncoded.inputDataLabel"),
+          type: "encodedData",
+          notice: t("newProposal.configureActionsEncoded.inputDataDesc"),
           value: action[fieldName],
         };
       default:
@@ -988,7 +993,7 @@ export function getWCEncodedFunctionName(name: string): string;
  */
 export function getWCEncodedFunctionName(
   action: DaoAction,
-  daoAddress: string
+  daoAddress: string,
 ): string;
 
 /**
@@ -1004,11 +1009,11 @@ export function getWCEncodedFunctionName(
  */
 export function getWCEncodedFunctionName(
   actionOrName: DaoAction | string,
-  daoAddress?: string
+  daoAddress?: string,
 ): string {
   // handle string name
-  if (typeof actionOrName === 'string') {
-    if (actionOrName === 'eth_sendTransaction') {
+  if (typeof actionOrName === "string") {
+    if (actionOrName === "eth_sendTransaction") {
       return ETH_TRANSACTION_CALL_LABEL;
     } else {
       return PERSONAL_SIGN_LABEL;
@@ -1017,14 +1022,14 @@ export function getWCEncodedFunctionName(
     // handle DaoAction
     if (!daoAddress) {
       throw new Error(
-        'daoAddress is required when actionOrName is a DaoAction'
+        "daoAddress is required when actionOrName is a DaoAction",
       );
     }
 
     // Note: unless the data field is decoded, we are never 100% sure of what the
     // method name is, but these checks can help determine whether the transaction
     // is a personal_sign or eth_call (the only ones supported by the current wc interceptor)
-    const {to, data} = actionOrName;
+    const { to, data } = actionOrName;
 
     // the encoded message hash for personal_sign call is 32 bytes
     const isPersonalSignLength = data.length === PERSONAL_SIGN_BYTES;
@@ -1034,7 +1039,7 @@ export function getWCEncodedFunctionName(
 
     // the 'to' field of the personal_sign call is usually the wallet address or set to '0x'
     const toIsEmptyOrOwnAddress =
-      to.toLowerCase() === daoAddress.toLowerCase() || to === '0x';
+      to.toLowerCase() === daoAddress.toLowerCase() || to === "0x";
 
     return isPersonalSignLength &&
       toIsEmptyOrOwnAddress &&
@@ -1055,7 +1060,7 @@ export class Web3Address {
   constructor(
     provider?: providers.Provider,
     address?: string,
-    ensName?: string
+    ensName?: string,
   ) {
     // Initialize the provider, address and ENS name
     this._provider = provider;
@@ -1066,12 +1071,12 @@ export class Web3Address {
   // Static method to create an Address instance
   static async create(
     provider?: providers.Provider,
-    addressOrEns?: {address?: string; ensName?: string} | string
+    addressOrEns?: { address?: string; ensName?: string } | string,
   ) {
     // Determine whether we are dealing with an address, an ENS name or an object containing both
     let addressToSet: string | undefined;
     let ensNameToSet: string | undefined;
-    if (typeof addressOrEns === 'string') {
+    if (typeof addressOrEns === "string") {
       // If input is a string, treat it as address if it matches address structure, else treat as ENS name
       if (isAddress(addressOrEns)) {
         addressToSet = addressOrEns;
@@ -1085,14 +1090,14 @@ export class Web3Address {
 
     // If no provider is given and no address is provided, throw an error
     if (!provider && !addressToSet) {
-      throw new Error('If no provider is given, address must be provided');
+      throw new Error("If no provider is given, address must be provided");
     }
 
     // Create a new Address instance
     const addressObj = new Web3Address(
       provider,
       addressToSet?.toLowerCase(),
-      ensNameToSet?.toLowerCase()
+      ensNameToSet?.toLowerCase(),
     );
 
     // If a provider is available, try to resolve the missing piece (address or ENS name)
@@ -1126,7 +1131,7 @@ export class Web3Address {
     } catch (error) {
       // this means we've an issue fetching ens related data; return
       // the provided instance regardless
-      console.warn('Error resolving ENS subdomain or avatar');
+      console.warn("Error resolving ENS subdomain or avatar");
       return addressObj;
     }
   }
@@ -1164,23 +1169,23 @@ export class Web3Address {
   }
 
   toString() {
-    return {address: this._address, ensName: this.ensName};
+    return { address: this._address, ensName: this.ensName };
   }
 }
 
 export function shortenAddress(address: string | null) {
-  if (address === null) return '';
+  if (address === null) return "";
   if (isAddress(address))
     return (
       address.substring(0, 6) +
-      '…' +
+      "…" +
       address.substring(address.length - 4, address.length)
     );
   else return address;
 }
 
 export function capitalizeFirstLetter(str: string) {
-  if (typeof str !== 'string' || str.length === 0) {
+  if (typeof str !== "string" || str.length === 0) {
     return str; // Return the input if it's not a string or an empty string
   }
 
@@ -1202,18 +1207,18 @@ export function capitalizeFirstLetter(str: string) {
  */
 export function parseWCIconUrl(
   dAppUrl: string,
-  icon: string | undefined
+  icon: string | undefined,
 ): string | undefined {
   let parsedUrl = icon;
 
-  if (icon && icon.startsWith('<')) {
+  if (icon && icon.startsWith("<")) {
     const match = icon.match(/<image href="([^"]*)"/);
     if (match && match[1]) {
       parsedUrl = match[1];
     }
   }
 
-  if (parsedUrl && parsedUrl.startsWith('/')) {
+  if (parsedUrl && parsedUrl.startsWith("/")) {
     parsedUrl = `${dAppUrl}${parsedUrl}`;
   }
 
@@ -1228,16 +1233,16 @@ export function parseWCIconUrl(
  * @returns Returns true if the value exists and isn't an empty string, otherwise false.
  */
 export function hasValue(value: unknown): boolean {
-  if (typeof value === 'string') {
-    return value.trim() !== '';
+  if (typeof value === "string") {
+    return value.trim() !== "";
   }
   return value !== undefined && value !== null;
 }
 
 export function clearWagmiCache(): void {
-  localStorage.removeItem('wagmi.cache');
-  localStorage.removeItem('wagmi.store');
-  localStorage.removeItem('wagmi.wallet');
+  localStorage.removeItem("wagmi.cache");
+  localStorage.removeItem("wagmi.store");
+  localStorage.removeItem("wagmi.wallet");
 }
 
 /**
@@ -1249,13 +1254,13 @@ export function clearWagmiCache(): void {
  */
 export const walletInWalletList = (
   wallet: Web3Address,
-  walletsList: MultisigWalletField[]
+  walletsList: MultisigWalletField[],
 ) =>
   walletsList?.some(
     w =>
       (w.address &&
         w.address.toLowerCase() === wallet.address?.toLowerCase()) ||
-      (w.ensName && w.ensName.toLowerCase() === wallet.ensName?.toLowerCase())
+      (w.ensName && w.ensName.toLowerCase() === wallet.ensName?.toLowerCase()),
   );
 
 /**
@@ -1270,8 +1275,8 @@ export const walletInWalletList = (
 export function compareVersions(version1: string, version2: string): number {
   if (!version1 || !version2) return 0;
 
-  const v1 = version1.split('.').map(Number);
-  const v2 = version2.split('.').map(Number);
+  const v1 = version1.split(".").map(Number);
+  const v2 = version2.split(".").map(Number);
 
   for (let i = 0; i < v1.length; i++) {
     if (v1[i] > v2[i]) {
@@ -1294,18 +1299,18 @@ export function compareVersions(version1: string, version2: string): number {
 export function getPluginRepoAddress(
   network: SupportedNetworks,
   pluginType: PluginTypes,
-  protocolVersion: [number, number, number]
+  protocolVersion: [number, number, number],
 ) {
   const translatedNetwork = translateToNetworkishName(network);
   if (
-    translatedNetwork !== 'unsupported' &&
+    translatedNetwork !== "unsupported" &&
     SupportedNetworksArray.includes(translatedNetwork)
   ) {
-    return pluginType === 'multisig.plugin.dao.eth'
-      ? LIVE_CONTRACTS[protocolVersion?.join('.') as SupportedVersion]?.[
+    return pluginType === "multisig.plugin.dao.eth"
+      ? LIVE_CONTRACTS[protocolVersion?.join(".") as SupportedVersion]?.[
           translatedNetwork
         ].multisigRepoAddress
-      : LIVE_CONTRACTS[protocolVersion?.join('.') as SupportedVersion]?.[
+      : LIVE_CONTRACTS[protocolVersion?.join(".") as SupportedVersion]?.[
           translatedNetwork
         ].tokenVotingRepoAddress;
   }

@@ -1,8 +1,8 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Carousel as ReactResponsiveCarousel } from "react-responsive-carousel";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 import CTACard from "src/components/CTACard";
 import { CTACards } from "src/components/CTACard/data";
@@ -19,39 +19,25 @@ const Carousel: React.FC = () => {
   // this prevents the user from entering the creation
   // flow without a wallet, but this should be updated
   // when the rest of CTAs are enabled
-  const handleCTAClick = () => {};
-  // useCallback(
-  //   (path: string) => {
-  //     if (path === "/create") {
-  //       trackEvent("landing_createDaoBtn_clicked");
-  //     }
+  const handleCTAClick = useCallback(
+    (path: string) => {
+      if (path === "/create") {
+        trackEvent("landing_createDaoBtn_clicked");
+      }
 
-  //     if (path.startsWith("http")) {
-  //       window.open(path, "_blank");
-  //       return;
-  //     }
+      if (path.startsWith("http")) {
+        window.open(path, "_blank");
+        return;
+      }
 
-  //     if (isConnected) {
-  //       navigate(path);
-  //       return;
-  //     }
+      navigate(path);
+    },
+    [navigate]
+  );
 
-  //     methods
-  //       .selectWallet()
-  //       .then(() => {
-  //         navigate(path);
-  //       })
-  //       .catch((err: Error) => {
-  //         // To be implemented: maybe add an error message when
-  //         // the error is different from closing the window
-  //         console.error(err);
-  //       });
-  //   },
-  //   [isConnected, methods, navigate]
-  // )
   const ctaList = useMemo(
     () =>
-      CTACards.map((card) => (
+      CTACards.map(card => (
         <CTACard
           key={card.title}
           {...card}
@@ -113,19 +99,19 @@ const Carousel: React.FC = () => {
 
 const DesktopCTA = styled.div.attrs({
   className:
-    "relative flex xl:flex-row flex-col mb-8 space-x-6 max-w-fit -mt-32",
+    "relative flex xl:flex-row flex-col mb-8 space-x-6 max-w-fit -mt-32"
 })``;
 
 const MobileCTA = styled.div.attrs({
-  className: "relative -mt-[104px] mb-10 -mx-4 md:-mx-6 xl:mx-0",
+  className: "relative -mt-[104px] mb-10 -mx-4 md:-mx-6 xl:mx-0"
 })``;
 
 export const ActiveIndicator = styled.li.attrs({
-  className: "inline-block bg-primary-500 h-1.5 w-12 ml-2 rounded-xl",
+  className: "inline-block bg-primary-500 h-1.5 w-12 ml-2 rounded-xl"
 })``;
 
 export const Indicator = styled.li.attrs({
-  className: "inline-block bg-neutral-200 h-1.5 w-4 ml-2 rounded-xl",
+  className: "inline-block bg-neutral-200 h-1.5 w-4 ml-2 rounded-xl"
 })``;
 
 export const StyledCarousel = styled(ReactResponsiveCarousel).attrs({})`

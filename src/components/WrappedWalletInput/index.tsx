@@ -1,12 +1,19 @@
-import React, {Ref, forwardRef, useCallback, useEffect, useState} from 'react';
-import {InputValue, WalletInput, WalletInputProps} from 'src/@aragon/ods-old';
-import {AlertInline} from '@aragon/ods';
-import {useTranslation} from 'react-i18next';
+import { AlertInline } from "@aragon/ods";
+import React, {
+  Ref,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
+import { useTranslation } from "react-i18next";
+import { InputValue, WalletInput, WalletInputProps } from "src/@aragon/ods-old";
 
-import {useAlertContext} from 'src/context/alert';
-import {useNetwork} from 'src/context/network';
-import {useProviders} from 'src/context/providers';
-import {CHAIN_METADATA, ENS_SUPPORTED_NETWORKS} from 'src/utils/constants/chains';
+import { useNetwork } from "src/context/network";
+import {
+  CHAIN_METADATA,
+  ENS_SUPPORTED_NETWORKS
+} from "src/utils/constants/chains";
 
 // delay (in ms) to remove the resolved/verified labels
 const RESOLVED_LABEL_DELAY = 1000;
@@ -14,8 +21,8 @@ const RESOLVED_LABEL_DELAY = 1000;
 type WrappedWalletInputProps = {
   onChange: (value: InputValue) => void;
   error?: string;
-  resolveLabels?: 'enabled' | 'disabled' | 'onBlur';
-} & Omit<WalletInputProps, 'onValueChange'>;
+  resolveLabels?: "enabled" | "disabled" | "onBlur";
+} & Omit<WalletInputProps, "onValueChange">;
 
 /**
  * This component bootstraps the WalletInput from the ui-components
@@ -26,17 +33,17 @@ export const WrappedWalletInput = forwardRef(
     {
       onChange,
       error,
-      resolveLabels = 'disabled',
+      resolveLabels = "disabled",
       ...props
     }: WrappedWalletInputProps,
     ref: Ref<HTMLTextAreaElement> | undefined
   ) => {
     const areaRef = React.useRef<HTMLTextAreaElement>(null);
 
-    const {t} = useTranslation();
-    const {alert} = useAlertContext();
-    const {network} = useNetwork();
-    const {api: provider} = useProviders();
+    const { t } = useTranslation();
+    // const {alert} = useAlertContext();
+    const { network } = useNetwork();
+    // const { api: provider } = useProviders();
 
     const [isFocused, setIsFocused] = useState(false);
     const [ensResolved, setEnsResolved] = useState(false);
@@ -46,10 +53,10 @@ export const WrappedWalletInput = forwardRef(
 
     const inputValue = props.value.ensName || props.value.address;
     const isEnsAttemptedInput =
-      !!inputValue && inputValue.toLowerCase().includes('.eth');
+      !!inputValue && inputValue.toLowerCase().includes(".eth");
 
     const showResolvedLabels =
-      resolveLabels === 'enabled' || resolveLabels === 'onBlur';
+      resolveLabels === "enabled" || resolveLabels === "onBlur";
 
     /*************************************************
      *                    Effects                    *
@@ -62,21 +69,21 @@ export const WrappedWalletInput = forwardRef(
       const textareaElement = areaRef.current;
 
       if (textareaElement) {
-        textareaElement.addEventListener('focus', handleFocus);
-        textareaElement.addEventListener('blur', handleBlur);
+        textareaElement.addEventListener("focus", handleFocus);
+        textareaElement.addEventListener("blur", handleBlur);
       }
 
       return () => {
         if (textareaElement) {
-          textareaElement.removeEventListener('focus', handleFocus);
-          textareaElement.removeEventListener('blur', handleBlur);
+          textareaElement.removeEventListener("focus", handleFocus);
+          textareaElement.removeEventListener("blur", handleBlur);
         }
       };
     }, []);
 
     // resolve the forwarded ref and local ref
     useEffect(() => {
-      if (typeof ref === 'function') {
+      if (typeof ref === "function") {
         ref(areaRef.current);
       } else if (ref) {
         (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current =
@@ -92,7 +99,7 @@ export const WrappedWalletInput = forwardRef(
     }, []);
 
     useEffect(() => {
-      if (!isFocused && resolveLabels === 'onBlur') {
+      if (!isFocused && resolveLabels === "onBlur") {
         removeLabels();
       }
     }, [isFocused, removeLabels, resolveLabels]);
@@ -100,15 +107,15 @@ export const WrappedWalletInput = forwardRef(
     /*************************************************
      *             Callbacks and Handlers            *
      *************************************************/
-    const resolveEnsNameFromAddress = useCallback(
-      (address: string | Promise<string>) => provider.lookupAddress(address),
-      [provider]
-    );
+    // const resolveEnsNameFromAddress = useCallback(
+    //   (address: string | Promise<string>) => provider.lookupAddress(address),
+    //   [provider]
+    // );
 
-    const resolveAddressFromEnsName = useCallback(
-      (ensName: string | Promise<string>) => provider.resolveName(ensName),
-      [provider]
-    );
+    // const resolveAddressFromEnsName = useCallback(
+    //   (ensName: string | Promise<string>) => provider.resolveName(ensName),
+    //   [provider]
+    // );
 
     const handleEnsResolved = useCallback(() => {
       if (showResolvedLabels && isFocused) {
@@ -130,38 +137,34 @@ export const WrappedWalletInput = forwardRef(
     return (
       <>
         <WalletInput
-          blockExplorerURL={CHAIN_METADATA[network].explorer + 'address/'}
+          blockExplorerURL={CHAIN_METADATA[network].explorer + "address/"}
           onAddressValidated={handleAddressValidated}
           onEnsResolved={handleEnsResolved}
-          onClearButtonClick={() => alert(t('alert.chip.inputCleared'))}
-          onCopyButtonClick={() => alert(t('alert.chip.inputCopied'))}
-          onPasteButtonClick={() => alert(t('alert.chip.inputPasted'))}
+          onClearButtonClick={() => console.log(t("alert.chip.inputCleared"))}
+          onCopyButtonClick={() => console.log(t("alert.chip.inputCopied"))}
+          onPasteButtonClick={() => console.log(t("alert.chip.inputPasted"))}
           onValueChange={onChange}
           placeholder={
-            networkSupportsENS ? t('inputWallet.placeholder') : '0x…'
+            networkSupportsENS ? t("inputWallet.placeholder") : "0x…"
           }
-          {...(networkSupportsENS && {
-            resolveEnsNameFromAddress,
-            resolveAddressFromEnsName,
-          })}
           {...props}
           ref={areaRef}
         />
         {showResolvedLabels && !networkSupportsENS && isEnsAttemptedInput && (
           <AlertInline
-            message={t('inputWallet.ensAlertWarning')}
+            message={t("inputWallet.ensAlertWarning")}
             variant="warning"
           />
         )}
         {showResolvedLabels && !error && ensResolved && (
           <AlertInline
-            message={t('inputWallet.ensAlertSuccess')}
+            message={t("inputWallet.ensAlertSuccess")}
             variant="success"
           />
         )}
         {showResolvedLabels && !error && addressValidated && (
           <AlertInline
-            message={t('inputWallet.addressAlertSuccess')}
+            message={t("inputWallet.addressAlertSuccess")}
             variant="success"
           />
         )}
@@ -171,4 +174,4 @@ export const WrappedWalletInput = forwardRef(
   }
 );
 
-WrappedWalletInput.displayName = 'WrappedWalletInput';
+WrappedWalletInput.displayName = "WrappedWalletInput";

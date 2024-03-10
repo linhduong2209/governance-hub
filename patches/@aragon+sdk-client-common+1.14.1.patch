@@ -1,0 +1,14 @@
+diff --git a/node_modules/@aragon/sdk-client-common/dist/types.d.ts b/node_modules/@aragon/sdk-client-common/dist/types.d.ts
+index dc53ab9..b029b61 100644
+--- a/node_modules/@aragon/sdk-client-common/dist/types.d.ts
++++ b/node_modules/@aragon/sdk-client-common/dist/types.d.ts
+@@ -20,7 +20,8 @@ export declare enum SupportedNetwork {
+     SEPOLIA = "sepolia",
+     ARBITRUM = "arbitrum",
+     ARBITRUM_GOERLI = "arbitrumGoerli",
+-    ARBITRUM_SEPOLIA = "arbitrumSepolia"
++    ARBITRUM_SEPOLIA = "arbitrumSepolia",
++    FUJI = "fuji"
+ }
+ export declare const SupportedNetworksArray: SupportedNetwork[];
+ /**

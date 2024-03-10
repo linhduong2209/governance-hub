@@ -1,9 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   presets: [require("@aragon/ods/tailwind.config")],
-  content: ["./src/**/*.{tsx,html}", "./node_modules/@aragon/ods/**/*.js"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@aragon/ods/**/*.js",
+  ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#E84142",
+        button: "#EEEDED",
+        white: "#FFFFFF",
+        secondary: "#FFF3C7",
+      },
+    },
   },
   plugins: [
     require("tailwindcss-fluid-type")({

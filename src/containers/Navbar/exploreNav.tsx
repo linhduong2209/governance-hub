@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { ButtonWallet, useScreen } from "src/@aragon/ods-old";
 import { Button, IconType } from "@aragon/ods";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { ButtonWallet, useScreen } from "src/@aragon/ods-old";
+import styled from "styled-components";
 
-import { useWallet } from "src/hooks/useWallet";
 import Logo from "public/logo.svg";
+import { GridLayout, HeaderContainer } from "src/components/Layout";
 import { useGlobalModalContext } from "src/context/globalModals";
-import { Container, GridLayout } from "src/components/Layout";
+import { useWallet } from "src/hooks/useWallet";
 import { FEEDBACK_FORM } from "src/utils/constants";
 
 const ExploreNav: React.FC = () => {
@@ -36,7 +36,7 @@ const ExploreNav: React.FC = () => {
   };
 
   return (
-    <Container data-testid="navbar">
+    <HeaderContainer data-testid="navbar">
       <Menu>
         <GridLayout>
           <LeftContent>
@@ -78,7 +78,7 @@ const ExploreNav: React.FC = () => {
           </RightContent>
         </GridLayout>
       </Menu>
-    </Container>
+    </HeaderContainer>
   );
 };
 

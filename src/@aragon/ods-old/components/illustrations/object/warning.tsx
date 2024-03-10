@@ -1,7 +1,6 @@
-import React from 'react';
-import {type IconType} from '../../icons';
+import { type IconType } from "../../icons";
 
-export const Warning: IconType = ({height = 160, width = 160, ...props}) => {
+export const Warning: IconType = ({ height = 160, width = 160, ...props }) => {
   return (
     <svg
       width={width}
@@ -18,11 +17,11 @@ export const Warning: IconType = ({height = 160, width = 160, ...props}) => {
       />
       <path
         d="M85.6907 64.6577C85.8965 61.0642 83.0077 58 79.5 58C75.9922 58 73.1036 60.9587 73.3094 64.6577L74.5487 89.1744C74.6517 91.9225 76.8185 94.0358 79.5008 94.0358C82.1831 94.0358 84.3499 91.9217 84.4528 89.1744L85.6907 64.6577Z"
-        fill="#3164FA"
+        fill="#E84142"
       />
       <path
         d="M73 105.342C73 109.041 75.8886 112 79.5 112C83.1112 112 86 109.041 86 105.342C86 101.643 83.1112 98.6846 79.5 98.6846C75.8888 98.6846 73 101.643 73 105.342Z"
-        fill="#3164FA"
+        fill="#E84142"
       />
     </svg>
   );

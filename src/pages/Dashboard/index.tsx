@@ -1,17 +1,23 @@
+import Carousel from "src/containers/Carousel";
+import Navbar from "src/containers/Navbar";
 import styled from "styled-components";
 import { GridLayout } from "../../components/Layout";
 import Hero from "../../containers/hero";
+import { DaoExplorer } from "src/containers/daoExplore/daoExplore";
 
 export const Dashboard: React.FC = () => {
   return (
     <>
-      <Hero />
-      <GridLayout>
-        <ContentWrapper>
-          {/* <Carousel />
-          <DaoExplorer /> */}
-        </ContentWrapper>
-      </GridLayout>
+      <Navbar />
+      <div className="min-h-screen">
+        <Hero />
+        <GridLayout>
+          <ContentWrapper>
+            <Carousel />
+            <DaoExplorer />
+          </ContentWrapper>
+        </GridLayout>
+      </div>
     </>
   );
 };

@@ -1,16 +1,15 @@
-import { Breadcrumb, IlluObject } from "src/@aragon/ods-old";
+import { Button, IconType } from "@aragon/ods";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import { Button, IconType } from "@aragon/ods";
+import { Breadcrumb, IlluObject } from "src/@aragon/ods-old";
 import CardWithImage from "src/components/CardWithImage";
 import { useFormStep } from "src/components/FullScreenStepper";
 import useScreen from "src/hooks/useScreen";
 import { trackEvent } from "src/services/analytics";
+import styled from "styled-components";
 
-import { ActiveIndicator, Indicator, StyledCarousel } from "../Carousel";
 import { i18n } from "../../../i18n.config";
-
+import { ActiveIndicator, Indicator, StyledCarousel } from "../Carousel";
 
 type OverviewDAOHeaderProps = {
   navLabel: string;
@@ -21,7 +20,7 @@ type OverviewDAOHeaderProps = {
 export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
   navLabel,
   returnPath,
-  onExitButtonClick,
+  onExitButtonClick
 }) => {
   const { t } = useTranslation();
   const { next } = useFormStep();
@@ -32,12 +31,12 @@ export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
   };
 
   return (
-    <div className="bg-neutral-0 p-4 md:rounded-xl md:p-12">
+    <div className="bg-white p-4 md:rounded-xl md:p-12">
       <div className="mb-6 xl:hidden">
         <Breadcrumb
           crumbs={{
             label: navLabel,
-            path: returnPath,
+            path: returnPath
           }}
           onClick={onExitButtonClick}
         />
@@ -62,8 +61,7 @@ export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
         /> */}
           <Button
             size="lg"
-            variant="primary"
-            className="w-full whitespace-nowrap md:w-max"
+            className="w-full whitespace-nowrap md:w-max bg-primary"
             iconRight={IconType.CHEVRON_RIGHT}
             onClick={handleSetupClick}
           >
@@ -99,7 +97,7 @@ const OverviewCards = [
     imgSrc={<IlluObject object="settings" />}
     caption={i18n.t("createDAO.step4.label")}
     title={i18n.t("createDAO.step4.shortTitle")}
-  />,
+  />
 ];
 
 export const OverviewDAOStep: React.FC = () => {
@@ -158,5 +156,5 @@ export const OverviewDAOStep: React.FC = () => {
 };
 
 const MobileCTA = styled.div.attrs({
-  className: "mb-10 -mx-4 md:-mx-6 xl:mx-0",
+  className: "mb-10 -mx-4 md:-mx-6 xl:mx-0"
 })``;

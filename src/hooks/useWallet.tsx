@@ -8,7 +8,7 @@ import {
   useBalance,
   useDisconnect,
   useEnsAvatar,
-  useEnsName
+  useEnsName,
 } from "wagmi";
 import { avalancheFuji } from "wagmi/chains";
 
@@ -40,7 +40,7 @@ export interface IUseWallet {
   methods: {
     selectWallet: (
       cacheProvider?: boolean,
-      networkId?: string
+      networkId?: string,
     ) => Promise<void>;
     disconnect: () => Promise<void>;
   };
@@ -56,9 +56,9 @@ export const useWallet = (): IUseWallet => {
     createConfig({
       chains: [avalancheFuji],
       transports: {
-        [avalancheFuji.id]: http()
-      }
-    })
+        [avalancheFuji.id]: http(),
+      },
+    }),
   );
   const signer = useEthersSigner(chainId);
 
@@ -67,19 +67,19 @@ export const useWallet = (): IUseWallet => {
       ["mumbai", "polygon"].includes(network)
         ? aragonGateway.getRpcProvider(network)
         : signer?.provider,
-    [network, signer?.provider]
+    [network, signer?.provider],
   );
 
   const { data: wagmiBalance } = useBalance({
-    address
+    address,
   });
 
   const { data: ensName } = useEnsName({
-    address
+    address,
   });
 
   const { data: ensAvatarUrl } = useEnsAvatar({
-    name: ensName
+    name: ensName,
   });
 
   const balance: bigint | null = wagmiBalance?.value || null;
@@ -93,7 +93,7 @@ export const useWallet = (): IUseWallet => {
         openWeb3Modal();
         resolve({
           networkId,
-          cacheProvider
+          cacheProvider,
         });
       });
     },
@@ -102,7 +102,7 @@ export const useWallet = (): IUseWallet => {
         disconnect();
         resolve(true);
       });
-    }
+    },
   };
 
   return {
@@ -119,6 +119,6 @@ export const useWallet = (): IUseWallet => {
     isModalOpen: isOpen,
     isOnWrongNetwork,
     methods,
-    network
+    network,
   };
 };

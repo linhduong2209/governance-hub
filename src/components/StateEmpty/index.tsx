@@ -1,13 +1,13 @@
 import { Button } from "@aragon/ods";
+import { IButtonBaseProps } from "@aragon/ods/dist/types/src/components/button/button.api";
+import React, { ButtonHTMLAttributes } from "react";
 import {
   IlluHumanProps,
   IlluObject,
   IlluObjectProps,
-  IllustrationHuman,
+  IllustrationHuman
 } from "src/@aragon/ods-old";
-import { IButtonBaseProps } from "@aragon/ods/dist/types/src/components/button/button.api";
 import useScreen from "src/hooks/useScreen";
-import React, { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
 type BaseProps = {
@@ -52,7 +52,7 @@ type StateEmptyProps =
       src: string;
     });
 
-export const StateEmpty: React.FC<StateEmptyProps> = (props) => {
+export const StateEmpty: React.FC<StateEmptyProps> = props => {
   return (
     <Card
       mode={props.mode}
@@ -80,9 +80,10 @@ export const StateEmpty: React.FC<StateEmptyProps> = (props) => {
               <Button
                 {...props.primaryButton}
                 variant="primary"
+                className="bg-primary"
                 size="lg"
                 {...(props.mode === "inline" &&
-                  (props.secondaryButton ? {} : { className: "w-full" }))}
+                  (props.secondaryButton ? {} : { className: "w-full " }))}
               >
                 {props.primaryButton.label}
               </Button>
@@ -104,7 +105,7 @@ export const StateEmpty: React.FC<StateEmptyProps> = (props) => {
   );
 };
 
-const RenderIllustration: React.FC<StateEmptyProps> = (props) => {
+const RenderIllustration: React.FC<StateEmptyProps> = props => {
   const { isMobile } = useScreen();
 
   if (props.type === "custom") {
@@ -124,7 +125,7 @@ const RenderIllustration: React.FC<StateEmptyProps> = (props) => {
             expression: props.expression,
             hair: props.hair,
             sunglass: props.sunglass,
-            accessory: props.accessory,
+            accessory: props.accessory
           }}
           {...(isMobile
             ? { height: 165, width: 295 }
@@ -160,23 +161,23 @@ const Card = styled.div.attrs<
 const ContentWrapper = styled.div.attrs({ className: "space-y-6 w-full" })``;
 
 const TextWrapper = styled.div.attrs({
-  className: "space-y-3 text-center",
+  className: "space-y-3 text-center"
 })``;
 
 const ActionContainer = styled.div.attrs<Pick<BaseProps, "actionsColumn">>(
   ({ actionsColumn }) => ({
     className: `flex w-full flex-col gap-y-3 ${
       !actionsColumn && "md:flex-row md:gap-y-0 md:justify-center md:gap-x-6"
-    }`,
+    }`
   })
 )<Pick<BaseProps, "actionsColumn">>``;
 
 const Title = styled.h2.attrs({
-  className: "ft-text-xl font-semibold text-neutral-800",
+  className: "ft-text-xl font-semibold text-neutral-800"
 })``;
 
 const Description = styled.p.attrs({
-  className: "text-neutral-500 ft-text-sm md:ft-text-base",
+  className: "text-neutral-500 ft-text-sm md:ft-text-base"
 })`
   & > a {
     color: #003bf5;
@@ -184,5 +185,5 @@ const Description = styled.p.attrs({
 `;
 
 const ImageWrapper = styled.div.attrs({
-  className: "flex justify-center pt-8 xl:pt-12 pb-8 xl:pb-16",
+  className: "flex justify-center pt-8 xl:pt-12 pb-8 xl:pb-16"
 })``;

@@ -1,14 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import React, { useMemo } from "react";
 import { matchRoutes, useLocation } from "react-router-dom";
-
-import { ProcessType } from "src/containers/ExitProcessMenu";
-// import {selectedDaoVar} from 'src/context/apolloClient';
-import { useGlobalModalContext } from "src/context/globalModals";
-// import {useNetwork} from 'src/context/network';
-import { usePrivacyContext } from "src/context/privacyContext";
-// import {useDaoDetailsQuery} from 'src/hooks/useDaoDetails';
 import useScreen from "src/hooks/useScreen";
-import { CHAIN_METADATA, FEEDBACK_FORM } from "src/utils/constants";
+import { FEEDBACK_FORM } from "src/utils/constants";
 import {
   Community,
   CreateDAO,
@@ -21,51 +15,51 @@ import {
   NewProposal,
   NewWithDraw,
   ProposeNewSettings,
-  Settings,
+  Settings
 } from "src/utils/paths";
+import { useAccount } from "wagmi";
 import { i18n } from "../../../i18n.config";
+import { ProcessType } from "../ExitProcessMenu";
 import DesktopNav from "./desktop";
 import MobileNav from "./mobile";
 
 const Navbar: React.FC = () => {
-  const { open } = useGlobalModalContext();
   const { pathname } = useLocation();
   const { isDesktop } = useScreen();
-  // const {network} = useNetwork();
-  const { handleWithFunctionalPreferenceMenu } = usePrivacyContext();
+  // const { handleWithFunctionalPreferenceMenu } = usePrivacyContext();
 
-  // const {data: daoDetails} = useDaoDetailsQuery();
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
 
   const processInfo = useMemo(() => {
     const matches = matchRoutes(processPaths, pathname);
     if (matches) return getProcessInfo(matches[0].route.path) as ProcessInfo;
   }, [pathname]);
 
-  // set current dao as selected dao
-  // useEffect(() => {
-  //   if (daoDetails) {
-  //     selectedDaoVar({
-  //       address: daoDetails.address,
-  //       ensDomain: daoDetails.ensDomain,
-  //       metadata: {
-  //         name: daoDetails.metadata.name,
-  //         avatar: daoDetails?.metadata?.avatar,
-  //       },
-  //       chain: CHAIN_METADATA[network].id,
-  //       plugins: daoDetails.plugins,
-  //     });
-  //   }
-  // }, [daoDetails, network]);
+  // return (
+  //   <HeaderContainer data-testid="navbar">
+  //     <Menu>
+  //       <ButtonWallet
+  //         src={""}
+  //         onClick={() => open()}
+  //         isConnected={isConnected}
+  //         label={isConnected ? address ?? "" : t("navButtons.connectWallet")}
+  //         className="mr-20"
+  //       />
+  //     </Menu>
+  //   </HeaderContainer>
+  // );
 
   /*************************************************
    *                   Handlers                    *
    *************************************************/
   const handleOnDaoSelect = () => {
-    handleWithFunctionalPreferenceMenu(() => open("selectDao"));
+    // handleWithFunctionalPreferenceMenu(() => open("selectDao"));
+    console.log("selectDao");
   };
 
   const handleWalletButtonClick = () => {
-    open("wallet");
+    open();
   };
 
   const handleFeedbackButtonClick = () => {
@@ -87,9 +81,9 @@ const Navbar: React.FC = () => {
   }
   return (
     <MobileNav
-      // onDaoSelect={handleOnDaoSelect}
+      onDaoSelect={handleOnDaoSelect}
       onWalletClick={handleWalletButtonClick}
-      // onFeedbackClick={handleFeedbackButtonClick}
+      onFeedbackClick={handleFeedbackButtonClick}
     />
   );
 };
@@ -108,35 +102,35 @@ const processPaths = [
   { path: NewProposal },
   { path: ProposeNewSettings },
   { path: MintTokensProposal },
-  { path: ManageMembersProposal },
+  { path: ManageMembersProposal }
 ];
 
 const processes: StringIndexed = {
   [CreateDAO]: { processLabel: i18n.t("createDAO.title"), returnURL: Landing },
   [NewDeposit]: {
     processLabel: i18n.t("allTransfer.newTransfer"),
-    returnURL: Finance,
+    returnURL: Finance
   },
   [NewWithDraw]: {
     processLabel: i18n.t("allTransfer.newTransfer"),
-    returnURL: Finance,
+    returnURL: Finance
   },
   [NewProposal]: {
     processLabel: i18n.t("newProposal.title"),
-    returnURL: Governance,
+    returnURL: Governance
   },
   [ProposeNewSettings]: {
     processLabel: i18n.t("settings.proposeSettings"),
-    returnURL: Settings,
+    returnURL: Settings
   },
   [MintTokensProposal]: {
     processLabel: i18n.t("labels.addMember"),
-    returnURL: Community,
+    returnURL: Community
   },
   [ManageMembersProposal]: {
     processLabel: i18n.t("labels.manageMember"),
-    returnURL: Community,
-  },
+    returnURL: Community
+  }
 };
 
 type ProcessInfo = {
@@ -155,7 +149,7 @@ function getProcessInfo(
       isProcess: true,
       ...processes[processPath],
       processName: processPath,
-      processType: getExitProcessType(processPath),
+      processType: getExitProcessType(processPath)
     };
   }
 }

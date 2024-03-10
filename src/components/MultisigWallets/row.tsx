@@ -1,15 +1,11 @@
-import { Dropdown, InputValue, ListItemAction } from "src/@aragon/ods-old";
 import { Button, IconType } from "@aragon/ods";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { Dropdown, ListItemAction } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
 import { WrappedWalletInput } from "src/components/WrappedWalletInput";
-import { useAlertContext } from "src/context/alert";
-import { useProviders } from "src/context/providers";
 import useScreen from "src/hooks/useScreen";
-import { Web3Address } from "src/utils/library";
-import { validateWeb3Address } from "src/utils/validators";
 
 export type MultisigWalletField = {
   id: string;
@@ -25,36 +21,35 @@ type MultisigWalletsRowProps = {
 
 export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
   const { t } = useTranslation();
-  const { alert } = useAlertContext();
   const { isMobile } = useScreen();
-  const { api: provider } = useProviders();
+  // const { api: provider } = useProviders();
 
   const { control, trigger } = useFormContext();
   const multisigWallets = useWatch({ name: "multisigWallets", control });
 
-  const addressValidator = async (value: InputValue, index: number) => {
-    const wallet = new Web3Address(provider, value?.address, value?.ensName);
+  // const addressValidator = async (value: InputValue, index: number) => {
+  //   const wallet = new Web3Address(provider, value?.address, value?.ensName);
 
-    let validationResult = await validateWeb3Address(
-      wallet,
-      t("errors.required.walletAddress"),
-      t
-    );
+  //   let validationResult = await validateWeb3Address(
+  //     wallet,
+  //     t("errors.required.walletAddress"),
+  //     t
+  //   );
 
-    if (multisigWallets) {
-      multisigWallets.forEach(
-        ({ address, ensName }: MultisigWalletField, itemIndex: number) => {
-          if (
-            (address === wallet.address || ensName === wallet.ensName) &&
-            itemIndex !== index
-          ) {
-            validationResult = t("errors.duplicateAddress");
-          }
-        }
-      );
-    }
-    return validationResult;
-  };
+  //   if (multisigWallets) {
+  //     multisigWallets.forEach(
+  //       ({ address, ensName }: MultisigWalletField, itemIndex: number) => {
+  //         if (
+  //           (address === wallet.address || ensName === wallet.ensName) &&
+  //           itemIndex !== index
+  //         ) {
+  //           validationResult = t("errors.duplicateAddress");
+  //         }
+  //       }
+  //     );
+  //   }
+  //   return validationResult;
+  // };
 
   return (
     <RowContainer>
@@ -63,10 +58,10 @@ export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
         name={`multisigWallets.${index}`}
         defaultValue={{ address: "", ensName: "" }}
         control={control}
-        rules={{ validate: (value) => addressValidator(value, index) }}
+        rules={{ validate: () => true }}
         render={({
           field: { onChange, value, onBlur, ref },
-          fieldState: { error },
+          fieldState: { error }
         }) => (
           <Container>
             <InputContainer>
@@ -79,7 +74,6 @@ export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
                 resolveLabels="onBlur"
                 ref={ref}
                 onClearButtonClick={() => {
-                  alert(t("alert.chip.inputCleared"));
                   setTimeout(() => {
                     trigger("multisigWallets");
                   }, 50);
@@ -108,8 +102,7 @@ export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
                   ),
                   callback: () => {
                     props.onResetEntry(index);
-                    alert(t("alert.chip.resetAddress"));
-                  },
+                  }
                 },
                 {
                   component: (
@@ -120,9 +113,8 @@ export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
                   ),
                   callback: () => {
                     props.onDeleteEntry(index);
-                    alert(t("alert.chip.removedAddress"));
-                  },
-                },
+                  }
+                }
               ]}
             />
           </Container>
@@ -133,16 +125,16 @@ export const Row = ({ index, ...props }: MultisigWalletsRowProps) => {
 };
 
 const RowContainer = styled.div.attrs(() => ({
-  className: "gap-1 flex flex-col xl:px-6 xl:py-3 p-4",
+  className: "gap-1 flex flex-col xl:px-6 xl:py-3 p-4"
 }))``;
 
 const Container = styled.div.attrs(() => ({
-  className: "flex gap-4 items-start",
+  className: "flex gap-4 items-start"
 }))``;
 const InputContainer = styled.div.attrs(() => ({
-  className: "flex flex-col gap-2 flex-1",
+  className: "flex flex-col gap-2 flex-1"
 }))``;
 
 const Title = styled.div.attrs(() => ({
-  className: "text-neutral-800 font-semibold ft-text-base",
+  className: "text-neutral-800 font-semibold ft-text-base"
 }))``;

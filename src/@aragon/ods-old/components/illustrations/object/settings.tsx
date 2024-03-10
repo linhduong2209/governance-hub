@@ -1,7 +1,6 @@
-import React from 'react';
-import {type IconType} from '../../icons';
+import { type IconType } from "../../icons";
 
-export const Settings: IconType = ({height = 160, width = 160, ...props}) => {
+export const Settings: IconType = ({ height = 160, width = 160, ...props }) => {
   return (
     <svg
       width={width}
@@ -12,7 +11,7 @@ export const Settings: IconType = ({height = 160, width = 160, ...props}) => {
     >
       <path
         d="M100.855 99.3477H110.983C112.275 99.3477 113.322 100.395 113.322 101.686C113.322 102.977 112.275 104.024 110.983 104.024H100.439C99.2801 106.741 96.5851 108.645 93.4454 108.645C90.3057 108.645 87.6107 106.741 86.4519 104.024H49.0166C47.7251 104.024 46.6782 102.977 46.6782 101.686C46.6782 100.395 47.7251 99.3477 49.0166 99.3477H86.036C86.8071 95.9676 89.8317 93.4453 93.4454 93.4453C97.0591 93.4453 100.084 95.9676 100.855 99.3477Z"
-        fill="#3164FA"
+        fill="#E84142"
       />
       <path
         fillRule="evenodd"

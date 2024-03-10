@@ -1,7 +1,7 @@
+import { Button } from "@aragon/ods";
 import React from "react";
 import styled from "styled-components";
 import useScreen from "../../hooks/useScreen";
-import { Button } from "@aragon/ods";
 
 type Props = {
   // temporary property, to be removed once all actions available
@@ -15,7 +15,7 @@ type Props = {
   title: string;
 };
 
-const CTACard: React.FC<Props> = (props) => {
+const CTACard: React.FC<Props> = props => {
   const { isDesktop } = useScreen();
 
   return (
@@ -27,11 +27,12 @@ const CTACard: React.FC<Props> = (props) => {
       </Content>
 
       <Button
-        variant={props.actionAvailable ? "primary" : "tertiary"}
         size="lg"
         state={props.actionAvailable ? undefined : "disabled"}
         onClick={() => props.onClick(props.path)}
-        className={`${!isDesktop && "w-full"}`}
+        className={`${!isDesktop && "w-full"} ${
+          props.actionAvailable ? "bg-primary" : "tertiary"
+        }`}
       >
         {props.actionLabel}
       </Button>
@@ -43,24 +44,24 @@ export default CTACard;
 
 const CTACardWrapper = styled.div.attrs({
   className:
-    "flex flex-col xl:items-start items-center p-6 space-y-6 rounded-xl relative xl:m-0 mb-6 mx-2" as string,
+    "flex flex-col xl:items-start items-center p-6 space-y-6 rounded-xl relative xl:m-0 mb-6 mx-2" as string
 })`
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(50px);
 `;
 
 const Content = styled.div.attrs({
-  className: "flex xl:items-start items-center flex-col xl:m-0 mb-6",
+  className: "flex xl:items-start items-center flex-col xl:m-0 mb-6"
 })``;
 
 const Title = styled.p.attrs({
-  className: "ft-text-2xl font-semibold text-neutral-800 xl:mt-4 mt-0",
+  className: "ft-text-2xl font-semibold text-neutral-800 xl:mt-4 mt-0"
 })``;
 
 const Subtitle = styled.p.attrs({
-  className: "text-neutral-600 h-[72px] ft-text-base xl:mt-4 mt-3",
+  className: "text-neutral-600 h-[72px] ft-text-base xl:mt-4 mt-3"
 })``;
 
 const StyledImg = styled.img.attrs({
-  className: "h-24 w-24",
+  className: "h-24 w-24"
 })``;
