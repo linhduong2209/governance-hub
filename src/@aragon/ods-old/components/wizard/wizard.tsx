@@ -1,6 +1,6 @@
-import React from 'react';
-import {styled} from 'styled-components';
-import {LinearProgress} from '../progress';
+import React from "react";
+import { styled } from "styled-components";
+import { LinearProgress } from "../progress";
 
 export type WizardProps = {
   title: string;
@@ -47,7 +47,7 @@ export const Wizard: React.FC<WizardProps> = ({
         <StepTitle>{title}</StepTitle>
         {renderHtml ? (
           <StepSubTitle
-            dangerouslySetInnerHTML={{__html: description as string}}
+            dangerouslySetInnerHTML={{ __html: description as string }}
           />
         ) : (
           <StepSubTitle>{description}</StepSubTitle>
@@ -59,26 +59,26 @@ export const Wizard: React.FC<WizardProps> = ({
 
 const StepCard = styled.div.attrs({
   className:
-    'flex flex-col px-4 pt-4 pb-6 md:p-6 xl:p-12 md:rounded-xl gap-y-6 bg-neutral-0 md:shadow-neutral',
+    "flex flex-col px-4 pt-4 pb-6 md:p-6 xl:p-12 md:rounded-xl gap-y-6 bg-neutral-0 md:shadow-neutral",
 })``;
 
 const Wrapper = styled.div.attrs({
-  className: 'space-y-2',
+  className: "space-y-2",
 })``;
 
 const StepTitle = styled.p.attrs({
-  className: 'ft-text-3xl text-neutral-800 font-semibold',
+  className: "ft-text-3xl text-neutral-800 font-semibold",
 })``;
 
 const StepSubTitle = styled.span.attrs({
-  className: 'text-neutral-600 ft-text-lg',
+  className: "text-neutral-600 ft-text-lg",
 })`
   & > a {
-    color: #003bf5;
+    color: #e84142;
     font-weight: 700;
   }
 `;
 
 const CenteredFlex = styled.div.attrs({
-  className: 'flex justify-between text-sm xl:text-base leading-normal',
+  className: "flex justify-between text-sm xl:text-base leading-normal",
 })``;
