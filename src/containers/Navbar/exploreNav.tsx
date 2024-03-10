@@ -5,7 +5,10 @@ import { ButtonWallet, useScreen } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
 import Logo from "public/logo.svg";
-import { GridLayout, HeaderContainer } from "src/components/Layout";
+import {
+  GridLayout,
+  Container as HeaderContainer,
+} from "src/components/Layout";
 import { useGlobalModalContext } from "src/context/globalModals";
 import { useWallet } from "src/hooks/useWallet";
 import { FEEDBACK_FORM } from "src/utils/constants";

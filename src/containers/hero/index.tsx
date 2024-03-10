@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import Logo from "/assets/images/Avalanche_Horizontal_Red.svg";
-import { GridLayout } from "../../components/layout";
+import { GridLayout } from "../../components/Layout";
 
 function Hero() {
   const { t } = useTranslation();

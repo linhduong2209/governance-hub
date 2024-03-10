@@ -5,7 +5,7 @@ import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, ButtonWallet } from "src/@aragon/ods-old";
 import styled from "styled-components";
 
-import { HeaderContainer } from "src/components/Layout";
+import { Container as HeaderContainer } from "src/components/Layout";
 import ExitProcessMenu, { ProcessType } from "src/containers/ExitProcessMenu";
 import { selectedDaoVar } from "src/context/apolloClient";
 import { useNetwork } from "src/context/network";
@@ -23,7 +23,7 @@ type DesktopNavProp = {
   onFeedbackClick: () => void;
 };
 
-const DesktopNav: React.FC<DesktopNavProp> = props => {
+const DesktopNav: React.FC<DesktopNavProp> = (props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { network } = useNetwork();
