@@ -37,19 +37,22 @@ export const MembershipSnapshot: React.FC<Props> = ({
   const navigate = useNavigate();
   const { network } = useNetwork(); // TODO ensure this is the dao network
   const { isDesktop } = useScreen();
+
+  const members = [{}];
+  const totalMemberCount = 2;
   // const {handleOpenModal} = useGovTokensWrapping();
 
-  const {
-    data: { members, daoToken, memberCount: totalMemberCount },
-    isLoading,
-  } = useDaoMembers(pluginAddress, pluginType, { page: 0 });
+  // const {
+  //   data: { members, daoToken, memberCount: totalMemberCount },
+  //   isLoading,
+  // } = useDaoMembers(pluginAddress, pluginType, { page: 0 });
 
   const { data: daoDetails } = useDaoDetailsQuery();
 
-  const { isDAOTokenWrapped, isTokenMintable } = useExistingToken({
-    daoToken,
-    daoDetails,
-  });
+  // const { isDAOTokenWrapped, isTokenMintable } = useExistingToken({
+  //   daoToken,
+  //   daoDetails,
+  // });
 
   const walletBased = pluginType === "multisig.plugin.dao.eth";
 

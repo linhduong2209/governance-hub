@@ -33,9 +33,11 @@ type Props = {
   pluginType: PluginTypes;
 };
 
-type ProposalItemProps = CardProposalProps & {
-  proposalId: string;
-};
+type ProposalItemProps =
+  // CardProposalProps &
+  {
+    proposalId: string;
+  };
 
 const Item = {
   title: "string",
@@ -50,20 +52,30 @@ const Item = {
 
 const ProposalItem: React.FC<ProposalItemProps> = ({
   proposalId,
-  ...props
+  // ...props
 }) => {
   const { t } = useTranslation();
-  const [{ data: isPluginUpdate }, { data: isOSUpdate }] =
-    useIsUpdateProposal(proposalId);
+  // const [{ data: isPluginUpdate }, { data: isOSUpdate }] =
+  //   useIsUpdateProposal(proposalId);
 
   return (
     <CardProposal
       {...Item}
+      title="Add Member"
+      description="Add New Signatory Members"
+      onClick={() => {}}
+      process={"executed"}
+      voteTitle="Add wallet"
+      publishLabel="Published by"
+      publisherDisplayName={"0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028"}
+      stateLabel={["0x7ad…6f56", "0x7ad…6f56", "0x7ad…6f56", "Executed"]}
       bannerContent={
-        (isPluginUpdate || isOSUpdate) &&
-        featureFlags.getValue("VITE_FEATURE_FLAG_OSX_UPDATES") === "true"
-          ? t("update.proposal.bannerTitle")
-          : ""
+        // (isPluginUpdate || isOSUpdate) &&
+        // featureFlags.getValue("VITE_FEATURE_FLAG_OSX_UPDATES") === "true"
+        //   ?
+        //  t("update.proposal.bannerTitle")
+        // :
+        ""
       }
     />
   );
@@ -86,40 +98,47 @@ const ProposalSnapshot: React.FC<Props> = ({
     pluginAddress,
   });
 
-  const {
-    data: proposalCount,
-    error: proposalCountError,
-    isLoading: proposalCountIsLoading,
-    isFetched: proposalCountIsFetched,
-  } = useTotalProposalCount({
-    pluginAddress,
-    pluginType,
-  });
+  // const {
+  //   data: proposalCount,
+  //   error: proposalCountError,
+  //   isLoading: proposalCountIsLoading,
+  //   isFetched: proposalCountIsFetched,
+  // } = useTotalProposalCount({
+  //   pluginAddress,
+  //   pluginType,
+  // });
 
-  const { data: members } = useDaoMembers(pluginAddress, pluginType, {
-    countOnly: true,
-  });
+  let proposalCount = 1;
 
-  const mappedProposals = data?.pages
-    .flat()
-    .slice(0, PROPOSALS_PER_PAGE)
-    .map((p) => {
-      return proposal2CardProps(
-        p,
-        members.memberCount,
-        network,
-        navigate,
-        t,
-        daoAddressOrEns,
-        address
-      );
-    });
+  // const { data: members } = useDaoMembers(pluginAddress, pluginType, {
+  //   countOnly: true,
+  // });
 
-  if (proposalsAreLoading || proposalCountIsLoading) {
-    return <Loading />;
-  }
+  const mappedProposals = [];
+  // data?.pages
+  //   .flat()
+  //   .slice(0, PROPOSALS_PER_PAGE)
+  //   .map((p) => {
+  //     return proposal2CardProps(
+  //       p,
+  //       members.memberCount,
+  //       network,
+  //       navigate,
+  //       t,
+  //       daoAddressOrEns,
+  //       address
+  //     );
+  //   });
 
-  if (proposalCountIsFetched && (proposalCount === 0 || proposalCountError)) {
+  // if (proposalsAreLoading || proposalCountIsLoading) {
+  //   return <Loading />;
+  // }
+
+  if (
+    //  proposalCountIsFetched && (
+    proposalCount === 0
+    //   || proposalCountError)
+  ) {
     return (
       <StateEmpty
         type="Human"
@@ -170,9 +189,11 @@ const ProposalSnapshot: React.FC<Props> = ({
         }
       />
 
-      {mappedProposals?.map(({ id, ...p }) => (
+      {/* {mappedProposals?.map(({ id, ...p }) => (
         <ProposalItem {...p} proposalId={id} key={id} type="list" />
-      ))}
+      ))} */}
+
+      <ProposalItem proposalId={"1"} key={1} />
 
       <Button
         variant="tertiary"

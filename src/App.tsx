@@ -41,10 +41,10 @@ const DaosWrapper: React.FC = () => {
       {/* <Navbar /> */}
       <div className="min-h-screen">
         <GridLayout>
-          {/* <Routes>
-            <Route path="/" element={<DaoPage />} />
-          </Routes> */}
-          <DaoPage />
+          <Routes>
+            <Route path="dao-detail" element={<DaoPage />} />
+          </Routes>
+          {/* <DaoPage /> */}
         </GridLayout>
       </div>
     </>
@@ -58,7 +58,7 @@ function App() {
         <Routes>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="dao/*" element={<DaoWrapper />} />
-          <Route path="daos" element={<DaosWrapper />} />
+          <Route path="daos/*" element={<DaosWrapper />} />
         </Routes>
         {/* <WalletMenu /> */}
       </BrowserRouter>

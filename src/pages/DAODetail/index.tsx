@@ -55,7 +55,7 @@ export const DAODetail: React.FC = () => {
 
   const navigate = useNavigate();
   const { network } = useNetwork();
-  const urlAddressOrEns = "0x68fa609716a1901b51e22c88baf660ca1d8dec0b";
+  const { dao: urlAddressOrEns } = useParams();
   const { open } = useGlobalModalContext();
 
   const [pollInterval, setPollInterval] = useState(0);
@@ -479,11 +479,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
-        <MembershipSnapshot
+        {/* <MembershipSnapshot
           daoAddressOrEns={daoAddressOrEns}
           pluginType={pluginType}
           pluginAddress={pluginAddress}
-        />
+        /> */}
       </RightNarrowContent>
     </>
   );
@@ -533,11 +533,11 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
         transfers={transfers}
         totalAssetValue={totalAssetValue}
       />
-      <MembershipSnapshot
+      {/* <MembershipSnapshot
         daoAddressOrEns={daoAddressOrEns}
         pluginType={pluginType}
         pluginAddress={pluginAddress}
-      />
+      /> */}
     </MobileLayout>
   );
 };
