@@ -55,6 +55,7 @@ const ProposalItem: React.FC<ProposalItemProps> = ({
   // ...props
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   // const [{ data: isPluginUpdate }, { data: isOSUpdate }] =
   //   useIsUpdateProposal(proposalId);
 
@@ -63,7 +64,9 @@ const ProposalItem: React.FC<ProposalItemProps> = ({
       {...Item}
       title="Add Wallet"
       description="Hardware wallet"
-      onClick={() => {}}
+      onClick={() => {
+        navigate("/proposal-detail");
+      }}
       process={"executed"}
       voteTitle="Add wallet"
       publishLabel="Published by"

@@ -36,7 +36,7 @@ export const DaoCard = (props: IDaoCardProps) => {
       : t("explore.explorer.walletBased");
 
   return (
-    <Container href={daoUrl}>
+    <Container href={"/dao-detail"}>
       <DaoDataWrapper>
         <HeaderContainer>
           {/* <AvatarDao daoName={name} src={logo && avatar} /> */}
@@ -102,7 +102,7 @@ const Description = styled.p.attrs({
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${props => (props.isDesktop ? 2 : 3)};
+  -webkit-line-clamp: ${(props) => (props.isDesktop ? 2 : 3)};
 `;
 
 const DaoMetadataWrapper = styled.div.attrs({
