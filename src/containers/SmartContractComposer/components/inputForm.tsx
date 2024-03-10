@@ -1,35 +1,35 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CheckboxListItem,
   NumberInput,
   TextInput,
   WalletInputLegacy,
-} from '@aragon/ods-old';
-import {Button, Icon, IconType} from '@aragon/ods';
-import {t} from 'i18next';
+} from "src/@aragon/ods-old";
+import { Button, Icon, IconType } from "@aragon/ods";
+import { t } from "i18next";
 import {
   Controller,
   FormProvider,
   useForm,
   useFormContext,
   useWatch,
-} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
-import {useParams} from 'react-router-dom';
-import styled from 'styled-components';
+} from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
-import {useActionsContext} from 'context/actions';
-import {useAlertContext} from 'context/alert';
-import {useNetwork} from 'context/network';
-import {trackEvent} from 'services/analytics';
+import { useActionsContext } from "src/context/actions";
+import { useAlertContext } from "src/context/alert";
+import { useNetwork } from "src/context/network";
+import { trackEvent } from "src/services/analytics";
 import {
   getDefaultPayableAmountInput,
   getDefaultPayableAmountInputName,
   getUserFriendlyWalletLabel,
   handleClipboardActions,
-} from 'utils/library';
-import {Input, SmartContract, SmartContractAction} from 'utils/types';
-import {isAddress} from 'ethers/lib/utils';
+} from "src/utils/library";
+import { Input, SmartContract, SmartContractAction } from "src/utils/types";
+import { isAddress } from "ethers/lib/utils";
 
 const extractTupleValues = (
   input: Input,
@@ -37,9 +37,9 @@ const extractTupleValues = (
 ) => {
   const tuple: unknown[] = [];
 
-  input.components?.map(component => {
-    if (component.type !== 'tuple') {
-      tuple.push(formData?.[component.name] || '');
+  input.components?.map((component) => {
+    if (component.type !== "tuple") {
+      tuple.push(formData?.[component.name] || "");
     } else {
       tuple.push(
         extractTupleValues(
@@ -61,26 +61,26 @@ const InputForm: React.FC<InputFormProps> = ({
   actionIndex,
   onComposeButtonClicked,
 }) => {
-  const {t} = useTranslation();
-  const {network} = useNetwork();
+  const { t } = useTranslation();
+  const { network } = useNetwork();
   const [selectedAction, selectedSC, sccActions]: [
     SmartContractAction,
     SmartContract,
-    Record<string, Record<string, Record<string, unknown>>>,
+    Record<string, Record<string, Record<string, unknown>>>
   ] = useWatch({
-    name: ['selectedAction', 'selectedSC', 'sccActions'],
+    name: ["selectedAction", "selectedSC", "sccActions"],
   });
-  const {dao: daoAddressOrEns} = useParams();
-  const {addAction, removeAction} = useActionsContext();
-  const {setValue, resetField} = useFormContext();
+  const { dao: daoAddressOrEns } = useParams();
+  const { addAction, removeAction } = useActionsContext();
+  const { setValue, resetField } = useFormContext();
   const [another, setAnother] = useState(false);
 
   // add payable input to the selected action if it is a payable method
   const actionInputs = useMemo(() => {
-    return selectedAction.stateMutability === 'payable'
+    return selectedAction.stateMutability === "payable"
       ? [
           ...selectedAction.inputs,
-          {...getDefaultPayableAmountInput(t, network)},
+          { ...getDefaultPayableAmountInput(t, network) },
         ]
       : selectedAction.inputs;
   }, [network, selectedAction.inputs, selectedAction.stateMutability, t]);
@@ -88,11 +88,11 @@ const InputForm: React.FC<InputFormProps> = ({
   const composeAction = useCallback(async () => {
     removeAction(actionIndex);
     addAction({
-      name: 'external_contract_action',
+      name: "external_contract_action",
     });
 
     resetField(`actions.${actionIndex}`);
-    setValue(`actions.${actionIndex}.name`, 'external_contract_action');
+    setValue(`actions.${actionIndex}.name`, "external_contract_action");
     setValue(`actions.${actionIndex}.contractAddress`, selectedSC.address);
     setValue(`actions.${actionIndex}.contractName`, selectedSC.name);
     setValue(`actions.${actionIndex}.functionName`, selectedAction.name);
@@ -110,7 +110,7 @@ const InputForm: React.FC<InputFormProps> = ({
       }
 
       // set the form data
-      if (input.type === 'tuple') {
+      if (input.type === "tuple") {
         const tuple = extractTupleValues(
           input,
           sccActions?.[selectedSC.address]?.[selectedAction.name]?.[
@@ -127,15 +127,15 @@ const InputForm: React.FC<InputFormProps> = ({
           value:
             sccActions?.[selectedSC.address]?.[selectedAction.name]?.[
               input.name
-            ] || '',
+            ] || "",
         });
       }
     });
-    resetField('sccActions');
+    resetField("sccActions");
 
     onComposeButtonClicked(another);
 
-    trackEvent('newProposal_composeAction_clicked', {
+    trackEvent("newProposal_composeAction_clicked", {
       dao_address: daoAddressOrEns,
       smart_contract_address: selectedSC.address,
       smart_contract_name: selectedSC.name,
@@ -179,7 +179,7 @@ const InputForm: React.FC<InputFormProps> = ({
       </div>
       {actionInputs.length > 0 ? (
         <div className="mt-10 space-y-4 rounded-xl border border-neutral-100 bg-neutral-0 p-6 shadow-neutral xl:bg-neutral-50">
-          {actionInputs.map(input => (
+          {actionInputs.map((input) => (
             <div key={input.name}>
               <div className="text-base font-semibold capitalize leading-normal text-neutral-800">
                 {input.name}
@@ -204,13 +204,13 @@ const InputForm: React.FC<InputFormProps> = ({
 
       <HStack>
         <Button onClick={composeAction} size="md" variant="primary">
-          {t('scc.detailContract.ctaLabel')}
+          {t("scc.detailContract.ctaLabel")}
         </Button>
         <CheckboxListItem
-          label={t('scc.detailContract.checkboxMultipleLabel')}
+          label={t("scc.detailContract.checkboxMultipleLabel")}
           multiSelect
           onClick={() => setAnother(!another)}
-          type={another ? 'active' : 'default'}
+          type={another ? "active" : "default"}
         />
       </HStack>
     </div>
@@ -218,10 +218,10 @@ const InputForm: React.FC<InputFormProps> = ({
 };
 
 const classifyInputType = (inputName: string) => {
-  if (inputName.includes('uint') && inputName.includes('[]') === false) {
-    return 'uint';
-  } else if (inputName.includes('int') && inputName.includes('[]') === false) {
-    return 'int';
+  if (inputName.includes("uint") && inputName.includes("[]") === false) {
+    return "uint";
+  } else if (inputName.includes("int") && inputName.includes("[]") === false) {
+    return "int";
   } else return inputName;
 };
 
@@ -242,8 +242,8 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
   disabled = false,
   isValid = true,
 }) => {
-  const {alert} = useAlertContext();
-  const {setValue} = useFormContext();
+  const { alert } = useAlertContext();
+  const { setValue } = useFormContext();
 
   const formName = formHandleName
     ? formHandleName
@@ -258,12 +258,12 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
 
   // Check if we need to add "index" kind of variable to the "name"
   switch (classifyInputType(input.type)) {
-    case 'encodedData':
+    case "encodedData":
       return (
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => (
+          render={({ field: { name, value, onBlur, onChange } }) => (
             <WalletInputLegacy
               mode="default"
               name={name}
@@ -273,7 +273,7 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
                 onChange(e.target.value);
               }}
               placeholder="0x"
-              adornmentText={value ? t('labels.copy') : t('labels.paste')}
+              adornmentText={value ? t("labels.copy") : t("labels.paste")}
               disabledFilled={disabled}
               onAdornmentClick={() =>
                 handleClipboardActions(value, onChange, alert)
@@ -282,14 +282,14 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
           )}
         />
       );
-    case 'address':
+    case "address":
       return (
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => (
+          render={({ field: { name, value, onBlur, onChange } }) => (
             <WalletInputLegacy
-              mode={!isValid && !isAddress(value) ? 'critical' : 'default'}
+              mode={!isValid && !isAddress(value) ? "critical" : "default"}
               name={name}
               value={getUserFriendlyWalletLabel(value, t)}
               onBlur={onBlur}
@@ -297,7 +297,7 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
                 onChange(e.target.value);
               }}
               placeholder="0x"
-              adornmentText={value ? t('labels.copy') : t('labels.paste')}
+              adornmentText={value ? t("labels.copy") : t("labels.paste")}
               disabledFilled={disabled}
               onAdornmentClick={() =>
                 handleClipboardActions(value, onChange, alert)
@@ -307,21 +307,21 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
         />
       );
 
-    case 'bool':
+    case "bool":
       return (
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => (
+          render={({ field: { name, value, onBlur, onChange } }) => (
             <TextInput
               name={name}
               onBlur={onBlur}
               onChange={onChange}
               placeholder={`${input.name} (${input.type})`}
               mode={
-                !isValid && value !== 'true' && value !== 'false'
-                  ? 'critical'
-                  : 'default'
+                !isValid && value !== "true" && value !== "false"
+                  ? "critical"
+                  : "default"
               }
               value={value}
               disabled={disabled}
@@ -330,12 +330,12 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
         />
       );
 
-    case 'uint':
+    case "uint":
       return (
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => (
+          render={({ field: { name, value, onBlur, onChange } }) => (
             <NumberInput
               name={name}
               onBlur={onBlur}
@@ -346,8 +346,8 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
                 !isValid &&
                 (!value || value < 0) &&
                 input.name !== getDefaultPayableAmountInputName(t)
-                  ? 'critical'
-                  : 'default'
+                  ? "critical"
+                  : "default"
               }
               value={value}
             />
@@ -355,12 +355,12 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
         />
       );
 
-    case 'int':
+    case "int":
       return (
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => (
+          render={({ field: { name, value, onBlur, onChange } }) => (
             <NumberInput
               name={name}
               onBlur={onBlur}
@@ -371,8 +371,8 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
                 !isValid &&
                 !value &&
                 input.name !== getDefaultPayableAmountInputName(t)
-                  ? 'critical'
-                  : 'default'
+                  ? "critical"
+                  : "default"
               }
               value={value}
             />
@@ -380,7 +380,7 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
         />
       );
 
-    case 'tuple':
+    case "tuple":
       if (input?.components)
         return (
           <>
@@ -427,7 +427,7 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
                 <ComponentForType
                   key={index}
                   functionName={value[0]}
-                  input={{value: value[1], type: typeof value[1]} as Input}
+                  input={{ value: value[1], type: typeof value[1] } as Input}
                   disabled={disabled}
                 />
               </div>
@@ -441,14 +441,14 @@ export const ComponentForType: React.FC<ComponentForTypeProps> = ({
         <Controller
           defaultValue=""
           name={formName}
-          render={({field: {name, value, onBlur, onChange}}) => {
+          render={({ field: { name, value, onBlur, onChange } }) => {
             return (
               <TextInput
                 name={name}
                 onBlur={onBlur}
                 onChange={onChange}
                 placeholder={`${input.name} (${input.type})`}
-                mode={!isValid && !value ? 'critical' : 'default'}
+                mode={!isValid && !value ? "critical" : "default"}
                 value={value}
                 disabled={disabled}
               />
@@ -469,19 +469,19 @@ export function FormlessComponentForType({
   input,
   disabled,
 }: FormlessComponentForTypeProps) {
-  const {alert} = useAlertContext();
+  const { alert } = useAlertContext();
 
   // Check if we need to add "index" kind of variable to the "name"
   switch (classifyInputType(input.type)) {
-    case 'address':
-    case 'encodedData': // custom type for the data field which is encoded bytes
+    case "address":
+    case "encodedData": // custom type for the data field which is encoded bytes
       return (
         <WalletInputLegacy
           name={input.name}
           value={input.value}
           onChange={() => {}}
           placeholder="0x"
-          adornmentText={t('labels.copy')}
+          adornmentText={t("labels.copy")}
           disabledFilled={disabled}
           onAdornmentClick={() =>
             handleClipboardActions(input.value as string, () => {}, alert)
@@ -489,8 +489,8 @@ export function FormlessComponentForType({
         />
       );
 
-    case 'uint':
-    case 'int':
+    case "uint":
+    case "int":
       return (
         <NumberInput
           name={input.name}
@@ -500,11 +500,11 @@ export function FormlessComponentForType({
         />
       );
 
-    case 'tuple':
+    case "tuple":
       if (input?.components)
         return (
           <>
-            {input.components?.map(component => (
+            {input.components?.map((component) => (
               <div key={component.name} className="ml-6">
                 <div className="mb-3 text-base font-semibold capitalize leading-normal text-neutral-800">
                   {input.name}
@@ -529,7 +529,7 @@ export function FormlessComponentForType({
                   </div>
                   <FormlessComponentForType
                     key={index}
-                    input={{value: value[1], type: typeof value[1]} as Input}
+                    input={{ value: value[1], type: typeof value[1] } as Input}
                     disabled={disabled}
                   />
                 </div>
@@ -557,7 +557,7 @@ export function ComponentForTypeWithFormProvider({
   defaultValue,
   disabled = false,
 }: ComponentForTypeProps) {
-  const methods = useForm({mode: 'onChange'});
+  const methods = useForm({ mode: "onChange" });
 
   return (
     <FormProvider {...methods}>
@@ -575,16 +575,16 @@ export function ComponentForTypeWithFormProvider({
 
 const ActionName = styled.p.attrs({
   className:
-    'text-xl leading-normal font-semibold text-neutral-800 capitalize truncate',
+    "text-xl leading-normal font-semibold text-neutral-800 capitalize truncate",
 })``;
 
 const ActionDescription = styled.p.attrs({
-  className: 'mt-2 text-sm leading-normal text-neutral-600',
+  className: "mt-2 text-sm leading-normal text-neutral-600",
 })``;
 
 const HStack = styled.div.attrs({
   className:
-    'flex justify-between items-center space-x-6 mt-10 ft-text-base mb-2',
+    "flex justify-between items-center space-x-6 mt-10 ft-text-base mb-2",
 })``;
 
 export default InputForm;

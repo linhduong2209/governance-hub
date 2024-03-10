@@ -1,24 +1,24 @@
-import {ListItemAddress} from 'src/@aragon/ods-old';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
+import { ListItemAddress } from "src/@aragon/ods-old";
+import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import {AccordionMethod} from 'src/components/AccordionMethod';
-import AccordionSummary from 'src/containers/ActionBuilder/addAddresses/accordionSummary';
-import {useNetwork} from 'src/context/network';
-import {useProviders} from 'src/context/providers';
-import {CHAIN_METADATA} from 'src/utils/constants';
-import {Web3Address} from 'src/utils/library';
-import {ActionAddAddress} from 'src/utils/types';
-import {useDaoDetailsQuery} from 'src/hooks/useDaoDetails';
+import { AccordionMethod } from "src/components/AccordionMethod";
+import AccordionSummary from "src/containers/ActionBuilder/addAddresses/accordionSummary";
+import { useNetwork } from "src/context/network";
+import { useProviders } from "src/context/providers";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { Web3Address } from "src/utils/library";
+import { ActionAddAddress } from "src/utils/types";
+import { useDaoDetailsQuery } from "src/hooks/useDaoDetails";
 
 export const AddAddressCard: React.FC<{
   action: ActionAddAddress;
-}> = ({action: {inputs}}) => {
-  const {t} = useTranslation();
-  const {network} = useNetwork();
-  const {api: provider} = useProviders();
-  const {data: daoDetails} = useDaoDetailsQuery();
+}> = ({ action: { inputs } }) => {
+  const { t } = useTranslation();
+  const { network } = useNetwork();
+  const { api: provider } = useProviders();
+  const { data: daoDetails } = useDaoDetailsQuery();
 
   const [addresses, setAddresses] = useState<Web3Address[]>([]);
 
@@ -30,14 +30,14 @@ export const AddAddressCard: React.FC<{
       try {
         const response = await Promise.all(
           inputs.memberWallets.map(
-            async ({address, ensName}) =>
-              await Web3Address.create(provider, {address, ensName})
+            async ({ address, ensName }) =>
+              await Web3Address.create(provider, { address, ensName })
           )
         );
 
         setAddresses(response);
       } catch (error) {
-        console.error('Error creating Web3Addresses', error);
+        console.error("Error creating Web3Addresses", error);
       }
     }
 
@@ -51,7 +51,7 @@ export const AddAddressCard: React.FC<{
     (addressOrEns: string | null) =>
       window.open(
         `${CHAIN_METADATA[network].explorer}address/${addressOrEns}`,
-        '_blank'
+        "_blank"
       ),
     [network]
   );
@@ -62,8 +62,8 @@ export const AddAddressCard: React.FC<{
   return (
     <AccordionMethod
       type="execution-widget"
-      methodName={t('labels.addWallets')}
-      smartContractName={`Multisig v${daoDetails?.plugins[0].release}.${daoDetails?.plugins[0].build}`}
+      methodName={t("labels.addWallets")}
+      smartContractName={`Multisig `}
       smartContractAddress={daoDetails?.plugins[0].instanceAddress}
       blockExplorerLink={
         daoDetails?.plugins[0].instanceAddress
@@ -71,10 +71,10 @@ export const AddAddressCard: React.FC<{
           : undefined
       }
       verified
-      methodDescription={t('labels.addWalletsDescription')}
+      methodDescription={t("labels.addWalletsDescription")}
     >
       <Container>
-        {inputs.memberWallets.map(({address, ensName}, index) => {
+        {inputs.memberWallets.map(({ address, ensName }, index) => {
           const label = ensName || addresses[index]?.ensName || address;
 
           return (
@@ -87,14 +87,11 @@ export const AddAddressCard: React.FC<{
           );
         })}
       </Container>
-      <AccordionSummary
-        type="execution-widget"
-        total={inputs.memberWallets.length}
-      />
+      <AccordionSummary type="execution-widget" total={1} />
     </AccordionMethod>
   );
 };
 
 const Container = styled.div.attrs({
-  className: 'bg-neutral-50 border border-t-0 border-neutral-100 space-y-2 p-4',
+  className: "bg-neutral-50 border border-t-0 border-neutral-100 space-y-2 p-4",
 })``;

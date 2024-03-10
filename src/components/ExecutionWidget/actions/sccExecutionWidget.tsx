@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {AccordionMethod} from 'components/accordionMethod';
-import {ComponentForTypeWithFormProvider} from 'containers/smartContractComposer/components/inputForm';
-import {useNetwork} from 'context/network';
-import React from 'react';
-import styled from 'styled-components';
-import {CHAIN_METADATA} from 'utils/constants';
-import {Input} from 'utils/types';
+import { AccordionMethod } from "src/components/AccordionMethod";
+import { ComponentForTypeWithFormProvider } from "src/containers/SmartContractComposer/components/inputForm";
+import { useNetwork } from "src/context/network";
+import React from "react";
+import styled from "styled-components";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { Input } from "src/utils/types";
 
 export const SCCExecutionCard: React.FC<{
   action: any;
-}> = ({action}) => {
-  const {network} = useNetwork();
+}> = ({ action }) => {
+  const { network } = useNetwork();
   return (
     <AccordionMethod
       type="execution-widget"
@@ -27,7 +27,7 @@ export const SCCExecutionCard: React.FC<{
       <Container>
         {action.inputs?.length > 0 ? (
           <div className="space-y-4">
-            {(action.inputs as Array<Input & {value: any}>).map(input => (
+            {(action.inputs as Array<Input & { value: any }>).map((input) => (
               <div key={input.name}>
                 <div className="mb-3 text-base font-semibold capitalize leading-normal text-neutral-800">
                   {input.name}
@@ -53,5 +53,5 @@ export const SCCExecutionCard: React.FC<{
 
 const Container = styled.div.attrs({
   className:
-    'bg-neutral-50 rounded-b-xl border border-t-0 border-neutral-100 space-y-6 p-6',
+    "bg-neutral-50 rounded-b-xl border border-t-0 border-neutral-100 space-y-6 p-6",
 })``;

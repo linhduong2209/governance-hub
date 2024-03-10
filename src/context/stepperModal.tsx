@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { Button, AlertInline, IconType } from "@aragon/ods";
 
-import { CHAIN_METADATA } from "utils/constants";
-import ModalBottomSheetSwitcher from "components/modalBottomSheetSwitcher";
-import { useNetwork } from "context/network";
-import { formatUnits } from "utils/library";
+import { CHAIN_METADATA } from "src/utils/constants";
+import ModalBottomSheetSwitcher from "src/components/ModalBottomSheetSwitcher";
+import { useNetwork } from "src/context/network";
+import { formatUnits } from "src/utils/library";
 import { StepsMap, StepStatus } from "../hooks/useFunctionStepper";
 import {
   StepperModalProgress,
@@ -180,7 +180,6 @@ const StepperModal = <TStepKey extends string>({
                   ? IconType.CHEVRON_RIGHT
                   : undefined
               }
-              state={gasEstimationError !== undefined ? "disabled" : undefined}
               onClick={callback}
             >
               {buttonLabels[globalState]!}

@@ -1,16 +1,19 @@
-import React, {useMemo} from 'react';
-import {Link} from 'src/@aragon/ods-old';
-import {Icon, IconType} from '@aragon/ods';
-import {useTranslation} from 'react-i18next';
-import {generatePath, useParams} from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useMemo } from "react";
+import { Link } from "src/@aragon/ods-old";
+import { Icon, IconType } from "@aragon/ods";
+import { useTranslation } from "react-i18next";
+import { generatePath, useParams } from "react-router-dom";
+import styled from "styled-components";
 
-import {AccordionMethodType, AccordionType} from 'src/components/AccordionMethod';
-import {useNetwork} from 'src/context/network';
-import {Community} from 'src/utils/paths';
+import {
+  AccordionMethodType,
+  AccordionType,
+} from "src/components/AccordionMethod";
+import { useNetwork } from "src/context/network";
+import { Community } from "src/utils/paths";
 
 type AccordionSummaryPropsType = {
-  type?: AccordionMethodType['type'];
+  type?: AccordionMethodType["type"];
   total: number;
   IsRemove?: boolean;
   borderless?: boolean;
@@ -18,30 +21,30 @@ type AccordionSummaryPropsType = {
 
 const AccordionSummary: React.FC<AccordionSummaryPropsType> = ({
   total,
-  type = 'action-builder',
+  type = "action-builder",
   IsRemove = false,
   borderless,
 }) => {
-  const {t} = useTranslation();
-  const {dao} = useParams();
-  const {network} = useNetwork();
+  const { t } = useTranslation();
+  const { dao } = useParams();
+  const { network } = useNetwork();
 
   // get protocol and domain, add generated path
-  const membersHref = useMemo(
-    () =>
-      window.location.href
-        .split('#')[0]
-        .concat(`#${generatePath(Community, {dao, network})}`),
-    [dao, network]
-  );
+  // const membersHref = useMemo(
+  //   () =>
+  //     window.location.href
+  //       .split('#')[0]
+  //       .concat(`#${generatePath(Community, {dao, network})}`),
+  //   [dao, network]
+  // );
 
   return (
-    <Footer {...{type}} className={borderless ? 'border-0' : ''}>
-      <BoldedText>{t('labels.summary')}</BoldedText>
-      {type === 'action-builder' ? (
+    <Footer {...{ type }} className={borderless ? "border-0" : ""}>
+      <BoldedText>{t("labels.summary")}</BoldedText>
+      {type === "action-builder" ? (
         <div className="flex justify-between">
           <p className="text-neutral-600 ft-text-base">
-            {t('labels.totalWallets')}
+            {t("labels.totalWallets")}
           </p>
           <BoldedText>{total}</BoldedText>
         </div>
@@ -51,22 +54,22 @@ const AccordionSummary: React.FC<AccordionSummaryPropsType> = ({
             {IsRemove ? (
               <>
                 <p className="text-neutral-600 ft-text-base">
-                  {t('labels.removedMembers')}
+                  {t("labels.removedMembers")}
                 </p>
                 <BoldedText>-{total}</BoldedText>
               </>
             ) : (
               <>
                 <p className="text-neutral-600 ft-text-base">
-                  {t('labels.addedMembers')}
+                  {t("labels.addedMembers")}
                 </p>
                 <BoldedText>+{total}</BoldedText>
               </>
             )}
           </div>
           <Link
-            href={membersHref}
-            label={t('labels.seeCommunity')}
+            href={""}
+            label={t("labels.seeCommunity")}
             iconRight={<Icon icon={IconType.LINK_EXTERNAL} />}
           />
         </div>
@@ -75,14 +78,14 @@ const AccordionSummary: React.FC<AccordionSummaryPropsType> = ({
   );
 };
 
-const Footer = styled.div.attrs<{type: AccordionType}>(({type}) => ({
+const Footer = styled.div.attrs<{ type: AccordionType }>(({ type }) => ({
   className: `space-y-3 bg-neutral-0 rounded-b-xl border border-t-0 border-neutral-100 ${
-    type === 'action-builder' ? 'bg-neutral-0 p-6' : 'bg-neutral-50 p-4'
+    type === "action-builder" ? "bg-neutral-0 p-6" : "bg-neutral-50 p-4"
   }`,
-}))<{type: AccordionType}>``;
+}))<{ type: AccordionType }>``;
 
 const BoldedText = styled.span.attrs({
-  className: 'font-semibold text-neutral-800 ft-text-base',
+  className: "font-semibold text-neutral-800 ft-text-base",
 })``;
 
 export default AccordionSummary;

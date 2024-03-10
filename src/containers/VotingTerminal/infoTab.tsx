@@ -57,11 +57,11 @@ const InfoTab: React.FC<Props> = ({
         <SectionHeader>{t("votingTerminal.decision")}</SectionHeader>
         <InfoLine>
           <p>{t("votingTerminal.options")}</p>
-          <Strong>{voteOptions}</Strong>
+          <Strong>{"Approve"}</Strong>
         </InfoLine>
         <InfoLine>
           <p>{t("votingTerminal.strategy")}</p>
-          <Strong>{strategy}</Strong>
+          <Strong>{"1 Wallet -> 1 Vote"}</Strong>
         </InfoLine>
 
         {/* Support threshold */}
@@ -124,34 +124,35 @@ const InfoTab: React.FC<Props> = ({
         )}
 
         {/* Multisig current approvals */}
-        {currentApprovals !== undefined && minApproval && memberCount && (
-          <InfoLine>
-            <p className="flex-1">{t("votingTerminal.currentApproval")}</p>
+        {/* {currentApprovals !== undefined && minApproval && memberCount && ( */}
+        <InfoLine>
+          <p className="flex-1">{t("votingTerminal.currentApproval")}</p>
 
-            <CurrentParticipationWrapper>
-              <Strong>
-                {`${t("votingTerminal.ofAddressCount", {
-                  value: currentApprovals,
-                  total: minApproval,
-                })} (${NumberFormatter.format(
-                  (currentApprovals / minApproval) * 100
-                )}%)`}
-              </Strong>
-              <div className="flex justify-end gap-x-2">
-                {minimumReached && (
-                  <Tag label={t("votingTerminal.reached")} variant="success" />
-                )}
-                <p className="text-right text-neutral-400 ft-text-sm">
-                  {minimumReached
-                    ? t("votingTerminal.noApprovalsMissing")
-                    : t("votingTerminal.missingApprovals", {
-                        approvals: missingApprovalOrParticipation,
-                      })}
-                </p>
-              </div>
-            </CurrentParticipationWrapper>
-          </InfoLine>
-        )}
+          <CurrentParticipationWrapper>
+            <Strong>
+              {`${t("votingTerminal.ofAddressCount", {
+                value: 2,
+                total: 2,
+              })} (${NumberFormatter.format((2 / 2) * 100)}%)`}
+            </Strong>
+            <div className="flex justify-end gap-x-2">
+              {/* {minimumReached && ( */}
+              <Tag label={t("votingTerminal.reached")} variant="success" />
+              {/* )} */}
+              <p className="text-right text-neutral-400 ft-text-sm">
+                {
+                  // minimumReached
+                  //   ?
+                  t("votingTerminal.noApprovalsMissing")
+                  // : t("votingTerminal.missingApprovals", {
+                  //     approvals: missingApprovalOrParticipation,
+                  //   })
+                }
+              </p>
+            </div>
+          </CurrentParticipationWrapper>
+        </InfoLine>
+        {/* )} */}
         {uniqueVoters !== undefined && (
           <InfoLine>
             <p>{t("votingTerminal.uniqueVoters")}</p>
@@ -163,27 +164,14 @@ const InfoTab: React.FC<Props> = ({
         <SectionHeader>{t("votingTerminal.duration")}</SectionHeader>
         <InfoLine>
           <p>{t("votingTerminal.startDate")}</p>
-          <Strong>{startDate}</Strong>
+          <Strong>{"2024/03/07 05:14 AM UTC+7"}</Strong>
         </InfoLine>
         <InfoLine className="items-start gap-x-4">
           <p className="ft-text-base">{t("votingTerminal.endDate")}</p>
           <EndDateWrapper className="w-[213px]">
-            {isMultisigProposal ? (
-              <p className="text-right font-semibold text-neutral-800 ft-text-base">
-                {t("votingTerminal.multisig.endDescription")}
-              </p>
-            ) : (
-              <>
-                <Strong>{endDate}</Strong>
-                {preciseEndDate && (
-                  <div className="flex justify-end gap-x-2">
-                    <p className="text-right text-neutral-800 ft-text-sm">
-                      {preciseEndDate}
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
+            <p className="text-right font-semibold text-neutral-800 ft-text-base">
+              {t("votingTerminal.multisig.endDescription")}
+            </p>
           </EndDateWrapper>
         </InfoLine>
       </VStackSection>

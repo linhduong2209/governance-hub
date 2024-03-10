@@ -38,8 +38,13 @@ export const MembershipSnapshot: React.FC<Props> = ({
   const { network } = useNetwork(); // TODO ensure this is the dao network
   const { isDesktop } = useScreen();
 
-  const members = [{}];
-  const totalMemberCount = 2;
+  const members = [
+    { address: "0xC97DB9086e854F727dB2b2c1462401EAF1Eb9028" },
+    { address: "0xEC8b5DdE1b47a820e3e682a03607c5D81916168c" },
+    { address: "0x341582A961C9CEBBc5Bdc97C847Bd1DeC1d25E00" },
+  ];
+  const totalMemberCount = members.length;
+
   // const {handleOpenModal} = useGovTokensWrapping();
 
   // const {
@@ -84,18 +89,21 @@ export const MembershipSnapshot: React.FC<Props> = ({
             icon={<Icon icon={IconType.APP_MEMBERS} />}
             value={`${totalMemberCount} ${t("labels.members")}`}
             label={
-              walletBased
-                ? t("explore.explorer.walletBased")
-                : t("explore.explorer.tokenBased")
+              // walletBased
+              //   ?
+              "Wallet-based"
+              // t("explore.explorer.walletBased")
+              // : t("explore.explorer.tokenBased")
             }
             buttonText={
-              walletBased
-                ? t("labels.manageMember")
-                : isDAOTokenWrapped
-                ? t("community.ctaMain.wrappedLabel")
-                : isTokenMintable
-                ? t("labels.addMember")
-                : t("labels.seeCommunity")
+              // walletBased
+              //   ?
+              t("labels.manageMember")
+              // : isDAOTokenWrapped
+              // ? t("community.ctaMain.wrappedLabel")
+              // : isTokenMintable
+              // ? t("labels.addMember")
+              // : t("labels.seeCommunity")
             }
             orientation="vertical"
             onClick={headerButtonHandler}
@@ -103,7 +111,7 @@ export const MembershipSnapshot: React.FC<Props> = ({
         </div>
         <div className="w-2/3 space-y-4">
           <ListItemGrid>
-            <MembersList token={daoToken} members={displayedMembers} />
+            <MembersList members={displayedMembers} />
           </ListItemGrid>
           <Button
             variant="tertiary"
@@ -133,22 +141,19 @@ export const MembershipSnapshot: React.FC<Props> = ({
             : t("explore.explorer.tokenBased")
         }
         buttonText={
-          walletBased
-            ? t("labels.manageMember")
-            : isDAOTokenWrapped
-            ? t("community.ctaMain.wrappedLabel")
-            : isTokenMintable
-            ? t("labels.addMember")
-            : t("labels.seeCommunity")
+          // walletBased
+          //   ?
+          t("labels.manageMember")
+          // : isDAOTokenWrapped
+          // ? t("community.ctaMain.wrappedLabel")
+          // : isTokenMintable
+          // ? t("labels.addMember")
+          // : t("labels.seeCommunity")
         }
         orientation="vertical"
         onClick={headerButtonHandler}
       />
-      <MembersList
-        token={daoToken}
-        members={displayedMembers}
-        isCompactMode={true}
-      />
+      <MembersList members={displayedMembers} isCompactMode={true} />
       <Button
         variant="tertiary"
         size="lg"

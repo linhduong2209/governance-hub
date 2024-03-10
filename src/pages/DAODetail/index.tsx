@@ -316,13 +316,15 @@ export const DAODetail: React.FC = () => {
             "blob:https://app.aragon.org/604a2bff-4af4-4440-969e-de808b00f420"
           }
           daoUrl={`app.aragon.org/#/daos/${network}/${liveAddressOrEns}`}
-          description={""}
+          description={
+            "This is the Devolved AI DAO that holds DAO treasury funds."
+          }
           created_at={formatDate(
             new Date().getTime() / 1000,
             "MMMM yyyy"
           ).toString()}
-          daoChain={CHAIN_METADATA[network].name}
-          daoType={""}
+          daoChain={"Fuji"}
+          daoType={"Wallet-based"}
           following={isFollowedDao}
           onCopy={onCopy}
           onFollowClick={
@@ -479,11 +481,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
-        {/* <MembershipSnapshot
+        <MembershipSnapshot
           daoAddressOrEns={daoAddressOrEns}
           pluginType={pluginType}
           pluginAddress={pluginAddress}
-        /> */}
+        />
       </RightNarrowContent>
     </>
   );
@@ -533,11 +535,11 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
         transfers={transfers}
         totalAssetValue={totalAssetValue}
       />
-      {/* <MembershipSnapshot
+      <MembershipSnapshot
         daoAddressOrEns={daoAddressOrEns}
         pluginType={pluginType}
         pluginAddress={pluginAddress}
-      /> */}
+      />
     </MobileLayout>
   );
 };

@@ -61,8 +61,8 @@ const ProposalItem: React.FC<ProposalItemProps> = ({
   return (
     <CardProposal
       {...Item}
-      title="Add Member"
-      description="Add New Signatory Members"
+      title="Add Wallet"
+      description="Hardware wallet"
       onClick={() => {}}
       process={"executed"}
       voteTitle="Add wallet"

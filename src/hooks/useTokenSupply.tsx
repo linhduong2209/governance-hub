@@ -1,11 +1,11 @@
-import {formatUnits} from 'ethers/lib/utils';
-import {useEffect, useState} from 'react';
+import { formatUnits } from "ethers/lib/utils";
+import { useEffect, useState } from "react";
 
-import {useNetwork} from 'context/network';
-import {useProviders} from 'context/providers';
-import {CHAIN_METADATA} from 'utils/constants';
-import {getTokenInfo} from 'utils/tokens';
-import {HookData} from 'utils/types';
+import { useNetwork } from "src/context/network";
+import { useProviders } from "src/context/providers";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { getTokenInfo } from "src/utils/tokens";
+import { HookData } from "src/utils/types";
 
 type TokenSupplyData = {
   formatted: number;
@@ -15,8 +15,8 @@ type TokenSupplyData = {
 export function useTokenSupply(
   tokenAddress: string
 ): HookData<TokenSupplyData | undefined> {
-  const {network} = useNetwork();
-  const {api: provider} = useProviders();
+  const { network } = useNetwork();
+  const { api: provider } = useProviders();
 
   const [data, setData] = useState<TokenSupplyData>();
   const [error, setError] = useState<Error>();
@@ -41,5 +41,5 @@ export function useTokenSupply(
     }
   }, [tokenAddress, provider, network]);
 
-  return {data, error, isLoading};
+  return { data, error, isLoading };
 }

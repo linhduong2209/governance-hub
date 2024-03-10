@@ -1,21 +1,21 @@
-import {CardToken, CardTransfer} from '@aragon/ods-old';
-import React from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
+import { CardToken, CardTransfer } from "src/@aragon/ods-old";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import {AccordionMethod} from 'components/accordionMethod';
-import {ActionWithdraw} from 'utils/types';
-import {NumberFormat, formatterUtils} from '@aragon/ods';
-import {CHAIN_METADATA} from 'utils/constants';
-import {useNetwork} from 'context/network';
+import { AccordionMethod } from "src/components/AccordionMethod";
+import { ActionWithdraw } from "src/utils/types";
+import { NumberFormat, formatterUtils } from "@aragon/ods";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { useNetwork } from "src/context/network";
 
 export const WithdrawCard: React.FC<{
   action: ActionWithdraw;
   daoAddress: string;
   daoLabel: string;
-}> = ({action, daoAddress, daoLabel}) => {
-  const {t} = useTranslation();
-  const {network} = useNetwork();
+}> = ({ action, daoAddress, daoLabel }) => {
+  const { t } = useTranslation();
+  const { network } = useNetwork();
 
   const amount = Number(action.amount) || 0;
   const tokenPrice = Number(action.tokenPrice) || 0;
@@ -36,7 +36,7 @@ export const WithdrawCard: React.FC<{
     ? (formatterUtils.formatNumber(tokenPrice * amount, {
         format: NumberFormat.FIAT_TOTAL_SHORT,
       }) as string)
-    : t('finance.unknownUSDValue');
+    : t("finance.unknownUSDValue");
 
   const explorerURL = CHAIN_METADATA[network].explorer;
   const daoExplorerURL = `${explorerURL}address/${daoAddress}`;
@@ -47,7 +47,7 @@ export const WithdrawCard: React.FC<{
   return (
     <AccordionMethod
       type="execution-widget"
-      methodName={t('TransferModal.item2Title')}
+      methodName={t("TransferModal.item2Title")}
       smartContractName={action.tokenSymbol ? action.tokenSymbol : undefined}
       smartContractAddress={action.tokenAddress}
       blockExplorerLink={
@@ -56,7 +56,7 @@ export const WithdrawCard: React.FC<{
           : undefined
       }
       verified
-      methodDescription={t('AddActionModal.withdrawAssetsActionSubtitle')}
+      methodDescription={t("AddActionModal.withdrawAssetsActionSubtitle")}
     >
       <Container>
         <CardTransfer
@@ -64,8 +64,8 @@ export const WithdrawCard: React.FC<{
           from={daoLabel}
           fromLinkURL={daoExplorerURL}
           toLinkURL={recipientURL}
-          toLabel={t('labels.to')}
-          fromLabel={t('labels.from')}
+          toLabel={t("labels.to")}
+          fromLabel={t("labels.from")}
         />
         <CardToken
           tokenName={action.tokenName}
@@ -73,7 +73,7 @@ export const WithdrawCard: React.FC<{
           tokenSymbol={action.tokenSymbol}
           tokenCount={tokenCountDisplay}
           treasuryShare={treasuryShareDisplay}
-          type={'transfer'}
+          type={"transfer"}
         />
       </Container>
     </AccordionMethod>
@@ -82,5 +82,5 @@ export const WithdrawCard: React.FC<{
 
 const Container = styled.div.attrs({
   className:
-    'bg-neutral-50 rounded-b-xl border border-t-0 border-neutral-100 space-y-6 p-6',
+    "bg-neutral-50 rounded-b-xl border border-t-0 border-neutral-100 space-y-6 p-6",
 })``;

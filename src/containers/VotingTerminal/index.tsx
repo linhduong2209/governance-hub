@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ButtonGroup,
   CheckboxListItem,
@@ -6,37 +6,37 @@ import {
   SearchInput,
   VoterType,
   VotersTable,
-} from 'src/@aragon/ods-old';
-import {Button, AlertCard, AlertInline} from '@aragon/ods';
+} from "src/@aragon/ods-old";
+import { Button, AlertCard, AlertInline } from "@aragon/ods";
 import {
   Erc20TokenDetails,
   Erc20WrapperTokenDetails,
   VoteValues,
-} from '@aragon/sdk-client';
-import {ProposalStatus} from '@aragon/sdk-client-common';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
+} from "@aragon/sdk-client";
+import { ProposalStatus } from "@aragon/sdk-client-common";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import {StateEmpty} from 'src/components/StateEmpty';
-import {useProviders} from 'src/context/providers';
-import {formatUnits} from 'ethers/lib/utils';
-import {usePastVotingPowerAsync} from 'src/services/aragon-sdk/queries/use-past-voting-power';
-import {Web3Address, shortenAddress} from 'src/utils/library';
-import BreakdownTab from './breakdownTab';
-import InfoTab from './infoTab';
-import {GaslessPluginName, PluginTypes} from 'src/hooks/usePluginClient';
-import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import {DaoMember} from 'src/utils/paths';
-import {useNetwork} from 'src/context/network';
-import {CHAIN_METADATA} from 'src/utils/constants';
+import { StateEmpty } from "src/components/StateEmpty";
+import { useProviders } from "src/context/providers";
+import { formatUnits } from "ethers/lib/utils";
+import { usePastVotingPowerAsync } from "src/services/aragon-sdk/queries/use-past-voting-power";
+import { Web3Address, shortenAddress } from "src/utils/library";
+import BreakdownTab from "./breakdownTab";
+import InfoTab from "./infoTab";
+import { GaslessPluginName, PluginTypes } from "src/hooks/usePluginClient";
+import { generatePath, useNavigate, useParams } from "react-router-dom";
+import { DaoMember } from "src/utils/paths";
+import { useNetwork } from "src/context/network";
+import { CHAIN_METADATA } from "src/utils/constants";
 
 export type ProposalVoteResults = {
-  yes: {value: string | number; percentage: number};
-  no: {value: string | number; percentage: number};
-  abstain: {value: string | number; percentage: number};
+  yes: { value: string | number; percentage: number };
+  no: { value: string | number; percentage: number };
+  abstain: { value: string | number; percentage: number };
 };
 
-export type TerminalTabs = 'voters' | 'breakdown' | 'info';
+export type TerminalTabs = "voters" | "breakdown" | "info";
 
 export type VotingTerminalProps = {
   title?: string;
@@ -97,7 +97,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   statusLabel,
   strategy,
   voted = false,
-  voteOptions = '',
+  voteOptions = "",
   onApprovalClicked,
   onVoteClicked,
   onVoteSubmitClicked,
@@ -105,25 +105,25 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   onCancelClicked,
   voteButtonLabel,
   alertMessage,
-  selectedTab = 'info',
+  selectedTab = "info",
   onTabSelected,
   pluginType,
   executableWithNextApproval = false,
   className,
 }) => {
   const [page, setPage] = useState(1);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [selectedVote, setSelectedVote] = useState<VoteValues>();
   const [displayedVoters, setDisplayedVoters] = useState<Array<VoterType>>([]);
-  const {api: provider} = useProviders();
-  const {t} = useTranslation();
-  const {network} = useNetwork();
+  const { api: provider } = useProviders();
+  const { t } = useTranslation();
+  const { network } = useNetwork();
   const navigate = useNavigate();
-  const {dao} = useParams();
+  const { dao } = useParams();
   const fetchPastVotingPower = usePastVotingPowerAsync();
 
   const isMultisigProposal =
-    (pluginType === 'multisig.plugin.dao.eth' ||
+    (pluginType === "multisig.plugin.dao.eth" ||
       pluginType === GaslessPluginName) && // If is gasless and have approvals or min approvals act as multisig voting terminal
     !!approvals &&
     !!minApproval;
@@ -132,7 +132,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
     // fetch avatar for each voter
     async function fetchEns() {
       const response = await Promise.all(
-        voters.map(async voter => {
+        voters.map(async (voter) => {
           const wallet = await Web3Address.create(provider, voter.wallet);
           let balance;
           if (daoToken?.address && wallet.address) {
@@ -172,9 +172,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   ]);
 
   const filteredVoters = useMemo(() => {
-    return query === ''
+    return query === ""
       ? displayedVoters
-      : displayedVoters.filter(voter =>
+      : displayedVoters.filter((voter) =>
           voter.wallet.includes(query.toLowerCase())
         );
   }, [displayedVoters, query]);
@@ -214,7 +214,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           {statusLabel && (
             <AlertInline
               message={statusLabel}
-              variant={status === 'Defeated' ? 'critical' : 'info'}
+              variant={status === "Defeated" ? "critical" : "info"}
             />
           )}
         </div>
@@ -227,36 +227,36 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           >
             <Option
               value="breakdown"
-              label={t('votingTerminal.breakdown')}
+              label={t("votingTerminal.breakdown")}
               disabled={breakdownTabDisabled}
               className="flex-1"
             />
             <Option
               value="voters"
-              label={t('votingTerminal.voters')}
+              label={t("votingTerminal.voters")}
               disabled={votersTabDisabled}
               className="flex-1"
             />
             <Option
               value="info"
-              label={t('votingTerminal.info')}
+              label={t("votingTerminal.info")}
               className="flex-1"
             />
           </ButtonGroup>
         </div>
       </Header>
 
-      {selectedTab === 'breakdown' ? (
+      {selectedTab === "breakdown" ? (
         <BreakdownTab
           approvals={approvals}
           memberCount={minApproval ?? voters.length} // For gasless proposals, the member count is the minimum approval and not all voters
           results={results}
           token={daoToken}
         />
-      ) : selectedTab === 'voters' ? (
+      ) : selectedTab === "voters" ? (
         <VotersTabContainer>
           <SearchInput
-            placeholder={t('votingTerminal.inputPlaceholder')}
+            placeholder={t("votingTerminal.inputPlaceholder")}
             value={query}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setQuery(e.target.value.trim())
@@ -268,9 +268,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
               showOption
               page={page}
               showAmount={daoToken !== undefined}
-              onLoadMore={() => setPage(prev => prev + 1)}
-              LoadMoreLabel={t('community.votersTable.loadMore')}
-              onVoterClick={user => {
+              onLoadMore={() => setPage((prev) => prev + 1)}
+              LoadMoreLabel={t("community.votersTable.loadMore")}
+              onVoterClick={(user) => {
                 dao
                   ? navigate(
                       generatePath(DaoMember, {
@@ -281,7 +281,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                     )
                   : window.open(
                       `${CHAIN_METADATA[network].explorer}address/${user}`,
-                      '_blank'
+                      "_blank"
                     );
               }}
             />
@@ -291,15 +291,15 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
               mode="inline"
               object="magnifying_glass"
               title={t(
-                query === ''
-                  ? 'votingTerminal.emptyState.title'
-                  : 'votingTerminal.emptyState.titleSearch',
+                query === ""
+                  ? "votingTerminal.emptyState.title"
+                  : "votingTerminal.emptyState.titleSearch",
                 {
                   query: shortenAddress(query),
                 }
               )}
               description={
-                query === '' ? '' : t('votingTerminal.emptyState.subtitle')
+                query === "" ? "" : t("votingTerminal.emptyState.subtitle")
               }
             />
           )}
@@ -326,29 +326,29 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
 
       {votingInProcess ? (
         <VotingContainer>
-          <Heading2>{t('votingTerminal.chooseOption')}</Heading2>
+          <Heading2>{t("votingTerminal.chooseOption")}</Heading2>
           <p className="mt-2 text-neutral-500">
-            {t('votingTerminal.chooseOptionHelptext')}
+            {t("votingTerminal.chooseOptionHelptext")}
           </p>
 
           <CheckboxContainer>
             <CheckboxListItem
-              label={t('votingTerminal.yes')}
-              helptext={t('votingTerminal.yesHelptext')}
+              label={t("votingTerminal.yes")}
+              helptext={t("votingTerminal.yesHelptext")}
               onClick={() => setSelectedVote(VoteValues.YES)}
-              type={selectedVote === VoteValues.YES ? 'active' : 'default'}
+              type={selectedVote === VoteValues.YES ? "active" : "default"}
             />
             <CheckboxListItem
-              label={t('votingTerminal.no')}
-              helptext={t('votingTerminal.noHelptext')}
+              label={t("votingTerminal.no")}
+              helptext={t("votingTerminal.noHelptext")}
               onClick={() => setSelectedVote(VoteValues.NO)}
-              type={selectedVote === VoteValues.NO ? 'active' : 'default'}
+              type={selectedVote === VoteValues.NO ? "active" : "default"}
             />
             <CheckboxListItem
-              label={t('votingTerminal.abstain')}
-              helptext={t('votingTerminal.abstainHelptext')}
+              label={t("votingTerminal.abstain")}
+              helptext={t("votingTerminal.abstainHelptext")}
               onClick={() => setSelectedVote(VoteValues.ABSTAIN)}
-              type={selectedVote === VoteValues.ABSTAIN ? 'active' : 'default'}
+              type={selectedVote === VoteValues.ABSTAIN ? "active" : "default"}
             />
           </CheckboxContainer>
 
@@ -357,16 +357,15 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
               <Button
                 size="lg"
                 variant="primary"
-                state={!selectedVote ? 'disabled' : undefined}
                 onClick={() => {
                   if (selectedVote && onVoteSubmitClicked)
                     onVoteSubmitClicked(selectedVote);
                 }}
               >
-                {t('votingTerminal.submit')}
+                {t("votingTerminal.submit")}
               </Button>
               <Button variant="tertiary" size="lg" onClick={onCancelClicked}>
-                {t('votingTerminal.cancel')}
+                {t("votingTerminal.cancel")}
               </Button>
             </ButtonWrapper>
           </VoteContainer>
@@ -384,30 +383,28 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                         variant="primary"
                         onClick={() => onApprovalClicked?.(true)}
                         className="w-full md:w-max"
-                        state={voteNowDisabled ? 'disabled' : undefined}
                       >
-                        {t('transactionModal.multisig.ctaApproveExecute')}
+                        {t("transactionModal.multisig.ctaApproveExecute")}
                       </Button>
                     )}
                     <Button
                       size="lg"
                       onClick={() => onApprovalClicked?.(false)}
                       className="w-full md:w-max"
-                      state={voteNowDisabled ? 'disabled' : undefined}
                       {...(executableWithNextApproval && !voted
-                        ? {variant: 'secondary'}
-                        : {variant: 'primary'})}
+                        ? { variant: "secondary" }
+                        : { variant: "primary" })}
                     >
-                      {voteButtonLabel ?? ''}
+                      {voteButtonLabel ?? ""}
                     </Button>
                   </div>
                   {executableWithNextApproval && (
                     <AlertInline
                       message={
                         approvals.length < minApproval
-                          ? t('votingTerminal.approveAndExecute.infoAlert')
+                          ? t("votingTerminal.approveAndExecute.infoAlert")
                           : t(
-                              'votingTerminal.approveAndExecute.infoAlertApproved'
+                              "votingTerminal.approveAndExecute.infoAlertApproved"
                             )
                       }
                       variant="info"
@@ -420,9 +417,8 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                   variant="primary"
                   onClick={onVoteClicked}
                   className="w-full md:w-max"
-                  state={voteNowDisabled ? 'disabled' : undefined}
                 >
-                  {voteButtonLabel || t('votingTerminal.voteNow')}
+                  {voteButtonLabel || t("votingTerminal.voteNow")}
                 </Button>
               )}
             </VoteContainer>
@@ -439,44 +435,44 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   );
 };
 
-const Container = styled.div.attrs<{customClasses?: string}>(
+const Container = styled.div.attrs<{ customClasses?: string }>(
   ({
-    customClasses = 'md:p-6 py-5 px-4 rounded-xl bg-neutral-0 border border-neutral-100',
+    customClasses = "md:p-6 py-5 px-4 rounded-xl bg-neutral-0 border border-neutral-100",
   }) => ({
     className: customClasses,
   })
-)<{customClasses?: string}>``;
+)<{ customClasses?: string }>``;
 
 const Header = styled.div.attrs({
-  className: 'md:flex md:flex-row md:space-x-6 space-y-4 md:space-y-0',
+  className: "md:flex md:flex-row md:space-x-6 space-y-4 md:space-y-0",
 })``;
 
 const Heading1 = styled.h1.attrs({
-  className: 'ft-text-xl font-semibold text-neutral-800 grow',
+  className: "ft-text-xl font-semibold text-neutral-800 grow",
 })``;
 
 const VotingContainer = styled.div.attrs({
-  className: 'mt-12 md:mt-10',
+  className: "mt-12 md:mt-10",
 })``;
 
 const Heading2 = styled.h2.attrs({
-  className: 'ft-text-xl font-semibold text-neutral-800',
+  className: "ft-text-xl font-semibold text-neutral-800",
 })``;
 
 const CheckboxContainer = styled.div.attrs({
-  className: 'mt-6 space-y-3',
+  className: "mt-6 space-y-3",
 })``;
 
 const VoteContainer = styled.div.attrs({
   className:
-    'flex flex-col md:flex-row md:justify-between md:space-x-6 items-center md:items-center mt-6 space-y-4 md:space-y-0' as string,
+    "flex flex-col md:flex-row md:justify-between md:space-x-6 items-center md:items-center mt-6 space-y-4 md:space-y-0" as string,
 })``;
 
 const ButtonWrapper = styled.div.attrs({
   className:
-    'flex flex-col md:flex-row space-y-4 space-x-0 md:space-y-0 md:space-x-4 w-full md:w-max',
+    "flex flex-col md:flex-row space-y-4 space-x-0 md:space-y-0 md:space-x-4 w-full md:w-max",
 })``;
 
 const VotersTabContainer = styled.div.attrs({
-  className: 'mt-6 xl:mt-10 space-y-4',
+  className: "mt-6 xl:mt-10 space-y-4",
 })``;

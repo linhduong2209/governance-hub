@@ -23,6 +23,12 @@ const DaoPage = lazy(() =>
   }))
 );
 
+const ProposalPage = lazy(() =>
+  import("./pages/ProposalDetail").then((module) => ({
+    default: module.ProposalDetail,
+  }))
+);
+
 const DaoWrapper: React.FC = () => {
   return (
     <>
@@ -39,13 +45,21 @@ const DaoWrapper: React.FC = () => {
 const DaosWrapper: React.FC = () => {
   return (
     <>
-      {/* <Navbar /> */}
       <div className="min-h-screen">
         <GridLayout>
-          <Routes>
-            <Route path="dao-detail" element={<DaoPage />} />
-          </Routes>
-          {/* <DaoPage /> */}
+          <DaoPage />
+        </GridLayout>
+      </div>
+    </>
+  );
+};
+
+const ProposalWrapper: React.FC = () => {
+  return (
+    <>
+      <div className="min-h-screen">
+        <GridLayout>
+          <ProposalPage />
         </GridLayout>
       </div>
     </>
@@ -61,7 +75,8 @@ function App() {
             <Routes>
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="create/*" element={<DaoWrapper />} />
-              <Route path="daos/*" element={<DaosWrapper />} />
+              <Route path="dao-detail" element={<DaosWrapper />} />
+              <Route path="proposal-detail" element={<ProposalWrapper />} />
             </Routes>
           </NetworkProvider>
         </BrowserRouter>

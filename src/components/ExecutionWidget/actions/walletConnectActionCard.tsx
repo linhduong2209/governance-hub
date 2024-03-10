@@ -1,18 +1,21 @@
-import {Label} from '@aragon/ods-old';
-import React, {useMemo} from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
-import {AlertCard} from '@aragon/ods';
+import { Label } from "src/@aragon/ods-old";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { AlertCard } from "@aragon/ods";
 
-import {AccordionMethod, AccordionMethodType} from 'components/accordionMethod';
-import {FormlessComponentForType} from 'containers/smartContractComposer/components/inputForm';
-import {POTENTIALLY_TIME_SENSITIVE_FIELDS} from 'utils/constants/misc';
-import {capitalizeFirstLetter, shortenAddress} from 'utils/library';
-import {ActionWC, ExecutionStatus, Input} from 'utils/types';
-import {CHAIN_METADATA} from 'utils/constants';
-import {useNetwork} from 'context/network';
+import {
+  AccordionMethod,
+  AccordionMethodType,
+} from "src/components/AccordionMethod";
+import { FormlessComponentForType } from "src/containers/SmartContractComposer/components/inputForm";
+import { POTENTIALLY_TIME_SENSITIVE_FIELDS } from "src/utils/constants/misc";
+import { capitalizeFirstLetter, shortenAddress } from "src/utils/library";
+import { ActionWC, ExecutionStatus, Input } from "src/utils/types";
+import { CHAIN_METADATA } from "src/utils/constants";
+import { useNetwork } from "src/context/network";
 
-type WCActionCardActionCardProps = Pick<AccordionMethodType, 'type'> & {
+type WCActionCardActionCardProps = Pick<AccordionMethodType, "type"> & {
   action: ActionWC;
   methodActions?: Array<{
     component: React.ReactNode;
@@ -27,8 +30,8 @@ export const WCActionCard: React.FC<WCActionCardActionCardProps> = ({
   status,
   type,
 }) => {
-  const {t} = useTranslation();
-  const {network} = useNetwork();
+  const { t } = useTranslation();
+  const { network } = useNetwork();
 
   const showTimeSensitiveWarning = useMemo(() => {
     // Note: need to check whether the inputs exist because the decoding
@@ -40,7 +43,7 @@ export const WCActionCard: React.FC<WCActionCardActionCardProps> = ({
         }
 
         // for tuples
-        if (input.type === 'tuple' && Array.isArray(input.value)) {
+        if (input.type === "tuple" && Array.isArray(input.value)) {
           // for whatever reason the name is coming as the array index??
           for (const name in input.value as {}) {
             if (POTENTIALLY_TIME_SENSITIVE_FIELDS.has(name.toLowerCase())) {
@@ -71,7 +74,7 @@ export const WCActionCard: React.FC<WCActionCardActionCardProps> = ({
       <Content type={type}>
         {action.inputs?.length > 0 ? (
           <FormGroup>
-            {action.inputs.map(input => {
+            {action.inputs.map((input) => {
               if (!input.name) return null;
               return (
                 <FormItem key={input.name}>
@@ -92,20 +95,20 @@ export const WCActionCard: React.FC<WCActionCardActionCardProps> = ({
         {!action.decoded && (
           <AlertCard
             variant="warning"
-            message={t('newProposal.configureActions.actionAlertWarning.title')}
+            message={t("newProposal.configureActions.actionAlertWarning.title")}
             description={t(
-              'newProposal.configureActions.actionAlertWarning.desc'
+              "newProposal.configureActions.actionAlertWarning.desc"
             )}
           />
         )}
-        {status !== 'executed' && showTimeSensitiveWarning && (
+        {status !== "executed" && showTimeSensitiveWarning && (
           <AlertCard
             variant="critical"
             message={t(
-              'newProposal.configureActions.actionAlertCritical.title'
+              "newProposal.configureActions.actionAlertCritical.title"
             )}
             description={t(
-              'newProposal.configureActions.actionAlertCritical.desc'
+              "newProposal.configureActions.actionAlertCritical.desc"
             )}
           />
         )}
@@ -114,18 +117,18 @@ export const WCActionCard: React.FC<WCActionCardActionCardProps> = ({
   );
 };
 
-const Content = styled.div.attrs<{type: WCActionCardActionCardProps['type']}>(
-  ({type}) => ({
+const Content = styled.div.attrs<{ type: WCActionCardActionCardProps["type"] }>(
+  ({ type }) => ({
     className: `px-4 xl:px-6 p-6 border border-neutral-100 border-t-0 space-y-4 xl:space-y-6 rounded-b-xl ${
-      type === 'action-builder' ? 'bg-neutral-0' : 'bg-neutral-50'
+      type === "action-builder" ? "bg-neutral-0" : "bg-neutral-50"
     }`,
   })
-)<{type: WCActionCardActionCardProps['type']}>``;
+)<{ type: WCActionCardActionCardProps["type"] }>``;
 
 const FormGroup = styled.div.attrs({
-  className: 'space-y-4 xl:space-y-6',
+  className: "space-y-4 xl:space-y-6",
 })``;
 
 const FormItem = styled.div.attrs({
-  className: 'space-y-3',
+  className: "space-y-3",
 })``;
